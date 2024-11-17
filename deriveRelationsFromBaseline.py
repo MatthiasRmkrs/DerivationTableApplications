@@ -92,7 +92,6 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                         for sr2 in source2:
                             if sr1 == sr2:
                                 common = sr2    
-                    pdb.set_trace()
 
                     if common >= 0 and not (ii == i and jj == j): 
                         # Only combine rels with common element, 
@@ -135,7 +134,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[crelLab] = [(source1[1], source2[1])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:
-                                        derived[crelLab].append((source1[1], source2[1]))
+                                        if not (source1[1], source2[1]) in derived[crelLab]:  # Filter for duplicates
+                                            derived[crelLab].append((source1[1], source2[1]))
                                     relTab[list.index(list(derived.keys()), crelLab), source1[1], source2[1]] = 1 # Update table
                                     if printRels:
                                         print('\n...And that {} is {} {}.\n\n'.format(
@@ -144,7 +144,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[mcrelLab] = [(source2[1], source1[1])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:
-                                        derived[mcrelLab].append((source2[1], source1[1]))
+                                        if not (source2[1], source1[1]) in derived[mcrelLab]: # Account for duplicates
+                                            derived[mcrelLab].append((source2[1], source1[1]))
                                     relTab[list.index(list(derived.keys()), mcrelLab), source2[1], source1[1]] = 1 # Update table
                                 else:
                                     if printRels:
@@ -157,7 +158,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[crelLab] = [(source1[1], source2[0])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:
-                                        derived[crelLab].append((source1[0], source2[1]))
+                                        if not (source1[0], source2[1]) in derived[crelLab]:  # Filter for duplicates
+                                            derived[crelLab].append((source1[0], source2[1]))
                                     relTab[list.index(list(derived.keys()), crelLab), source1[1], source2[0]] = 1 # Update table
                                     if printRels:
                                         print('\n...And that {} is {} {}.\n\n'.format(
@@ -166,7 +168,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[mcrelLab] = [(source2[0], source1[1])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:
-                                        derived[mcrelLab].append((source2[0], source1[1]))
+                                        if not (source2[0], source1[1]) in derived[mcrelLab]: # Filter for duplicates
+                                            derived[mcrelLab].append((source2[0], source1[1]))
                                     relTab[list.index(list(derived.keys()), mcrelLab), source2[0], source1[1]] = 1 # Update table
                             else: 
                                 # --> Derive B-C relation
@@ -181,7 +184,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[crelLab] = [(source1[0], source2[1])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:
-                                        derived[crelLab].append((source1[0], source2[1]))
+                                        if not (source1[0], source2[1]) in derived[crelLab]:  # Filter for duplicates
+                                            derived[crelLab].append((source1[0], source2[1]))
                                     relTab[list.index(list(derived.keys()), crelLab), source1[0], source2[1]] = 1 # Update table
                                     if printRels:
                                         print('And that {} is {} {}.\n\n'.format(
@@ -190,7 +194,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[mcrelLab] = [(source2[1], source1[0])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:
-                                        derived[mcrelLab].append((source2[1], source1[0]))
+                                        if not (source2[1], source1[0]) in derived[mcrelLab]:  # Filter for duplicates
+                                            derived[mcrelLab].append((source2[1], source1[0]))
                                     relTab[list.index(list(derived.keys()), mcrelLab), source2[1], source1[0]] = 1 # Update table        
                                 else: # A - B and A - C -> B-C
                                     if printRels:
@@ -203,7 +208,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[crelLab] = [(source1[0], source2[0])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:
-                                        derived[crelLab].append((source1[0], source2[0]))
+                                        if not (source1[0], source2[0]) in derived[crelLab]:  # Filter for duplicates
+                                            derived[crelLab].append((source1[0], source2[0]))
                                     relTab[list.index(list(derived.keys()), crelLab), source1[0], source2[0]] = 1 # Update table
                                     if printRels:
                                         print('\n...And that {} is {} {}\n\n'.format(
@@ -212,7 +218,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                                         derived[mcrelLab] = [(source2[0], source1[0])]
                                         relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
                                     else:       
-                                        derived[mcrelLab].append((source2[0], source1[0]))
+                                        if not (source2[0], source1[0]) in derived[mcrelLab]:  # Filter for duplicates
+                                            derived[mcrelLab].append((source2[0], source1[0]))
                                     relTab[list.index(list(derived.keys()), mcrelLab), source2[0], source1[0]] = 1 # Update table
 
                         else:

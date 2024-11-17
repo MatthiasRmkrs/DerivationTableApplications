@@ -28,20 +28,22 @@ from derivationTablesFromSourceRelations import derivationTablesFromSourceRelati
 from deriveRelationsFromBaseline import deriveRelationsFromBaseline
 
 # plot parameteres
-radius = .2 # Determines curvature of lines between stimuli, can tweak to make plot more readable
+radius = .3 # Determines curvature of lines between stimuli, can tweak to make plot more readable
 # Between .15 and .3 seems to provide best results
 relColor = 'black'
 drelColor = 'grey'
-protocol = 'Linear' # For one-to-many or many-to-one, the 'one' is plotted in the middle
-title = 'Baseline Trained Relational Network and Tested Derived Relations'
+protocol = 'OneToMany' # For one-to-many or many-to-one, the 'one' is plotted in the middle
+title = 'Steele & Hayes (1991) Trained and Derived Relational Network'
 # arrowStyle = "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
-arrowStyle = "fancy, head_length=50, head_width=15, tail_width=5" # Pointed arrow growing thinner
-label_offset = .75 # Play around with how close labels are plotted to lines
+relArrowStyle = "fancy, head_length=50, head_width=15, tail_width=5" # Pointed arrow growing thinner
+drelArrowStyle = "fancy, head_length=50, head_width=10, tail_width=3" # Pointed arrow growing thinner
+label_offset = .55 # Play around with how close labels are plotted to lines
 relLabelFontSize = 14
 sLabelFontSize = 20
 sDotSize = 40
 plotMutual = True
 plotCombinatorial = True
+figsize = (25,25)
 
 # Define default relations
 relations = dict({'Same as': 0,
@@ -55,9 +57,9 @@ relations = dict({'Same as': 0,
              'After': 8})
 mutual, combi = derivationTablesFromSourceRelations(relations)
 # Deinfe baseline network
-baseline = dict({'Different from': [(0,1), (1, 2)],
-                   # 'More than': [(0,2), (3, 2)], 
-              # 'Opposite to': [(0,3), (0,6)]
+baseline = dict({'Same as': [(0,1), (0,4)],
+                 'Different from': [(0,2), (0,5)], 
+               'Opposite to': [(0,3), (0,6)]
              })
 # derive relations (or do on the spot while plotting?)
 plot = False
@@ -103,7 +105,7 @@ vertices = polygon_coords(n_stim)
 
 
 # Create a Cartesian grid plot without showing the grid
-plt.figure(figsize=(20, 20))  # Set figure size
+plt.figure(figsize=figsize)  # Set figure size
 plt.plot([], [])  # Create an empty plot (optional for axes setup)
 plt.xlim(0,  n_stim*100)  # Set x-axis range
 plt.ylim(0,  n_stim*100)  # Set y-axis range
@@ -134,7 +136,7 @@ for rels in baseline.keys():
         # pdb.set_trace()
         baselineArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                 connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                arrowstyle= arrowStyle, color=relColor, linewidth=1.5)
+                                arrowstyle= relArrowStyle, color=relColor, linewidth=1.5)
         plt.gca().add_patch(baselineArrow)
         # Label the curve, position depending on symmetry of relation
         mid_x, mid_y = (x_start + x_end)/ 2, (y_start + y_end)/ 2# midpoint for positioning
@@ -166,7 +168,7 @@ for drels in derived.keys():
                 # Plot a curved line using FancyArrowPatch 
                 derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                        arrowstyle=arrowStyle, color=drelColor, 
+                                        arrowstyle=drelArrowStyle, color=drelColor, 
                                         linestyle = ':', linewidth=1.5)
                 plt.gca().add_patch(derivedArrow)
                 # Label the curve, position depending on symmetry of relation
