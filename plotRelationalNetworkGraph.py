@@ -32,7 +32,7 @@ radius = .2 # Determines curvature of lines between stimuli, can tweak to make p
 # Between .15 and .3 seems to provide best results
 relColor = 'black'
 drelColor = 'grey'
-protocol = 'OneToMaany' # For one-to-many or many-to-one, the 'one' is plotted in the middle
+protocol = 'Linear' # For one-to-many or many-to-one, the 'one' is plotted in the middle
 title = 'Baseline Trained Relational Network and Tested Derived Relations'
 # arrowStyle = "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
 arrowStyle = "fancy, head_length=50, head_width=15, tail_width=5" # Pointed arrow growing thinner
@@ -55,7 +55,7 @@ relations = dict({'Same as': 0,
              'After': 8})
 mutual, combi = derivationTablesFromSourceRelations(relations)
 # Deinfe baseline network
-baseline = dict({'Different from': [(0,1), (0, 2)],
+baseline = dict({'Different from': [(0,1), (1, 2)],
                    # 'More than': [(0,2), (3, 2)], 
               # 'Opposite to': [(0,3), (0,6)]
              })
@@ -179,7 +179,6 @@ for drels in derived.keys():
                 distance = np.sqrt(dx**2 + dy**2) # Calculate the distance between start and end points
                 # Calculate angle of the line segment for consistent radial offset
                 angle = np.arctan2(dy, dx) + np.pi / 2  # Rotate by 90 degrees to get perpendicular
-                if drel == (2, 0): pdb.set_trace()
                 offset = radius * distance # Offset based on radius
                 # Azimuth point for label, shifted by label_offset in the radial direction
                 azimuth_x = mid_x - offset * np.cos(angle) *label_offset

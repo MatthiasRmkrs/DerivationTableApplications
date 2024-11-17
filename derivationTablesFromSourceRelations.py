@@ -115,7 +115,7 @@ def derivationTablesFromSourceRelations(relations=None):
                         combi['Linear'][rel1, rel2] = -1 
                         combi['OTM'][rel1, rel2] = -1 
                         combi['MTO'][rel1, rel2] = -1 
-                        combi['MTO'][rel1, rel2] = -1                         
+                        combi['sMTO'][rel1, rel2] = -1                         
                     elif list(relations.keys())[rel1] == 'Opposite to':
                         # Opposition relations combine to equialence
                         combi['Linear'][rel1, rel2] = 0

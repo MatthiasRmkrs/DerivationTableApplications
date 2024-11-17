@@ -92,7 +92,8 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                         for sr2 in source2:
                             if sr1 == sr2:
                                 common = sr2    
-                    
+                    pdb.set_trace()
+
                     if common >= 0 and not (ii == i and jj == j): 
                         # Only combine rels with common element, 
                         # Don't combine identical instances
@@ -115,7 +116,6 @@ def deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs):
                             else: # A-B & C- B (MTO)
                                 crel = combi['MTO'][rel1, rel2]
                         
-
                         if crel >= 0: # Exclude ill-defined relations
                             crelLab = list(relations.keys())[crel] # label
                             mcrel = mutual[crel] # get mutually entailed from predefined list
