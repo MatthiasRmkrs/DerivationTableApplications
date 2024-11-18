@@ -28,21 +28,27 @@ from derivationTablesFromSourceRelations import derivationTablesFromSourceRelati
 from deriveRelationsFromBaseline import deriveRelationsFromBaseline
 
 # plot parameteres
-radius = .3 # Determines curvature of lines between stimuli, can tweak to make plot more readable
+radius = .2 # Determines curvature of lines between stimuli, can tweak to make plot more readable
 # Between .15 and .3 seems to provide best results
+plotBaseline = False
 relColor = 'black'
-drelColor = 'grey'
+plotMutual = True
+mrelColor = 'dimgrey'
+plotCombinatorial = False
+crelColor = 'lightgrey'
+
 protocol = 'OneToMany' # For one-to-many or many-to-one, the 'one' is plotted in the middle
 title = 'Steele & Hayes (1991) Trained and Derived Relational Network'
-# arrowStyle = "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
+#       "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
 relArrowStyle = "fancy, head_length=50, head_width=15, tail_width=5" # Pointed arrow growing thinner
 drelArrowStyle = "fancy, head_length=50, head_width=10, tail_width=3" # Pointed arrow growing thinner
 label_offset = .55 # Play around with how close labels are plotted to lines
 relLabelFontSize = 14
 sLabelFontSize = 20
 sDotSize = 40
-plotMutual = True
-plotCombinatorial = True
+
+mutColor = 'darkgrey'
+combiColor = 'dimgrey'
 figsize = (25,25)
 
 # Define default relations
@@ -57,9 +63,9 @@ relations = dict({'Same as': 0,
              'After': 8})
 mutual, combi = derivationTablesFromSourceRelations(relations)
 # Deinfe baseline network
-baseline = dict({'Same as': [(0,1), (0,4)],
-                 'Different from': [(0,2), (0,5)], 
-               'Opposite to': [(0,3), (0,6)]
+baseline = dict({'Same as': [(0,1), (0, 4)],
+                  'Different from': [(0,2), (0,5)], 
+                'Opposite to': [(0,3), (0,6)]
              })
 # derive relations (or do on the spot while plotting?)
 plot = False
@@ -80,14 +86,16 @@ def polygon_coords(n_nodes, radius=n_stim*45, center=(n_stim*50, n_stim*50)):
     
     # Calculate angle between vertices
     if n_nodes > 3: 
-        angle = 2 * np.pi / (n_nodes-1) 
+        
         if protocol != 'Linear': # Plot network around the 'One' (center)for OTM/MTO
+            angle = 2 * np.pi / (n_nodes-1) 
             vertices.append((center))
             for i in range(n_nodes-1): # skip one for center S
                 x = center[0] + radius * np.cos(i * angle) # Calculate polygon coords around center
                 y = center[1] + radius * np.sin(i * angle)
                 vertices.append((x, y))
         else:
+            angle = 2 * np.pi / (n_nodes) 
             for i in range(n_nodes):
                 x = center[0] + radius * np.cos(i * angle) 
                 y = center[1] + radius * np.sin(i * angle)
@@ -111,84 +119,105 @@ plt.xlim(0,  n_stim*100)  # Set x-axis range
 plt.ylim(0,  n_stim*100)  # Set y-axis range
 
 
-# Intitialize to keep track of plotted network
-plottedS = dict()
-plottedRels = dict()
+# Intitialize to ensure network is constructed the same for baseline/derived
+plottedS = dict({})
+for i in range(n_stim):
+    plottedS[sLabs[i]] =  [vertices[len(plottedS.keys())]]
+plottedRels = dict({})
 
-
-# Loop through baseline relations
-for rels in baseline.keys():
-    for rel in baseline[rels]:
-        for s in range(2):
-            # First plot dot if new stimulus
-            if not sLabs[rel[s]] in plottedS.keys():
-                plottedS[sLabs[rel[s]]] = [vertices[len(plottedS.keys())]] 
+if plotBaseline:
+    # Loop through baseline relations
+    for rels in baseline.keys():
+        for rel in baseline[rels]:
+            for s in range(2):
                 # plot a labeled point on the grid
                 x = plottedS[sLabs[rel[s]]][0][0]
                 y = plottedS[sLabs[rel[s]]][0][1]
                 plt.plot(x, y, 'o', markersize = sDotSize, color = 'grey')  # Plot point
                 plt.text(x, y , sLabs[rel[s]], 
                          fontweight = 'bold', fontsize=sLabelFontSize, ha='center', va = 'center')  # Label next to the point
-        # get coords for relation
-        x_start, y_start = plottedS[sLabs[rel[0]]][0][0], plottedS[sLabs[rel[0]]][0][1]        
-        x_end, y_end = plottedS[sLabs[rel[1]]][0][0], plottedS[sLabs[rel[1]]][0][1]
-        # Plot a curved line using FancyArrowPatch 
-        # pdb.set_trace()
-        baselineArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
-                                connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                arrowstyle= relArrowStyle, color=relColor, linewidth=1.5)
-        plt.gca().add_patch(baselineArrow)
-        # Label the curve, position depending on symmetry of relation
-        mid_x, mid_y = (x_start + x_end)/ 2, (y_start + y_end)/ 2# midpoint for positioning
-        # make label position function of direction of arrow up/down-left/right
+            # get coords for relation
+            x_start, y_start = plottedS[sLabs[rel[0]]][0][0], plottedS[sLabs[rel[0]]][0][1]        
+            x_end, y_end = plottedS[sLabs[rel[1]]][0][0], plottedS[sLabs[rel[1]]][0][1]
+            # Plot a curved line using FancyArrowPatch 
+            # pdb.set_trace()
+            baselineArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
+                                    connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
+                                    arrowstyle= relArrowStyle, color=relColor, linewidth=1.5)
+            plt.gca().add_patch(baselineArrow)
+            # Label the curve, position depending on symmetry of relation
+            mid_x, mid_y = (x_start + x_end)/ 2, (y_start + y_end)/ 2# midpoint for positioning
+            # make label position function of direction of arrow up/down-left/right
+                    
                 
+            dx, dy = x_end - x_start, y_end - y_start # Vector from start to end
             
-        dx, dy = x_end - x_start, y_end - y_start # Vector from start to end
-        
-        distance = np.sqrt(dx**2 + dy**2) # Calculate the distance between start and end points
-        # Calculate angle of the line segment for consistent radial offset
-        angle = np.arctan2(dy, dx) + np.pi / 2  # Rotate by 90 degrees to get perpendicular
-
-        offset = radius * distance # Offset based on radius
-        # Azimuth point for label, shifted by label_offset in the radial direction
-        azimuth_x = mid_x - offset * np.cos(angle) *label_offset
-        azimuth_y = mid_y - offset * np.sin(angle) *label_offset
-        plt.text(azimuth_x, azimuth_y, rels, color=relColor, 
-                 fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
+            distance = np.sqrt(dx**2 + dy**2) # Calculate the distance between start and end points
+            # Calculate angle of the line segment for consistent radial offset
+            angle = np.arctan2(dy, dx) + np.pi / 2  # Rotate by 90 degrees to get perpendicular
+    
+            offset = radius * distance # Offset based on radius
+            # Azimuth point for label, shifted by label_offset in the radial direction
+            azimuth_x = mid_x - offset * np.cos(angle) *label_offset
+            azimuth_y = mid_y - offset * np.sin(angle) *label_offset
+            plt.text(azimuth_x, azimuth_y, rels, color=relColor, 
+                     fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
         
 plotted = []
 # Loop through derived relations
 for drels in derived.keys():
     for drel in derived[drels]:
+        
+        if not plotBaseline: # Plot nodes if no baseline relations plotted 
+            for s in range(2):
+                # plot a labeled point on the grid
+                x = plottedS[sLabs[drel[s]]][0][0]
+                y = plottedS[sLabs[drel[s]]][0][1]
+                plt.plot(x, y, 'o', markersize = sDotSize, color = 'grey')  # Plot point
+                plt.text(x, y , sLabs[drel[s]], 
+                         fontweight = 'bold', fontsize=sLabelFontSize, ha='center', va = 'center')  # Label next to the point
+        # Figure out if derivation is mutual or not?
+        if list(relations.keys())[mutual[relations[drels]]] in baseline.keys():
+            if (drel[1], drel[0]) in baseline[list(relations.keys())[mutual[relations[drels]]]]:
+                type = 'mutual'
+            else: type = 'combi'
         # get coords for relation
         x_start, y_start = plottedS[sLabs[drel[0]]][0][0], plottedS[sLabs[drel[0]]][0][1]        
         x_end, y_end = plottedS[sLabs[drel[1]]][0][0], plottedS[sLabs[drel[1]]][0][1]
-        if x_start != x_end and y_start != y_end: # no self relations
-            if drel not in plotted: # No duplicates (better to filter in derivation script!!)
-                # Plot a curved line using FancyArrowPatch 
-                derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
-                                        connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                        arrowstyle=drelArrowStyle, color=drelColor, 
-                                        linestyle = ':', linewidth=1.5)
-                plt.gca().add_patch(derivedArrow)
-                # Label the curve, position depending on symmetry of relation
-                mid_x, mid_y = (x_start + x_end)/ 2, (y_start + y_end)/ 2# midpoint for positioning
-                # make label position function of direction of arrow up/down-left/right
-                        
-                    
-                dx, dy = x_end - x_start, y_end - y_start # Vector from start to end
-                
-                distance = np.sqrt(dx**2 + dy**2) # Calculate the distance between start and end points
-                # Calculate angle of the line segment for consistent radial offset
-                angle = np.arctan2(dy, dx) + np.pi / 2  # Rotate by 90 degrees to get perpendicular
-                offset = radius * distance # Offset based on radius
-                # Azimuth point for label, shifted by label_offset in the radial direction
-                azimuth_x = mid_x - offset * np.cos(angle) *label_offset
-                azimuth_y = mid_y - offset * np.sin(angle) *label_offset
-                plt.text(azimuth_x, azimuth_y, drels, color=drelColor, 
-                         fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
-                plotted.append((drel))
-
+        # Label the curve, position depending on symmetry of relation
+        mid_x, mid_y = (x_start + x_end)/ 2, (y_start + y_end)/ 2# midpoint for positioning
+        # make label position function of direction of arrow up/down-left/right     
+        dx, dy = x_end - x_start, y_end - y_start # Vector from start to end
+        distance = np.sqrt(dx**2 + dy**2) # Calculate the distance between start and end points
+        # Calculate angle of the line segment for consistent radial offset
+        angle = np.arctan2(dy, dx) + np.pi / 2  # Rotate by 90 degrees to get perpendicular
+        offset = radius * distance # Offset based on radius
+        # Azimuth point for label, shifted by label_offset in the radial direction
+        azimuth_x = mid_x - offset * np.cos(angle) *label_offset
+        azimuth_y = mid_y - offset * np.sin(angle) *label_offset
+        
+        
+        # if x_start != x_end and y_start != y_end: # no self relations (filtered out?)
+        if plotMutual and type == 'mutual': # No duplicates (better to filter in derivation script!!)
+            # Plot a curved line using FancyArrowPatch 
+            derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
+                                    connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
+                                    arrowstyle=drelArrowStyle, color=mrelColor, 
+                                    linestyle = ':', linewidth=1.5)
+            plt.gca().add_patch(derivedArrow)
+            plt.text(azimuth_x, azimuth_y, drels, color=mrelColor, 
+                     fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
+            plotted.append((drel))
+        if plotCombinatorial and type == 'combi':
+            # Plot a curved line using FancyArrowPatch 
+            derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
+                                    connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
+                                    arrowstyle=drelArrowStyle, color=crelColor, 
+                                    linestyle = ':', linewidth=1.5)
+            plt.gca().add_patch(derivedArrow)
+            plt.text(azimuth_x, azimuth_y, drels, color=crelColor, 
+                     fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
+            plotted.append((drel))
 
 plt.title(title, fontsize=24, fontweight = 'bold')
 
