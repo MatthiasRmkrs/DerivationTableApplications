@@ -4,13 +4,20 @@ Created on Fri Nov 15 04:47:43 2024
 
 Script to plot a relational network as a graph (kind of) on a grid
 
+Mainly need to specify a baseline network (dict as in other applications)
+    Can then choose to plot baseline and/or mutually and/or combinatorially
+    derived relations
+        At the moment, linear protocol plotted as polygon, whearas OTM/MTO are 
+        plotted with 'one' S in the center of the polygon 
+        (except 2- or 3-nod)
+    Can adapt plot characteristics (e.g., node and arrow styles, fonts, title)
 TODO:
     - clean up
     - how to decide on network shape, based on input?
+        - option to choose line vs polygpn?
     - labels rotated to match arrow?
             or rather change arrow labels to symbols with legend
     - get user-specified input and general notebook outlined
-    - add option to plot only mutual or combinatorial entailment
 
     
     
@@ -30,11 +37,11 @@ from deriveRelationsFromBaseline import deriveRelationsFromBaseline
 # plot parameteres
 radius = .2 # Determines curvature of lines between stimuli, can tweak to make plot more readable
 # Between .15 and .3 seems to provide best results
-plotBaseline = False
+plotBaseline = True
 relColor = 'black'
 plotMutual = True
 mrelColor = 'dimgrey'
-plotCombinatorial = False
+plotCombinatorial = True
 crelColor = 'lightgrey'
 
 protocol = 'OneToMany' # For one-to-many or many-to-one, the 'one' is plotted in the middle
@@ -63,9 +70,9 @@ relations = dict({'Same as': 0,
              'After': 8})
 mutual, combi = derivationTablesFromSourceRelations(relations)
 # Deinfe baseline network
-baseline = dict({'Same as': [(0,1), (0, 4)],
-                  'Different from': [(0,2), (0,5)], 
-                'Opposite to': [(0,3), (0,6)]
+baseline = dict({'Same as': [(0,1), (0, 4), (0, 7)],
+                  'Different from': [(0,2), (0,5), (0, 8)], 
+                'Opposite to': [(0,3), (0,6), (0, 9)]
              })
 # derive relations (or do on the spot while plotting?)
 plot = False
@@ -76,7 +83,7 @@ for rels in baseline.keys():
         for s in rel: 
             if s not in unique: unique.append(s)
 n_stim = len(unique) 
-sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'N']
+sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'D1', 'D2', 'D3']
 relTab, derived = deriveRelationsFromBaseline(baseline, plot, printRels, n_stim, sLabs)
 
 vertices = []

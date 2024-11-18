@@ -21,7 +21,11 @@ Prameters:
 
 TO DO:
     - Plotting errors when only one relation and order of derived /baseline is not same?
-    - Could add steps beyond two step?
+    
+    
+    -  add parameter controlled steps beyond two step!!!
+        needed for e.g., transitive inference
+    
     - Compute n_unique stim in function here
     - add network plotter
     - Move computation of relTab to end so that order of relations can be controlled
