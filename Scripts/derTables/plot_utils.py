@@ -4,10 +4,21 @@ Created on Sun Jan 11 12:33:05 2026
 
 Specific functions for plotting related to derivation tables.
 
-Plot derivation tables as heatmaps
-Plot relational network as heatmap
-Plot Relational Network as Graph Network
+Defines the following functions:
+    plotTablesHeatmap - Plot derivation tables as heatmaps
+    plotNetworkHeatmap - Plot relational network (baseline + derived) as heatmap
+    plotRelNetworkGraph - Plot Relational Network as Graph Network
+    + some further minor functions that support the above
 
+
+TO DO:
+    - graph network plotter legend and selective relations
+        -> not easy to allow customization within deriveRelations
+        -> Only if plot function is used separately? Specify what to plot, 
+            and then automatically include in legend?
+    - createPlotRelLabels can be more robust by checking whether new label already
+        exists? avoid problems for relations that start with same letters?
+        
 @author: mraemaek
 """
 
@@ -23,7 +34,9 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch
 from matplotlib.lines import Line2D  # <— for legend proxies
 
-from utils import *
+from derTables.utils_tables import (createRelationTable, 
+                   countUniqueStimuli, 
+                   cleanRelationLabels)
 
 # Some labels 
 type_labs = {'Linear': 'Linear Combination: AxB and BxC - Derive AxC',
@@ -59,6 +72,16 @@ long_rels = {'Same as': 'Same as (Sa)', # on y-axis or separate legend?
 
 def createPlotRelLabels(relations):
     
+    """
+    Creates 'short' labels for relations to use in plots (e.g., label vertices in 
+    graph network or cells in heatmap). Just converts to first two letters of the label.
+    
+    Args: 
+        relations: dict containing relation labels as keys and tuples of stimulus pairs as values
+            typically output of createDerivationTables (already converted, hence dict not list)
+        
+    """
+    
     shortrels = {}
     longrel = {}
     
@@ -73,6 +96,20 @@ def createPlotRelLabels(relations):
 def plotTablesHeatmap(relations, mutual, combi):
     
     """
+    Plots derivation tables, created by 'createDerivationTables' as heatmaps,
+    both for mutual and combinatorial entailment.
+    
+    Args:
+        relations: dict, relations as keys, tuples of stimulus indices as values
+                 output by createDerivationTables
+        mutual: list that contains the (indices) of the relations that are mutually 
+                entailed by those provided in input
+                output by createDerivationTables
+        combi:  a dict containing four arrays, one for each way two relations can be combined,
+             each containing the combinatorially entailed relations (indices)
+             for all possible combinations of the relations provided in input
+             output by createDerivationTables
+            
     """
     inv_relations = {v: k for k, v in relations.items()}  # invert dict index -> label
     # Plot mutual entailment as heatmap 
@@ -163,7 +200,7 @@ def plotTablesHeatmap(relations, mutual, combi):
     return
 
 
-# %%
+# %% plotNetworkHeatmap - plot network of baseline and derived relations as heatmaps
 
 def plotNetworkHeatmap(baseline, derived, sLabs):
     
@@ -312,7 +349,20 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
                         plotTitle = None):
     
     """
+    Plots a network of (baseline and derived) relations as a graph network
     
+    Args:
+        baseline: dict - baseline relation labels as keys, list of tuples 
+                    (stimulus pairs) that represent instances of that 
+                    relation as the value for each key
+        derived: optional, dict - derived relations, can be output of 
+                deriveRelationsFromBaseline function, is not provided, will be
+                computed using said function
+        sLabs: optional, list of str representing stimulus labels (for plotting)
+        plotRels: list of str, which relations to include in plot
+                choose from 'baseline', 'mutual', 'combi'. Default is all types.
+        plotTitle: optional str to serve as plot title.
+        
     """
     
     
@@ -321,7 +371,7 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
     relations = cleanRelationLabels(list(baseline.keys()))
     
     if plotRels is None:
-        plotRels = ['baseline', 'mutual', 'derived']
+        plotRels = ['baseline', 'mutual', 'combi']
     # Do I need to input derived? Want user to also use it in stand-alone case
     # so derive on the spot anyways, should produce same result anyway
     
@@ -347,7 +397,9 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
             title = 'Trained and Mutually Entailed Relational Network'
         else:
             title = 'Trained and Derived Relational Network'
-
+    else:
+        title = plotTitle
+        
     # graph parameters
     radius = .18 # Determines curvature of lines between stimuli, can tweak to make plot more readable
     # Between .15 and .3 seems to provide best results

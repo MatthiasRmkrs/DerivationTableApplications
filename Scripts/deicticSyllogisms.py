@@ -26,84 +26,72 @@ from together import Together
 from datetime import datetime
 import pdb
 import pandas as pd
-from generateDeicticSyllogisms import generateDeicticSyllogisms
+from derTables.generateDeicticSyllogisms import generateDeicticSyllogisms2
 import matplotlib.pyplot as plt
 
 
-os.environ["TOGETHER_API_KEY"] = \
-    'a38f55199d6a87bad5c2248ea49a34a3e157c8e57e20f95d2df9627243e88b55'
-
 client = Together(api_key=os.environ.get("TOGETHER_API_KEY"))
 
-#%% Specify task characteristics
-
-
-# Might want to add a default set to function so it can run without the need to specify?
-
-# For each relation to test, specify the required verbs/objects to insert in prompts
-
-# Interpersonal thinking: P: "I think A and you think B" -> Qs: "Do I/you think A/B?", "What do I/you think?"?
-# Requires a set of 'thinking' synonyms to loop, and for each of those, two 'thoughts' for You and I
-thinking = ['think', 
-            # 'believe', 'remember', 'understand' # understand doesn't always work well
-            
-            ]
+#for deictic relations
+thinking = ['think', 'believe']# Interpersonal feeling: 
+past_think = ['thought'] 
 thoughts = ['cats are fun', 'dogs are fun', 'ducks are superior', 'mosquitos suck',
             'psychology is fun', 'homework is lame', 'Trump is stupid', 'Harris is smart',
             'the beach is nice', 'mountains are cool', 'ice cream is better than cookies', 'cookies are better than ice cream',
-            'MacDonalds is disgusting', 'MacDonalds is amazing', 'MacDonalds is good', "Wendy's is better"
+            'MacDonalds is disgusting', 'MacDonalds is amazing', 'MacDonalds is good', "Wendy's is better",
+            'AI is cool', 'AI is scary', 'football is fun', 'football is stupid'
             ]
 
-# Interpersonal feeling: 
-
-# Takes a list of 'feeling' synonyms (though really only one... could replace to be like 'doing')
-feeling = ['feel'] # could copy but can also just increase n_reps
+feeling = ['feel'] # Interpersonal feeling: 
+past_feelings = ['felt']
 feelings = ['happy', 'sad', 'angry', 'confused', 
             'scared', 'safe', 'cold', 'warm', 'hot', 'cold',
             'sick', 'dizzy', 'happy', 'angry', 'nauseous', 'fine',
             'great', 'sad', 'dissapointed', 'sad', 'awfull', 'guilty'
             ]
 
-
-# Interpersonal 'doing' relations
-# Premise: "I am doing A and you are doing B" -> Qs: "Am I/Are you doing A/B?", "What am I/are you doing?"?
-# Only requires a list of 'actions', two for each repetition 
-doing = ['doing'] # not really used, but for sake of having idetical loops
+doing = ['doing'] # Interpersonal 'doing' relations
 actions = ['sitting on a red chair', 'sitting on a blue chair',
             'playing chess', 'playing outside',
             'drinking a coke', 'feeding the cat',
             'playing videogames', 'reading a book',
             'cleaning', 'cooking',
             'playing football', 'playing tennis', 'watching television', 'reading a magazine'
-           # 'playing videogames', 'cooking', 'feeding the cat', 'cleaning the kitchen' 
-           # 'sitting on a red chair', 'sitting on a black chair', 'sitting on a blue chair', 'sitting on a black chair',
+            'playing videogames', 'cooking', 'feeding the cat', 'cleaning the kitchen' 
+            'sitting on a red chair', 'sitting on a black chair', 'sitting on a blue chair', 'sitting on a black chair',
            ]
 
 # Temporal relations (now-then)
 times = [['today', 'yesterday'], 
-         # ['today', 'tomorrow'], ['yesterday', 'tomorrow'], ['last week', 'this week'], 
-         # ['last week', 'next week'], ['this week', 'next week'], ['tomorrow', 'next week']
-         # ['last week', 'tomorrow'], ['yesterday', 'last week'], ['last week', 'today'], 
-         # ['yesterday', 'next week'], ['this week', 'yesterday'], ['yesterday', 'this week']
+          # ['today', 'tomorrow'], ['yesterday', 'tomorrow'], ['last week', 'this week'], 
+          # ['last week', 'next week'], ['this week', 'next week'], ['tomorrow', 'next week'],
+          # ['last week', 'tomorrow'], ['yesterday', 'last week'], ['last week', 'today'], 
+          # ['yesterday', 'next week'], ['this week', 'yesterday'], ['yesterday', 'this week']
          ]
 events = ['the opening of the new shop', 'the start of the academic year',
-          'my birthday', 'your birthday', 'the first day of school', 'my birthday',
-           'a holiday', 'a workday', 'a holiday', "John's birthday", 'the festival', 'the closing of the old shop',
-           'the opening of the new shop', 'the closing of the old shop', 'Christmas', 'my birthday'
-          
+          'my birthday', 'your birthday', 'the first day of school', 
+          'my birthday', "John's birthday", 
+            'the festival', 'the closing of the old shop',
+           'the opening of the new shop', 'the closing of the old shop',
+           'Christmas', 'my birthday', 
+           'Easter', 'the final of the Voice', 
+           'the opening of the new supermarket', 'your birthday',
+           "mom's birthday", "dad's birthday",
+           "the first day of the year", 'game night'
           ]
 # Spatial relations (here-there)
 # Premise: 'A is here and B is there' -> Qq: Is A/B here/there?"/"Where is A/B?"
 places = [['here', 'there'],
-          # ['in the store', 'at home'], ['at the pool', 'in the gym']
-          # ...
+           # ['in the store', 'at home'], ['at the pool', 'in the gym']
           ] # others? 
 
-things = ['the red chair', 'the blue chair',
-          'the pharmacy', 'the grocery store',
-          'school', 'my home', 'the bank', 'my wallet', 'the bus stop', 'the post office',
-          ' the chair', 'the table', 'the green chair', 'the red chair', 'my book', 'my bag'
-          ]
+things = ['the red chair', 'the blue chair', 'the pharmacy', 'the grocery store',
+          'the school', 'my home', 'the bank', 'the supermarket',
+          'my wallet', 'my keys', 'the bus stop', 'the post office',
+          ' the chair', 'the table', 'the green chair', 'the red chair',
+          'my book', 'my bag', 'my cup', 'your cup']
+
+# %%
 
 # Specify relations to test
 relations = dict({
@@ -112,36 +100,144 @@ relations = dict({
                 'interpersonal-doing': [doing, actions],
                 'temporal': [times, events],
                 'spatial': [places, things],
-                # 'temporalIPthinking': 5,
-                # 'temporalIPfeeling': 6,
-                # 'temporalIPdoing': 7,
-                # 'IPthinking': 8, # Maybe a little weird?
-                # 'IP-feeling+spatial': , # Maybe a little weird?
-                # 'IP-doing+spatial': [places, actions],
-                # 'spatTempIPthinking': 11,
-                # 'spatTempIPfeeling': 12,
-                # 'spatTempIPdoing': 13
+                # 'temporal+spatial': [things, times, places],
+                # 'IPthinking+temporal': [thinking, past_think, thoughts, times],
+                # 'IPfeeling+temporal': [feeling, past_feelings, feelings, times],
+                # 'IPdoing+temporal': [doing, actions, times],
+                # 'IPthinking+spatial': [thinking, thoughts, places], # Maybe a little weird?7
+                # 'IPfeeling+spatial': [feeling, feelings, places], # Maybe a little weird?
+                # 'IPdoing+spatial': [doing, actions, places],
+                # 'IPthinking+temporal+spatial': [thinking, past_think, thoughts, times, places],
+                # 'IPfeeling+temporal+spatial': [feeling, past_feelings, feelings, times, places],
+                # 'IPdoing+temporal+spatial': [doing, actions, times, places]
 })
 # Specify task characteristics
-n_reps = 1  # Repetitions of relations
+n_reps = 15  # Repetitions of relations
 reversal = True
+allReversals = True
 irrelevant = True
 printTrials = True
-forcedChoice = False  # Open (False) or forced choice (True)
-
-# trial_data = generateDeicticSyllogisms(relations, n_reps, reversal, irrelevant, forcedChoice, printTrials)
-
-#%%
-
-from generateDeicticSyllogisms2 import generateDeicticSyllogisms2
-
-n_opt = 4 
-multipleChoice = False
+forcedChoice = True  # Open (False) or forced choice (True)
+n_opt = 3
 selectTF = True
-trial_data = generateDeicticSyllogisms2(relations, n_reps, reversal, irrelevant,
-                                       multipleChoice, n_opt, printTrials, selectTF)
+csv_file = 'LlamaModels_FullDeictic.csv'
+output = 'labjs' 
+# trial_data = generateDeicticSyllogisms(relations, n_reps, reversal, irrelevant, forcedChoice, printTrials)
+trial_data_1dim = generateDeicticSyllogisms2(relations, n_reps, reversal, allReversals,
+                                        irrelevant, forcedChoice, n_opt, printTrials, selectTF, output)
+# %% Create trial set
 
-# %% Select models & set filename to store data
+# general settnigs
+reversal = True
+reversal2 = True
+reversal3 = True
+allReversals = True
+irrelevant = False
+printTrials = True
+forcedChoice = True  # Open (False) or forced choice (True)
+n_opt = 3
+selectTF = True
+csv_file = 'LlamaModels_FullDeictic.csv'
+output = 'labjs' 
+
+# Specify relations to test
+relations_1dim_ip = dict({
+                'interpersonal-thinking': [thinking, thoughts], 
+                'interpersonal-feeling': [feeling, feelings],
+                'interpersonal-doing': [doing, actions]})
+relations_1dim = dict({
+                'temporal': [times, events],
+                'spatial': [places, things]
+})
+relations_2dim = dict({
+                # 'temporal+spatial': [things, times, places],
+                'IPthinking+temporal': [thinking, past_think, thoughts, times],
+                'IPfeeling+temporal': [feeling, past_feelings, feelings, times],
+                'IPdoing+temporal': [doing, actions, times],
+                'IPthinking+spatial': [thinking, thoughts, places], # Maybe a little weird?7
+                'IPfeeling+spatial': [feeling, feelings, places], # Maybe a little weird?
+                'IPdoing+spatial': [doing, actions, places]
+})
+relations_3dim = dict({
+                'IPthinking+temporal+spatial': [thinking, past_think, thoughts, times, places],
+                'IPfeeling+temporal+spatial': [feeling, past_feelings, feelings, times, places],
+                'IPdoing+temporal+spatial': [doing, actions, times, places]
+})
+
+# combine trials
+blocks = {'1dim': relations_1dim,
+          '1dim_ip': relations_1dim_ip,
+          '2dim': relations_2dim,
+          '3dim': relations_3dim
+          }
+reps = {'1dim': 1,
+        '1dim_ip': 1,
+          '2dim': 1,
+          '3dim': 1
+          }
+trial_data_combined = dict()
+t =-1
+for block, rels in blocks.items():
+    t+=1
+    relations = rels
+    n_reps = reps[block]
+    trial_data = generateDeicticSyllogisms2(relations, n_reps, reversal, allReversals,
+                                            irrelevant, forcedChoice, n_opt, printTrials, output)
+    
+    # combine all block data
+    if not trial_data_combined:
+        trial_data_combined = {k: list(v) for k, v in trial_data.items()}
+    else:
+        prev_len = len(next(iter(trial_data_combined.values()))) # align
+        for k in trial_data.keys(): # check for new keys
+            if k not in trial_data_combined:
+                trial_data_combined[k] = [None] * prev_len
+        for k in trial_data_combined.keys(): # check for missing keys
+            if k not in trial_data:
+                trial_data[k] = [None] * len(trial_data.get('id', next(iter(trial_data.values()))))
+   
+        for k, v in trial_data.items(): # extend dict
+            trial_data_combined[k].extend(v)
+            
+# %% for testing new updated generator function
+import numpy as np
+import pdb
+import pandas as pd
+from derTables.utils_deictics import * 
+from derTables.generateDeicticSyllogisms import generateDeicticSyllogisms2
+
+relations = [
+    'interpersonal-doing',
+    'interpersonal-thinking', 
+    'interpersonal-feeling',
+    'temporal',
+    'spatial',
+    'temporal+spatial',
+    'IPthinking+temporal',
+    'IPfeeling+temporal',
+    'IPdoing+temporal',
+    'IPthinking+spatial', # Maybe a little weird?7
+    'IPfeeling+spatial', # Maybe a little weird?
+    'IPdoing+spatial',
+    'IPthinking+temporal+spatial', 
+    'IPfeeling+temporal+spatial',
+    'IPdoing+temporal+spatial'
+]
+n_reps = 5
+reversal = True
+allReversals = False
+irrelevant = False
+forcedChoice = True
+n_opt = 3
+printTrials = True
+output = 'labjs'
+csv_file = "MorganeTestTrials.csv"
+trial_data = generateDeicticSyllogisms2(relations, n_reps, reversal, allReversals,
+                                        irrelevant, forcedChoice, n_opt, printTrials, output)
+
+trial_data_df = pd.DataFrame.from_dict(trial_data) # create pandas dataframe
+trial_data_df.to_csv(csv_file) # store in csv for later use
+  # %% Select models & set filename to store data
 
 filename = 'Meta8Bvs405B_DeicticRelations.csv'
 

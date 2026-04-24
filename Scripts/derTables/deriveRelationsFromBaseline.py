@@ -19,15 +19,9 @@ Prameters:
 
 
 TO DO:
-    - Plotting errors when only one relation and order of derived /baseline is not same?
-        FIXED
     - Proper testing with all kinds of relations
-
-
     - add network plotter
     
-
-
 
 """
 
@@ -36,12 +30,15 @@ TO DO:
 # Dependencies
 import numpy as np
 import matplotlib.pyplot as plt
-# from derivationTablesFromSourceRelations import derivationTablesFromSourceRelations
-from createDerivationTables import createDerivationTables # to create derivation tables for input relations
-from utils import * # helper functions
-from plot_utils import *
 import pdb
-
+from derTables.createDerivationTables import createDerivationTables # to create derivation tables for input relations
+from derTables.utils_tables import (cleanRelationLabels, # helper functions
+                   findCommon,
+                   deriveCombi,
+                   determineProtocol,
+                   createRelationTable
+                   )
+from derTables.plot_utils import (plotNetworkHeatmap, plotRelNetworkGraph) # plot functions
 
 def deriveRelationsFromBaseline(baseline, sLabs = None, illustrate = None):
     

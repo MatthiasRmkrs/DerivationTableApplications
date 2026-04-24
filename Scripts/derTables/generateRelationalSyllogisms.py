@@ -56,10 +56,25 @@ import pdb
 
 # Dependencies
 import numpy as np
-from deriveRelationsFromBaseline import deriveRelationsFromBaseline
-from createDerivationTables import createDerivationTables
-from utils import *
 import pandas as pd
+from derTables.createDerivationTables import createDerivationTables # create derivation tables for input relations
+from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline # auto-derive relations
+from derTables.utils_tables import (findCommon, deriveCombi) # derivation tables helpers
+from derTables.utils_syllogisms import (findAllRelPremCombinations, # syllogistic problem formatiing helpers
+                              relLabsForPremises,
+                              findUniqueStimuli,
+                              findIncorrectRelation,
+                              findIrrelevant,
+                              createConclusion,
+                              createPremises,
+                              formatPremise,
+                              createAnalogyConclusion,
+                              createMCconclusion,
+                              createTOFConclusion,
+                              determine_taskPremise,
+                              _convert_selecttf
+                              )
+
 
 # Some default stimulus labels (non-words, names, alfanumerics) to use in problems
 alphanumerics = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
@@ -90,8 +105,8 @@ names = ['Bart', 'John', 'Elsa', 'Mark', 'Jane', 'Phillip', 'Jake', 'Lisa', 'Ell
 def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLabs = None, 
                       functions = None, n_opt = None, testToF = False,
                       printTrials = False, randomizePremises = False,
-                      includeIllDefined = False, 
-                      multipleChoice = False, selectTF = False):
+                      selectTF = False, includeIllDefined = False, output = 'csv'):
+    
     if protocol is None:
         protocol = 'Linear' # linear combination by default
     if sLabs is None:
@@ -106,14 +121,20 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                     'More than': 'more than',
                     'Less than': 'less than',
                     'Contains': 'contains',
+                    'Before': 'before',
+                    'After': 'after',
                     'Is part of': 'is part of',
+                    'Left of': 'to the left of',
+                    'Right of': 'to the right of',
+                    'In front': 'in front of',
+                    'Behind': 'behind'
                       }
 
     # Create transitivity tables for relations in task
     mutual, combi, relations = createDerivationTables(relations)
     # Initialize before looping trials
     trial_data = dict({'id': [], 'Premises': [], 'Relations': [], 'Prompt': [],
-                       'Correct': [], 'Type': [], 'n_p': []})
+                       'Correct': [], 'printCorrect': [], 'Type': [], 'n_p': []})
     t = 0
     rels = []  # init to store current problem relation(s) and stimuli
     stim = []
@@ -207,9 +228,8 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                     corDer, d_pair = deriveCombi(
                         d_pair, sources[4],common,  corDer, r_ids[4], combi)
                 corDerLab = relpremVoc[list(relations.keys())[corDer]]
-
-                
-                if not multipleChoice:
+    
+                if n_opt == 1:
                     if corDer >= 0: # well-defined derivations
                    
                         # Regular 2-premise problem: Compile prompt from premise + query
@@ -220,7 +240,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                         prompt = "{} {}".format(" ".join(p_premises), conc)
                         rows.append({'id': t, 'Premises': p_premises,
                                      'Relations': rels, 'Prompt': prompt,
-                                     'Correct': 'Yes', 'n_p': p,
+                                     'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                      'Derivation': derivation, 'Type': 'Regular'})
     
                         ## Transformation of function 
@@ -242,7 +262,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                             prompt = "{} {}".format(" ".join(p_premises), conc)
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': 'Yes', 'n_p': p,
+                                         'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                          'Derivation': derivation + ' ToF', 'Type': 'Regular'})
                             
                         if 'mutualCE' in var: # Mutually entailed of CE for 2<= premises
@@ -256,13 +276,13 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                             prompt = '{} {}'.format(" ".join(p_premises), conc)
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': 'Yes', 'n_p': p,
+                                         'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                          'Derivation': 'Mutual Combinatorial', 'Type': 'Regular'})
     
                         if 'Incorrect' in var:  # Incorrect query variant
                             t += 1  # update trial index
                             # Find incorrect relation examples
-                            incorDerLab = findIncorrectRelation(relations, corDerLab)
+                            incorDerLab = findIncorrectRelation(relations, relpremVoc,corDerLab)
                             p_premises = premises.copy()
                             if randomizePremises:  # randomize premise order
                                 p_premises = np.random.permutation(p_premises)  
@@ -270,7 +290,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                             prompt = '{} {}'.format(" ".join(p_premises), conc)
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': 'No', 'n_p': p,
+                                         'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                          'Derivation': derivation, 'Type': 'Incorrect'})
     
                             # Transformation of function
@@ -288,13 +308,13 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 prompt = '{} {}'.format(" ".join(p_premises), conc)
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': 'No', 'n_p': p,
+                                             'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                              'Derivation': derivation + ' ToF', 'Type': 'Incorrect'})                            
                                 
                             if 'mutualCE' in var: # Incorrect prompt - 2 premises
                                 # incorrect mutual of combinatorially entailed relation
                                 t += 1 # update trial id
-                                incorDerRevLab = findIncorrectRelation(relations, derRevLab)
+                                incorDerRevLab = findIncorrectRelation(relations,relpremVoc,derRevLab)
                                 p_premises = premises.copy()
                                 if randomizePremises: # randomize premise order
                                     p_premises = np.random.permutation(p_premises)
@@ -302,7 +322,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 prompt = '{} {}'.format(" ".join(p_premises), conc)
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': 'No', 'n_p': p,
+                                             'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                              'Derivation': 'Mutual Combinatorial', 'Type': 'Incorrect'})
                             
                         # Analogy prompt: 2 premises, compare relations
@@ -319,7 +339,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                                                                         stim[0], stim[1], stim[1], stim[2])
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': 'Yes', 'n_p': p,
+                                         'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                          'Derivation': 'Analogy', 'Type': 'Regular'})
                             
                             if 'Incorrect' in var:  # Incorrect analogy prompt:
@@ -334,7 +354,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                     prompt = "{} Is {} to {} the same as {} to {}?".format(" ".join(p_premises),                                                       stim[0], stim[1], stim[1], stim[2])
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': 'No', 'n_p': p,
+                                             'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                              'Derivation': 'Analogy', 'Type': 'Incorrect'})
                                 
                         if 'Irrelevant' in var:
@@ -351,7 +371,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                             prompt = "{} {}".format(" ".join(p_premises), conc)
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': 'Yes', 'n_p': p,
+                                         'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                          'Derivation': derivation, 'Type': 'Irrelevant'})  # Store trial data
     
                             # Transformation of function
@@ -366,7 +386,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 prompt = "{} {}".format(" ".join(p_premises), conc)
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': 'Yes', 'n_p': p,
+                                             'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                              'Derivation': derivation + ' ToF', 'Type': 'Irrelevant'})
     
                             if 'mutualCE' in var: # Irrelevant premise - query Mutual of CE
@@ -379,7 +399,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 prompt = "{} {}".format(" ".join(p_premises), conc)
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': 'Yes', 'n_p': p,
+                                             'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                              'Derivation': 'Mutual Combinatorial', 'Type': 'Irrelevant'})
     
                             if "Incorrect" in var:  # Incorrect irrlevant query variant
@@ -394,7 +414,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 prompt = "{} {}".format(" ".join(p_premises), conc)
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': 'No', 'n_p': p,
+                                             'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                              'Derivation': derivation, 'Type': 'Irrelevant Incorrect'})
     
                                 # Transformation of function (irrelevant incorrect)
@@ -408,7 +428,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                     prompt = "{} {}".format(" ".join(p_premises), conc)
                                     rows.append({'id': t, 'Premises': p_premises,
                                                  'Relations': rels, 'Prompt': prompt,
-                                                 'Correct': 'No', 'n_p': p,
+                                                 'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                                  'Derivation': derivation + ' ToF', 'Type': 'Irrelevant Incorrect'})
     
                                 if 'mutualCE' in var: # Incorrect irrelevant - Mutual entailment of (incorrect) CE
@@ -423,7 +443,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                     prompt = "{} {}".format(" ".join(p_premises), conc)
                                     rows.append({'id': t, 'Premises': p_premises,
                                                  'Relations': rels, 'Prompt': prompt,
-                                                 'Correct': 'No', 'n_p': p,
+                                                 'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                                  'Derivation': 'Mutual Combinatorial', 'Type': 'Irrelevant Incorrect'})
     
                             # Analogy with irrelevant premise
@@ -441,7 +461,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                                                                               stim[0], stim[1], stim[1], stim[2])
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': 'Yes', 'n_p': p,
+                                             'Correct': 'Yes', 'printCorrect': 'Yes', 'n_p': p,
                                              'Derivation': 'Analogy', 'Type': 'Irrelevant'})
     
                                 if 'Incorrect' in var: # Irrelevant premise + Incorrect analogy prompt
@@ -458,7 +478,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                                                                                   stim[0], stim[1], stim[1], stim[2])
                                     rows.append({'id': t, 'Premises': p_premises,
                                                  'Relations': rels, 'Prompt': prompt,
-                                                 'Correct': 'No', 'n_p': p,
+                                                 'Correct': 'No', 'printCorrect': 'No', 'n_p': p,
                                                  'Derivation': 'Analogy', 'Type': 'Irrelevant Incorrect'})
                     else: # can't derive relation with certainty for this combination
                         if includeIllDefined: # onnly include if specified by user
@@ -475,7 +495,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                             prompt = "{} {}".format(" ".join(p_premises), conc)
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': "I cant't know", 'n_p': p,
+                                         'Correct': "I cannot know", 'printCorrect': "I cannot know", 'n_p': p,
                                          'Derivation': derivation, 'Type': 'Ill-defined'})
                             
                             if 'Irrelevant 'in var:  # add irrelevant premise
@@ -492,10 +512,13 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 prompt = "{} {}".format(" ".join(p_premises), conc)
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': "I can't know", 'n_p': p,
+                                             'Correct': "I cannot know", 'printCorrect': "I cannot know", 'n_p': p,
                                              'Derivation': derivation, 'Type': 'Ill-defined Irrelevant'}) 
                 else: # multiple choice
                     if corDer >= 0:
+                        # determine task instruction (select TRUE/FALSE)
+                        
+                        taskPremise = determine_taskPremise(selectTF)
                         # regular problem type
                         t +=1
                         p_premises = premises.copy()
@@ -503,19 +526,16 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                             p_premises = np.random.permutation(p_premises)
                         conc, correct = createMCconclusion(n_opt, corDerLab, d_pair, 
                                                            rels, relations, relpremVoc,
-                                                           derivation, mutual)
+                                                           derivation, mutual,
+                                                           selectTF, illDefined = False)
+                        correct, printCorrect = _convert_selecttf(correct, output, selectTF, taskPremise)
                         
-                        if selectTF:
-                            taskInstr = np.random.choice['Select all TRUE statements.',
-                                                         'Select all FALSE statements.']
-                        else: 
-                            taskInstr = 'Select all TRUE statements.'
                         prompt = "{} {} {}".format(" ".join(p_premises), 
-                                                       taskInstr,
+                                                       taskPremise,
                                                        " ".join(conc))
                         rows.append({'id': t, 'Premises': p_premises,
                                      'Relations': rels, 'Prompt': prompt,
-                                     'Correct': correct, 'n_p': p,
+                                     'Correct': correct, 'printCorrect': printCorrect, 'n_p': p,
                                      'Derivation': derivation, 'Type': 'Regular'}) 
                         if 'Irrelevant' in var: # Irrelevant variant
                             t += 1
@@ -529,18 +549,17 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 p_premises = np.random.permutation(p_premises)
                             conc, correct = createMCconclusion(n_opt, corDerLab, d_pair, 
                                                                rels, relations, relpremVoc,
-                                                               derivation, mutual)  
-                            if selectTF:
-                                taskInstr = np.random.choice['Select all TRUE statements.',
-                                                             'Select all FALSE statements.']
-                            else: 
-                                taskInstr = 'Select all TRUE statements.'
+                                                               derivation, mutual,
+                                                               selectTF, illDefined = False)  
+                            taskPremise = determine_taskPremise(selectTF)
+                            correct, printCorrect = _convert_selecttf(correct, output, selectTF, taskPremise)
+                            
                             prompt = "{} {} {}".format(" ".join(p_premises), 
-                                                           taskInstr,
+                                                           taskPremise,
                                                            " ".join(conc))
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': correct, 'n_p': p,
+                                         'Correct': correct, 'printCorrect': printCorrect, 'n_p': p,
                                          'Derivation': derivation, 'Type': 'Irrelevant'}) 
                     else: # ill-defined problems
                         if includeIllDefined: # onnly include if specified by user
@@ -555,18 +574,16 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                 p_premises = np.random.permutation(p_premises)  
                             conc, correct = createMCconclusion(n_opt, corDerLab, d_pair, 
                                                                rels, relations, relpremVoc,
-                                                               derivation, mutual)  
-                            if selectTF:
-                                taskInstr = np.random.choice['Select all TRUE statements.',
-                                                             'Select all FALSE statements.']
-                            else: 
-                                taskInstr = 'Select all TRUE statements.'
+                                                               derivation, mutual,
+                                                               selectTF, illDefined = True)  
+                            taskPremise = determine_taskPremise(selectTF)
+                            correct, printCorrect = _convert_selecttf(correct, output, selectTF, taskPremise)
                             prompt = "{} {} {}".format(" ".join(p_premises), 
-                                                           taskInstr,
+                                                           taskPremise,
                                                            " ".join(conc))
                             rows.append({'id': t, 'Premises': p_premises,
                                          'Relations': rels, 'Prompt': prompt,
-                                         'Correct': correct, 'n_p': p,
+                                         'Correct': correct, 'printCorrect': printCorrect, 'n_p': p,
                                          'Derivation': derivation, 'Type': 'Ill-defined'})
                             
                             if 'Irrelevant 'in var:  # add irrelevant premise
@@ -581,18 +598,16 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                                     p_premises = np.random.permutation(p_premises)
                                 conc, correct = createMCconclusion(n_opt, corDerLab, d_pair, 
                                                                    rels, relations,  relpremVoc,
-                                                                   derivation, mutual)  
-                                if selectTF:
-                                    taskInstr = np.random.choice['Select all TRUE statements.',
-                                                                 'Select all FALSE statements.']
-                                else: 
-                                    taskInstr = 'Select all TRUE statements.'
+                                                                   derivation, mutual,
+                                                                   selectTF, illDefined = True)  
+                                taskPremise = determine_taskPremise(selectTF)
+                                correct, printCorrect = _convert_selecttf(correct, output, selectTF, taskPremise)
                                 prompt = "{} {} {}".format(" ".join(p_premises), 
-                                                               taskInstr,
+                                                               taskPremise,
                                                                " ".join(conc))
                                 rows.append({'id': t, 'Premises': p_premises,
                                              'Relations': rels, 'Prompt': prompt,
-                                             'Correct': correct, 'n_p': p,
+                                             'Correct': correct, 'printCorrect': printCorrect, 'n_p': p,
                                              'Derivation': derivation, 'Type': 'Ill-defined Irrelevant'}) 
     trial_data = pd.DataFrame(rows) # create dataframe
 
@@ -600,17 +615,17 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
         for t in range(len(trial_data['id'])):
             print("Trial {} ({} - {}): {} \nCorrect: {}".format(
                 t+1, trial_data['Derivation'][t], trial_data['Type'][t],
-                trial_data['Prompt'][t], trial_data['Correct'][t]))
+                trial_data['Prompt'][t], trial_data['printCorrect'][t]))
 
     return trial_data
 
 
-# %% test function
+ # %% test function
 
 # crelfuncs = dict({'Same as': ['has the same meaning as'],
 #                   'Different from': ['has the same meaning as'],
 #                   # 'opposite to': ['has the same meaning as'],
-#                   # 'more than': ['is worth', 'means'],
+#                   # 'more t7han': ['is worth', 'means'],
 #                   # 'less than': ['is worth', 'means'],
 #                   # 'before': ['is at'],
 #                   # 'after': ['is at']
@@ -642,21 +657,20 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
 #                   })
 
 # premises_types = {
-#                    # '1': ['Incorrect', 'Irrelevant'],
-#                    # '2': [],
-#                    '3': [],
+#                    '1': ['Incorrect', 'Irrelevant'],
+#                    '2': ['Incorrect', 'Irrelevant'],
+#                    # '3': [],
 #                    # '4': ['Incorrect', 'Irrelevant'],
 #                    # '5': ['Incorrect', 'Irrelevant']
 #                    }
-# relations = ['same', 'more', 'less']
-# functions = {'crelfuncs': crelfuncs, # for transformation of function
-#                   'cfuncprompts': cfuncprompts,
-#                   'funcs': funcs}
+# relations = ['same', 'different']
+# # functions = {'crelfuncs': crelfuncs, # for transformation of function
+# #                   'cfuncprompts': cfuncprompts,
+# #                   'funcs': funcs}
 # relata = 'nonwords' # choose between nonwords, names, alfanumerics or custom?
-# sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
+# # sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
 # n_rep = 1
 # protocol = 'Linear' # note that OTM and MTO only work for 2 premisew
-# trial_data = generateSyllogism(relations, premises_types, n_rep, relata, protocol, n_opt = 4,
-#                                printTrials = True, 
-#                                includeIllDefined=True,
-#                                multipleChoice = False)
+# trial_data = generateSyllogism(relations, premises_types, n_rep, relata, protocol, n_opt = 3,
+#                                printTrials = True, selectTF = False,
+#                                includeIllDefined=True, output = 'LLMstudy')

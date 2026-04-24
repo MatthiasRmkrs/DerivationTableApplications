@@ -1,0 +1,631 @@
+,id,Premises,Relations,Prompt,Correct,Type,n_p,Derivation,pPrems,pCorrect,taskPremise,Premise1,Premise2,extraPremises,option1,option2,option3
+0,1,"['Today is the opening of the new shop', 'Yesterday was the start of the academic year.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is the opening of the new shop. Yesterday was the start of the academic year.","[1, 1, 0]",Regular,2,Mutual,"
+1: Was the start of the academic year yesterday?
+2: Is the opening of the new shop today?
+3: Was the opening of the new shop yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,Today is the opening of the new shop,Yesterday was the start of the academic year.,,Was the start of the academic year yesterday?,Is the opening of the new shop today?,Was the opening of the new shop yesterday?
+1,2,"['Today is the opening of the new shop', 'Yesterday was the start of the academic year.']",['temporal'],"Select all questions to which the answer is 'no'.
+Today is the opening of the new shop. Yesterday was the start of the academic year. If today were yesterday and yesterday were today;","[0, 1, 1]",Temporal Reversal,2,Mutual,"
+1: Would the opening of the new shop have been yesterday?
+2: Would the start of the academic year have been yesterday?
+3: Would the opening of the new shop be today?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,Today is the opening of the new shop,Yesterday was the start of the academic year.,If today were yesterday and yesterday were today;,Would the opening of the new shop have been yesterday?,Would the start of the academic year have been yesterday?,Would the opening of the new shop be today?
+2,3,"['Today is my birthday', 'Yesterday was your birthday.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is my birthday. Yesterday was your birthday.","[1, 0, 1]",Regular,2,Mutual,"
+1: Was your birthday yesterday?
+2: Was my birthday yesterday?
+3: Is my birthday today?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,Today is my birthday,Yesterday was your birthday.,,Was your birthday yesterday?,Was my birthday yesterday?,Is my birthday today?
+3,4,"['Today is my birthday', 'Yesterday was your birthday.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is my birthday. Yesterday was your birthday. If today were yesterday and yesterday were today;","[0, 1, 1]",Temporal Reversal,2,Mutual,"
+1: Would your birthday have been yesterday?
+2: Would my birthday have been yesterday?
+3: Would your birthday be today?","['no select', 'select', 'select']",Select all questions to which the answer is 'yes'.,Today is my birthday,Yesterday was your birthday.,If today were yesterday and yesterday were today;,Would your birthday have been yesterday?,Would my birthday have been yesterday?,Would your birthday be today?
+4,5,"['Today is the first day of school', 'Yesterday was my birthday.']",['temporal'],"Select all questions to which the answer is 'no'.
+Today is the first day of school. Yesterday was my birthday.","[1, 1, 0]",Regular,2,Mutual,"
+1: Is my birthday today?
+2: Was the first day of school yesterday?
+3: Was my birthday yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,Today is the first day of school,Yesterday was my birthday.,,Is my birthday today?,Was the first day of school yesterday?,Was my birthday yesterday?
+5,6,"['Today is the first day of school', 'Yesterday was my birthday.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is the first day of school. Yesterday was my birthday. If today were yesterday and yesterday were today;","[0, 0, 1]",Temporal Reversal,2,Mutual,"
+1: Would the first day of school be today?
+2: Would my birthday have been yesterday?
+3: Would my birthday be today?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,Today is the first day of school,Yesterday was my birthday.,If today were yesterday and yesterday were today;,Would the first day of school be today?,Would my birthday have been yesterday?,Would my birthday be today?
+6,7,"[""Today is John's birthday"", 'Yesterday was the festival.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is John's birthday. Yesterday was the festival.","[0, 1, 0]",Regular,2,Mutual,"
+1: Was John's birthday yesterday?
+2: Was the festival yesterday?
+3: Is the festival today?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,Today is John's birthday,Yesterday was the festival.,,Was John's birthday yesterday?,Was the festival yesterday?,Is the festival today?
+7,8,"[""Today is John's birthday"", 'Yesterday was the festival.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is John's birthday. Yesterday was the festival. If today were yesterday and yesterday were today;","[1, 1, 0]",Temporal Reversal,2,Mutual,"
+1: Would John's birthday have been yesterday?
+2: Would the festival be today?
+3: Would the festival have been yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,Today is John's birthday,Yesterday was the festival.,If today were yesterday and yesterday were today;,Would John's birthday have been yesterday?,Would the festival be today?,Would the festival have been yesterday?
+8,9,"['Today is the closing of the old shop', 'Yesterday was the opening of the new shop.']",['temporal'],"Select all questions to which the answer is 'no'.
+Today is the closing of the old shop. Yesterday was the opening of the new shop.","[1, 0, 1]",Regular,2,Mutual,"
+1: Is the opening of the new shop today?
+2: Is the closing of the old shop today?
+3: Was the closing of the old shop yesterday?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,Today is the closing of the old shop,Yesterday was the opening of the new shop.,,Is the opening of the new shop today?,Is the closing of the old shop today?,Was the closing of the old shop yesterday?
+9,10,"['Today is the closing of the old shop', 'Yesterday was the opening of the new shop.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is the closing of the old shop. Yesterday was the opening of the new shop. If today were yesterday and yesterday were today;","[1, 0, 1]",Temporal Reversal,2,Mutual,"
+1: Would the opening of the new shop be today?
+2: Would the closing of the old shop be today?
+3: Would the closing of the old shop have been yesterday?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,Today is the closing of the old shop,Yesterday was the opening of the new shop.,If today were yesterday and yesterday were today;,Would the opening of the new shop be today?,Would the closing of the old shop be today?,Would the closing of the old shop have been yesterday?
+10,11,"['Today is the closing of the old shop', 'Yesterday was Christmas.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is the closing of the old shop. Yesterday was Christmas.","[0, 1, 1]",Regular,2,Mutual,"
+1: Was the closing of the old shop yesterday?
+2: Is the closing of the old shop today?
+3: Was Christmas yesterday?","['no select', 'select', 'select']",Select all questions to which the answer is 'yes'.,Today is the closing of the old shop,Yesterday was Christmas.,,Was the closing of the old shop yesterday?,Is the closing of the old shop today?,Was Christmas yesterday?
+11,12,"['Today is the closing of the old shop', 'Yesterday was Christmas.']",['temporal'],"Select all questions to which the answer is 'no'.
+Today is the closing of the old shop. Yesterday was Christmas. If today were yesterday and yesterday were today;","[0, 1, 0]",Temporal Reversal,2,Mutual,"
+1: Would Christmas be today?
+2: Would the closing of the old shop be today?
+3: Would the closing of the old shop have been yesterday?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,Today is the closing of the old shop,Yesterday was Christmas.,If today were yesterday and yesterday were today;,Would Christmas be today?,Would the closing of the old shop be today?,Would the closing of the old shop have been yesterday?
+12,13,"['Today is my birthday', 'Yesterday was Easter.']",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is my birthday. Yesterday was Easter.","[0, 0, 1]",Regular,2,Mutual,"
+1: Was my birthday yesterday?
+2: Is Easter today?
+3: Is my birthday today?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,Today is my birthday,Yesterday was Easter.,,Was my birthday yesterday?,Is Easter today?,Is my birthday today?
+13,14,"['Today is my birthday', 'Yesterday was Easter.']",['temporal'],"Select all questions to which the answer is 'no'.
+Today is my birthday. Yesterday was Easter. If today were yesterday and yesterday were today;","[1, 0, 1]",Temporal Reversal,2,Mutual,"
+1: Would my birthday be today?
+2: Would my birthday have been yesterday?
+3: Would Easter have been yesterday?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,Today is my birthday,Yesterday was Easter.,If today were yesterday and yesterday were today;,Would my birthday be today?,Would my birthday have been yesterday?,Would Easter have been yesterday?
+14,15,"['Today is the final of the Voice', 'Yesterday was the opening of the new supermarket.']",['temporal'],"Select all questions to which the answer is 'no'.
+Today is the final of the Voice. Yesterday was the opening of the new supermarket.","[1, 0, 0]",Regular,2,Mutual,"
+1: Is the opening of the new supermarket today?
+2: Is the final of the Voice today?
+3: Was the opening of the new supermarket yesterday?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,Today is the final of the Voice,Yesterday was the opening of the new supermarket.,,Is the opening of the new supermarket today?,Is the final of the Voice today?,Was the opening of the new supermarket yesterday?
+15,16,"['Today is the final of the Voice', 'Yesterday was the opening of the new supermarket.']",['temporal'],"Select all questions to which the answer is 'no'.
+Today is the final of the Voice. Yesterday was the opening of the new supermarket. If today were yesterday and yesterday were today;","[1, 0, 1]",Temporal Reversal,2,Mutual,"
+1: Would the opening of the new supermarket have been yesterday?
+2: Would the opening of the new supermarket be today?
+3: Would the final of the Voice be today?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,Today is the final of the Voice,Yesterday was the opening of the new supermarket.,If today were yesterday and yesterday were today;,Would the opening of the new supermarket have been yesterday?,Would the opening of the new supermarket be today?,Would the final of the Voice be today?
+16,17,"['Today is your birthday', ""Yesterday was mom's birthday.""]",['temporal'],"Select all questions to which the answer is 'yes'.
+Today is your birthday. Yesterday was mom's birthday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Was your birthday yesterday?
+2: Is mom's birthday today?
+3: Was mom's birthday yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,Today is your birthday,Yesterday was mom's birthday.,,Was your birthday yesterday?,Is mom's birthday today?,Was mom's birthday yesterday?
+17,18,"['Today is your birthday', ""Yesterday was mom's birthday.""]",['temporal'],"Select all questions to which the answer is 'no'.
+Today is your birthday. Yesterday was mom's birthday. If today were yesterday and yesterday were today;","[0, 0, 1]",Temporal Reversal,2,Mutual,"
+1: Would your birthday have been yesterday?
+2: Would mom's birthday be today?
+3: Would mom's birthday have been yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,Today is your birthday,Yesterday was mom's birthday.,If today were yesterday and yesterday were today;,Would your birthday have been yesterday?,Would mom's birthday be today?,Would mom's birthday have been yesterday?
+18,19,"['The red chair is here', 'The blue chair is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The red chair is here. The blue chair is there.","[1, 1, 0]",Regular,2,Mutual,"
+1: Is the red chair here?
+2: Is the blue chair there?
+3: Is the red chair there?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,The red chair is here,The blue chair is there.,,Is the red chair here?,Is the blue chair there?,Is the red chair there?
+19,20,"['The red chair is here', 'The blue chair is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The red chair is here. The blue chair is there. If here were there and there were here;","[1, 0, 1]",Spatial Reversal,2,Mutual,"
+1: Would the blue chair be here?
+2: Would the blue chair be there?
+3: Would the red chair be there?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,The red chair is here,The blue chair is there.,If here were there and there were here;,Would the blue chair be here?,Would the blue chair be there?,Would the red chair be there?
+20,21,"['The pharmacy is here', 'The grocery store is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The pharmacy is here. The grocery store is there.","[0, 1, 0]",Regular,2,Mutual,"
+1: Is the grocery store here?
+2: Is the pharmacy here?
+3: Is the pharmacy there?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,The pharmacy is here,The grocery store is there.,,Is the grocery store here?,Is the pharmacy here?,Is the pharmacy there?
+21,22,"['The pharmacy is here', 'The grocery store is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The pharmacy is here. The grocery store is there. If here were there and there were here;","[0, 0, 1]",Spatial Reversal,2,Mutual,"
+1: Would the pharmacy be here?
+2: Would the grocery store be there?
+3: Would the pharmacy be there?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,The pharmacy is here,The grocery store is there.,If here were there and there were here;,Would the pharmacy be here?,Would the grocery store be there?,Would the pharmacy be there?
+22,23,"['The school is here', 'My home is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+The school is here. My home is there.","[1, 1, 0]",Regular,2,Mutual,"
+1: Is my home here?
+2: Is the school there?
+3: Is the school here?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,The school is here,My home is there.,,Is my home here?,Is the school there?,Is the school here?
+23,24,"['The school is here', 'My home is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The school is here. My home is there. If here were there and there were here;","[1, 0, 0]",Spatial Reversal,2,Mutual,"
+1: Would my home be here?
+2: Would the school be here?
+3: Would my home be there?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,The school is here,My home is there.,If here were there and there were here;,Would my home be here?,Would the school be here?,Would my home be there?
+24,25,"['The bank is here', 'The supermarket is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+The bank is here. The supermarket is there.","[1, 0, 0]",Regular,2,Mutual,"
+1: Is the supermarket here?
+2: Is the bank here?
+3: Is the supermarket there?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,The bank is here,The supermarket is there.,,Is the supermarket here?,Is the bank here?,Is the supermarket there?
+25,26,"['The bank is here', 'The supermarket is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The bank is here. The supermarket is there. If here were there and there were here;","[0, 1, 0]",Spatial Reversal,2,Mutual,"
+1: Would the bank be here?
+2: Would the supermarket be here?
+3: Would the supermarket be there?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,The bank is here,The supermarket is there.,If here were there and there were here;,Would the bank be here?,Would the supermarket be here?,Would the supermarket be there?
+26,27,"['My wallet is here', 'My phone is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+My wallet is here. My phone is there.","[1, 1, 0]",Regular,2,Mutual,"
+1: Is my wallet here?
+2: Is my phone there?
+3: Is my phone here?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,My wallet is here,My phone is there.,,Is my wallet here?,Is my phone there?,Is my phone here?
+27,28,"['My wallet is here', 'My phone is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+My wallet is here. My phone is there. If here were there and there were here;","[1, 0, 0]",Spatial Reversal,2,Mutual,"
+1: Would my wallet be here?
+2: Would my phone be here?
+3: Would my wallet be there?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,My wallet is here,My phone is there.,If here were there and there were here;,Would my wallet be here?,Would my phone be here?,Would my wallet be there?
+28,29,"['The bus stop is here', 'The post office is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+The bus stop is here. The post office is there.","[1, 0, 0]",Regular,2,Mutual,"
+1: Is the post office here?
+2: Is the post office there?
+3: Is the bus stop here?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,The bus stop is here,The post office is there.,,Is the post office here?,Is the post office there?,Is the bus stop here?
+29,30,"['The bus stop is here', 'The post office is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The bus stop is here. The post office is there. If here were there and there were here;","[0, 1, 0]",Spatial Reversal,2,Mutual,"
+1: Would the bus stop be here?
+2: Would the bus stop be there?
+3: Would the post office be there?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,The bus stop is here,The post office is there.,If here were there and there were here;,Would the bus stop be here?,Would the bus stop be there?,Would the post office be there?
+30,31,"['The chair is here', 'The table is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+The chair is here. The table is there.","[1, 0, 1]",Regular,2,Mutual,"
+1: Is the chair there?
+2: Is the table there?
+3: Is the table here?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,The chair is here,The table is there.,,Is the chair there?,Is the table there?,Is the table here?
+31,32,"['The chair is here', 'The table is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+The chair is here. The table is there. If here were there and there were here;","[1, 0, 0]",Spatial Reversal,2,Mutual,"
+1: Would the table be there?
+2: Would the chair be there?
+3: Would the table be here?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,The chair is here,The table is there.,If here were there and there were here;,Would the table be there?,Would the chair be there?,Would the table be here?
+32,33,"['The green chair is here', 'The red chair is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+The green chair is here. The red chair is there.","[0, 0, 1]",Regular,2,Mutual,"
+1: Is the green chair there?
+2: Is the red chair here?
+3: Is the green chair here?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,The green chair is here,The red chair is there.,,Is the green chair there?,Is the red chair here?,Is the green chair here?
+33,34,"['The green chair is here', 'The red chair is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+The green chair is here. The red chair is there. If here were there and there were here;","[1, 1, 0]",Spatial Reversal,2,Mutual,"
+1: Would the green chair be here?
+2: Would the red chair be there?
+3: Would the red chair be here?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,The green chair is here,The red chair is there.,If here were there and there were here;,Would the green chair be here?,Would the red chair be there?,Would the red chair be here?
+34,35,"['My book is here', 'My bag is there.']",['spatial'],"Select all questions to which the answer is 'no'.
+My book is here. My bag is there.","[0, 1, 0]",Regular,2,Mutual,"
+1: Is my book here?
+2: Is my bag here?
+3: Is my bag there?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,My book is here,My bag is there.,,Is my book here?,Is my bag here?,Is my bag there?
+35,36,"['My book is here', 'My bag is there.']",['spatial'],"Select all questions to which the answer is 'yes'.
+My book is here. My bag is there. If here were there and there were here;","[0, 1, 1]",Spatial Reversal,2,Mutual,"
+1: Would my bag be there?
+2: Would my bag be here?
+3: Would my book be there?","['no select', 'select', 'select']",Select all questions to which the answer is 'yes'.,My book is here,My bag is there.,If here were there and there were here;,Would my bag be there?,Would my bag be here?,Would my book be there?
+36,1,"['You think cats are fun', 'I think cats are annoying and dirty.']",['interpersonal-thinking'],"Select all questions to which the answer is 'no'.
+You think cats are fun. I think cats are annoying and dirty.","[1, 1, 0]",Regular,2,Mutual,"
+1: Do you think cats are annoying and dirty?
+2: Do I think cats are fun?
+3: Do you think cats are fun?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,You think cats are fun,I think cats are annoying and dirty.,,Do you think cats are annoying and dirty?,Do I think cats are fun?,Do you think cats are fun?
+37,2,"['You think cats are fun', 'I think cats are annoying and dirty.']",['interpersonal-thinking'],"Select all questions to which the answer is 'no'.
+You think cats are fun. I think cats are annoying and dirty. If I were you and you were me;","[1, 0, 0]",Interpersonal Reversal,2,Mutual,"
+1: Would I think cats are annoying and dirty?
+2: Would I think cats are fun?
+3: Would you think cats are annoying and dirty?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,You think cats are fun,I think cats are annoying and dirty.,If I were you and you were me;,Would I think cats are annoying and dirty?,Would I think cats are fun?,Would you think cats are annoying and dirty?
+38,3,"['You think ducks are funny and cute', 'I think ducks are boring.']",['interpersonal-thinking'],"Select all questions to which the answer is 'yes'.
+You think ducks are funny and cute. I think ducks are boring.","[1, 0, 0]",Regular,2,Mutual,"
+1: Do I think ducks are boring?
+2: Do I think ducks are funny and cute?
+3: Do you think ducks are boring?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,You think ducks are funny and cute,I think ducks are boring.,,Do I think ducks are boring?,Do I think ducks are funny and cute?,Do you think ducks are boring?
+39,4,"['You think ducks are funny and cute', 'I think ducks are boring.']",['interpersonal-thinking'],"Select all questions to which the answer is 'no'.
+You think ducks are funny and cute. I think ducks are boring. If I were you and you were me;","[0, 1, 1]",Interpersonal Reversal,2,Mutual,"
+1: Would you think ducks are boring?
+2: Would you think ducks are funny and cute?
+3: Would I think ducks are boring?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,You think ducks are funny and cute,I think ducks are boring.,If I were you and you were me;,Would you think ducks are boring?,Would you think ducks are funny and cute?,Would I think ducks are boring?
+40,5,"['You think politics is boring', 'I think politics is important.']",['interpersonal-thinking'],"Select all questions to which the answer is 'yes'.
+You think politics is boring. I think politics is important.","[1, 1, 0]",Regular,2,Mutual,"
+1: Do I think politics is important?
+2: Do you think politics is boring?
+3: Do I think politics is boring?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,You think politics is boring,I think politics is important.,,Do I think politics is important?,Do you think politics is boring?,Do I think politics is boring?
+41,6,"['You think politics is boring', 'I think politics is important.']",['interpersonal-thinking'],"Select all questions to which the answer is 'yes'.
+You think politics is boring. I think politics is important. If I were you and you were me;","[1, 1, 0]",Interpersonal Reversal,2,Mutual,"
+1: Would you think politics is important?
+2: Would I think politics is boring?
+3: Would I think politics is important?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,You think politics is boring,I think politics is important.,If I were you and you were me;,Would you think politics is important?,Would I think politics is boring?,Would I think politics is important?
+42,7,"['I feel happy', 'You feel sad.']",['interpersonal-feeling'],"Select all questions to which the answer is 'yes'.
+I feel happy. You feel sad.","[0, 0, 1]",Regular,2,Mutual,"
+1: Do I feel sad?
+2: Do you feel happy?
+3: Do you feel sad?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,I feel happy,You feel sad.,,Do I feel sad?,Do you feel happy?,Do you feel sad?
+43,8,"['I feel happy', 'You feel sad.']",['interpersonal-feeling'],"Select all questions to which the answer is 'no'.
+I feel happy. You feel sad. If I were you and you were me;","[0, 0, 1]",Interpersonal Reversal,2,Mutual,"
+1: Would you feel happy?
+2: Would I feel sad?
+3: Would I feel happy?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,I feel happy,You feel sad.,If I were you and you were me;,Would you feel happy?,Would I feel sad?,Would I feel happy?
+44,9,"['I feel angry', 'You feel confused.']",['interpersonal-feeling'],"Select all questions to which the answer is 'no'.
+I feel angry. You feel confused.","[0, 1, 1]",Regular,2,Mutual,"
+1: Do I feel angry?
+2: Do you feel angry?
+3: Do I feel confused?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,I feel angry,You feel confused.,,Do I feel angry?,Do you feel angry?,Do I feel confused?
+45,10,"['I feel angry', 'You feel confused.']",['interpersonal-feeling'],"Select all questions to which the answer is 'no'.
+I feel angry. You feel confused. If I were you and you were me;","[0, 1, 0]",Interpersonal Reversal,2,Mutual,"
+1: Would I feel confused?
+2: Would I feel angry?
+3: Would you feel angry?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I feel angry,You feel confused.,If I were you and you were me;,Would I feel confused?,Would I feel angry?,Would you feel angry?
+46,11,"['I feel scared', 'You feel safe.']",['interpersonal-feeling'],"Select all questions to which the answer is 'no'.
+I feel scared. You feel safe.","[0, 1, 1]",Regular,2,Mutual,"
+1: Do I feel scared?
+2: Do I feel safe?
+3: Do you feel scared?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,I feel scared,You feel safe.,,Do I feel scared?,Do I feel safe?,Do you feel scared?
+47,12,"['I feel scared', 'You feel safe.']",['interpersonal-feeling'],"Select all questions to which the answer is 'no'.
+I feel scared. You feel safe. If I were you and you were me;","[1, 0, 1]",Interpersonal Reversal,2,Mutual,"
+1: Would you feel safe?
+2: Would you feel scared?
+3: Would I feel scared?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,I feel scared,You feel safe.,If I were you and you were me;,Would you feel safe?,Would you feel scared?,Would I feel scared?
+48,13,"['You are sitting on a red chair', 'I am sitting on a blue chair.']",['interpersonal-doing'],"Select all questions to which the answer is 'no'.
+You are sitting on a red chair. I am sitting on a blue chair.","[1, 0, 0]",Regular,2,Mutual,"
+1: Am I sitting on a red chair?
+2: Am I sitting on a blue chair?
+3: Are you sitting on a red chair?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,You are sitting on a red chair,I am sitting on a blue chair.,,Am I sitting on a red chair?,Am I sitting on a blue chair?,Are you sitting on a red chair?
+49,14,"['You are sitting on a red chair', 'I am sitting on a blue chair.']",['interpersonal-doing'],"Select all questions to which the answer is 'yes'.
+You are sitting on a red chair. I am sitting on a blue chair. If I were you and you were me;","[0, 1, 0]",Interpersonal Reversal,2,Mutual,"
+1: Would you be sitting on a red chair?
+2: Would I be sitting on a red chair?
+3: Would I be sitting on a blue chair?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,You are sitting on a red chair,I am sitting on a blue chair.,If I were you and you were me;,Would you be sitting on a red chair?,Would I be sitting on a red chair?,Would I be sitting on a blue chair?
+50,15,"['I am playing chess', 'You are reading a book.']",['interpersonal-doing'],"Select all questions to which the answer is 'yes'.
+I am playing chess. You are reading a book.","[0, 1, 0]",Regular,2,Mutual,"
+1: Are you playing chess?
+2: Are you reading a book?
+3: Am I reading a book?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,I am playing chess,You are reading a book.,,Are you playing chess?,Are you reading a book?,Am I reading a book?
+51,16,"['I am playing chess', 'You are reading a book.']",['interpersonal-doing'],"Select all questions to which the answer is 'yes'.
+I am playing chess. You are reading a book. If I were you and you were me;","[1, 1, 0]",Interpersonal Reversal,2,Mutual,"
+1: Would I be reading a book?
+2: Would you be playing chess?
+3: Would you be reading a book?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,I am playing chess,You are reading a book.,If I were you and you were me;,Would I be reading a book?,Would you be playing chess?,Would you be reading a book?
+52,17,"['You are drinking a coke', 'I am drinking a glass of water.']",['interpersonal-doing'],"Select all questions to which the answer is 'no'.
+You are drinking a coke. I am drinking a glass of water.","[0, 1, 1]",Regular,2,Mutual,"
+1: Are you drinking a coke?
+2: Am I drinking a coke?
+3: Are you drinking a glass of water?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,You are drinking a coke,I am drinking a glass of water.,,Are you drinking a coke?,Am I drinking a coke?,Are you drinking a glass of water?
+53,18,"['You are drinking a coke', 'I am drinking a glass of water.']",['interpersonal-doing'],"Select all questions to which the answer is 'no'.
+You are drinking a coke. I am drinking a glass of water. If I were you and you were me;","[0, 1, 1]",Interpersonal Reversal,2,Mutual,"
+1: Would I be drinking a coke?
+2: Would you be drinking a coke?
+3: Would I be drinking a glass of water?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,You are drinking a coke,I am drinking a glass of water.,If I were you and you were me;,Would I be drinking a coke?,Would you be drinking a coke?,Would I be drinking a glass of water?
+54,1,"['The newspaper is here today', 'My phone was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The newspaper is here today. My phone was there yesterday.","[1, 1, 0]",Regular,2,Mutual,"
+1: Was the newspaper there yesterday?
+2: Is my phone here today?
+3: Was my phone there yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,The newspaper is here today,My phone was there yesterday.,,Was the newspaper there yesterday?,Is my phone here today?,Was my phone there yesterday?
+55,2,"['The newspaper is here today', 'My phone was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The newspaper is here today. My phone was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[1, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would the newspaper be here today?
+2: Would the newspaper have been there yesterday?
+3: Would my phone have been there yesterday?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,The newspaper is here today,My phone was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would the newspaper be here today?,Would the newspaper have been there yesterday?,Would my phone have been there yesterday?
+56,3,"['Your phone is here today', 'Your wallet was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+Your phone is here today. Your wallet was there yesterday.","[0, 1, 0]",Regular,2,Mutual,"
+1: Was your wallet there yesterday?
+2: Was your phone there yesterday?
+3: Is your phone here today?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,Your phone is here today,Your wallet was there yesterday.,,Was your wallet there yesterday?,Was your phone there yesterday?,Is your phone here today?
+57,4,"['Your phone is here today', 'Your wallet was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'yes'.
+Your phone is here today. Your wallet was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[1, 1, 0]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would your phone have been there yesterday?
+2: Would your wallet be here today?
+3: Would your wallet have been there yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,Your phone is here today,Your wallet was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would your phone have been there yesterday?,Would your wallet be here today?,Would your wallet have been there yesterday?
+58,5,"['My key is here today', 'Your phone was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'yes'.
+My key is here today. Your phone was there yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Was your phone there yesterday?
+2: Was my key there yesterday?
+3: Is your phone here today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,My key is here today,Your phone was there yesterday.,,Was your phone there yesterday?,Was my key there yesterday?,Is your phone here today?
+59,6,"['My key is here today', 'Your phone was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'yes'.
+My key is here today. Your phone was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[0, 1, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would my key be here today?
+2: Would my key have been there yesterday?
+3: Would your phone be here today?","['no select', 'select', 'select']",Select all questions to which the answer is 'yes'.,My key is here today,Your phone was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would my key be here today?,Would my key have been there yesterday?,Would your phone be here today?
+60,7,"['The bleu chair is here today', 'The green table was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The bleu chair is here today. The green table was there yesterday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Was the green table there yesterday?
+2: Is the bleu chair here today?
+3: Was the bleu chair there yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,The bleu chair is here today,The green table was there yesterday.,,Was the green table there yesterday?,Is the bleu chair here today?,Was the bleu chair there yesterday?
+61,8,"['The bleu chair is here today', 'The green table was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The bleu chair is here today. The green table was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[1, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would the green table have been there yesterday?
+2: Would the bleu chair have been there yesterday?
+3: Would the bleu chair be here today?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,The bleu chair is here today,The green table was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would the green table have been there yesterday?,Would the bleu chair have been there yesterday?,Would the bleu chair be here today?
+62,9,"['The fridge is here today', 'The sink was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The fridge is here today. The sink was there yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Was the fridge there yesterday?
+2: Was the sink there yesterday?
+3: Is the fridge here today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,The fridge is here today,The sink was there yesterday.,,Was the fridge there yesterday?,Was the sink there yesterday?,Is the fridge here today?
+63,10,"['The fridge is here today', 'The sink was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The fridge is here today. The sink was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[0, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would the sink be here today?
+2: Would the fridge have been there yesterday?
+3: Would the sink have been there yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,The fridge is here today,The sink was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would the sink be here today?,Would the fridge have been there yesterday?,Would the sink have been there yesterday?
+64,11,"['The car is here today', 'Your bicycle was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The car is here today. Your bicycle was there yesterday.","[0, 1, 0]",Regular,2,Mutual,"
+1: Is the car here today?
+2: Was the car there yesterday?
+3: Was your bicycle there yesterday?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,The car is here today,Your bicycle was there yesterday.,,Is the car here today?,Was the car there yesterday?,Was your bicycle there yesterday?
+65,12,"['The car is here today', 'Your bicycle was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The car is here today. Your bicycle was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[1, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would the car be here today?
+2: Would your bicycle be here today?
+3: Would your bicycle have been there yesterday?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,The car is here today,Your bicycle was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would the car be here today?,Would your bicycle be here today?,Would your bicycle have been there yesterday?
+66,13,"['The post office is here today', 'The store was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'yes'.
+The post office is here today. The store was there yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Was the store there yesterday?
+2: Was the post office there yesterday?
+3: Is the store here today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,The post office is here today,The store was there yesterday.,,Was the store there yesterday?,Was the post office there yesterday?,Is the store here today?
+67,14,"['The post office is here today', 'The store was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The post office is here today. The store was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[0, 1, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would the post office have been there yesterday?
+2: Would the store have been there yesterday?
+3: Would the post office be here today?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,The post office is here today,The store was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would the post office have been there yesterday?,Would the store have been there yesterday?,Would the post office be here today?
+68,15,"['The bank is here today', 'The supermarket was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The bank is here today. The supermarket was there yesterday.","[1, 1, 0]",Regular,2,Mutual,"
+1: Is the supermarket here today?
+2: Was the bank there yesterday?
+3: Was the supermarket there yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,The bank is here today,The supermarket was there yesterday.,,Is the supermarket here today?,Was the bank there yesterday?,Was the supermarket there yesterday?
+69,16,"['The bank is here today', 'The supermarket was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The bank is here today. The supermarket was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[0, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would the supermarket be here today?
+2: Would the bank have been there yesterday?
+3: Would the bank be here today?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,The bank is here today,The supermarket was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would the supermarket be here today?,Would the bank have been there yesterday?,Would the bank be here today?
+70,17,"['The remote is here today', 'The book you are reading was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'no'.
+The remote is here today. The book you are reading was there yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Is the book you are reading here today?
+2: Is the remote here today?
+3: Was the book you are reading there yesterday?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,The remote is here today,The book you are reading was there yesterday.,,Is the book you are reading here today?,Is the remote here today?,Was the book you are reading there yesterday?
+71,18,"['The remote is here today', 'The book you are reading was there yesterday.']",['temporal+spatial'],"Select all questions to which the answer is 'yes'.
+The remote is here today. The book you are reading was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;","[1, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: Would the remote have been there yesterday?
+2: Would the book you are reading have been there yesterday?
+3: Would the book you are reading be here today?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,The remote is here today,The book you are reading was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,Would the remote have been there yesterday?,Would the book you are reading have been there yesterday?,Would the book you are reading be here today?
+72,1,"['I think football is the best sport today', 'You thought football is a nuisance yesterday.']",['IPthinking+temporal'],"Select all questions to which the answer is 'yes'.
+I think football is the best sport today. You thought football is a nuisance yesterday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Did you think football is the best sport yesterday?
+2: Do I think football is a nuisance today?
+3: Did you think football is a nuisance yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,I think football is the best sport today,You thought football is a nuisance yesterday.,,Did you think football is the best sport yesterday?,Do I think football is a nuisance today?,Did you think football is a nuisance yesterday?
+73,2,"['I think football is the best sport today', 'You thought football is a nuisance yesterday.']",['IPthinking+temporal'],"Select all questions to which the answer is 'no'.
+I think football is the best sport today. You thought football is a nuisance yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[0, 1, 1]",IP+Temporal Reversal,2,Mutual,"
+1: Would you have thought football is the best sport yesterday?
+2: Would you have thought football is a nuisance yesterday?
+3: Would I think football is the best sport today?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,I think football is the best sport today,You thought football is a nuisance yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would you have thought football is the best sport yesterday?,Would you have thought football is a nuisance yesterday?,Would I think football is the best sport today?
+74,3,"['I think tennis is boring to watch today', 'You thought tennis is very entertaining yesterday.']",['IPthinking+temporal'],"Select all questions to which the answer is 'yes'.
+I think tennis is boring to watch today. You thought tennis is very entertaining yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Do I think tennis is boring to watch today?
+2: Did you think tennis is boring to watch yesterday?
+3: Do I think tennis is very entertaining today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,I think tennis is boring to watch today,You thought tennis is very entertaining yesterday.,,Do I think tennis is boring to watch today?,Did you think tennis is boring to watch yesterday?,Do I think tennis is very entertaining today?
+75,4,"['I think tennis is boring to watch today', 'You thought tennis is very entertaining yesterday.']",['IPthinking+temporal'],"Select all questions to which the answer is 'no'.
+I think tennis is boring to watch today. You thought tennis is very entertaining yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[0, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: Would I think tennis is very entertaining today?
+2: Would you have thought tennis is very entertaining yesterday?
+3: Would you have thought tennis is boring to watch yesterday?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I think tennis is boring to watch today,You thought tennis is very entertaining yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would I think tennis is very entertaining today?,Would you have thought tennis is very entertaining yesterday?,Would you have thought tennis is boring to watch yesterday?
+76,5,"['I think reading is fun today', 'You thought reading is boring yesterday.']",['IPthinking+temporal'],"Select all questions to which the answer is 'yes'.
+I think reading is fun today. You thought reading is boring yesterday.","[1, 1, 0]",Regular,2,Mutual,"
+1: Do I think reading is fun today?
+2: Did you think reading is boring yesterday?
+3: Did you think reading is fun yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,I think reading is fun today,You thought reading is boring yesterday.,,Do I think reading is fun today?,Did you think reading is boring yesterday?,Did you think reading is fun yesterday?
+77,6,"['I think reading is fun today', 'You thought reading is boring yesterday.']",['IPthinking+temporal'],"Select all questions to which the answer is 'no'.
+I think reading is fun today. You thought reading is boring yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[0, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: Would I think reading is boring today?
+2: Would I think reading is fun today?
+3: Would you have thought reading is fun yesterday?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I think reading is fun today,You thought reading is boring yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would I think reading is boring today?,Would I think reading is fun today?,Would you have thought reading is fun yesterday?
+78,7,"['You feel awfull today', 'I felt guilty yesterday.']",['IPfeeling+temporal'],"Select all questions to which the answer is 'yes'.
+You feel awfull today. I felt guilty yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Did I feel guilty yesterday?
+2: Did I feel awfull yesterday?
+3: Do you feel guilty today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,You feel awfull today,I felt guilty yesterday.,,Did I feel guilty yesterday?,Did I feel awfull yesterday?,Do you feel guilty today?
+79,8,"['You feel awfull today', 'I felt guilty yesterday.']",['IPfeeling+temporal'],"Select all questions to which the answer is 'no'.
+You feel awfull today. I felt guilty yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[0, 1, 1]",IP+Temporal Reversal,2,Mutual,"
+1: Would you feel guilty today?
+2: Would I have felt guilty yesterday?
+3: Would you feel awfull today?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,You feel awfull today,I felt guilty yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would you feel guilty today?,Would I have felt guilty yesterday?,Would you feel awfull today?
+80,9,"['You feel a little sick today', 'I felt fine yesterday.']",['IPfeeling+temporal'],"Select all questions to which the answer is 'no'.
+You feel a little sick today. I felt fine yesterday.","[0, 1, 1]",Regular,2,Mutual,"
+1: Do you feel a little sick today?
+2: Do you feel fine today?
+3: Did I feel a little sick yesterday?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,You feel a little sick today,I felt fine yesterday.,,Do you feel a little sick today?,Do you feel fine today?,Did I feel a little sick yesterday?
+81,10,"['You feel a little sick today', 'I felt fine yesterday.']",['IPfeeling+temporal'],"Select all questions to which the answer is 'yes'.
+You feel a little sick today. I felt fine yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[0, 0, 1]",IP+Temporal Reversal,2,Mutual,"
+1: Would you feel a little sick today?
+2: Would I have felt fine yesterday?
+3: Would you feel fine today?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,You feel a little sick today,I felt fine yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would you feel a little sick today?,Would I have felt fine yesterday?,Would you feel fine today?
+82,11,"['You feel agitated today', 'I felt relaxed yesterday.']",['IPfeeling+temporal'],"Select all questions to which the answer is 'yes'.
+You feel agitated today. I felt relaxed yesterday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Did I feel agitated yesterday?
+2: Do you feel relaxed today?
+3: Did I feel relaxed yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,You feel agitated today,I felt relaxed yesterday.,,Did I feel agitated yesterday?,Do you feel relaxed today?,Did I feel relaxed yesterday?
+83,12,"['You feel agitated today', 'I felt relaxed yesterday.']",['IPfeeling+temporal'],"Select all questions to which the answer is 'yes'.
+You feel agitated today. I felt relaxed yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[1, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: Would you feel relaxed today?
+2: Would I have felt agitated yesterday?
+3: Would I have felt relaxed yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,You feel agitated today,I felt relaxed yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would you feel relaxed today?,Would I have felt agitated yesterday?,Would I have felt relaxed yesterday?
+84,13,"['You are sitting on a blue chair today', 'I was sitting on a black chair yesterday.']",['IPdoing+temporal'],"Select all questions to which the answer is 'yes'.
+You are sitting on a blue chair today. I was sitting on a black chair yesterday.","[1, 1, 0]",Regular,2,Mutual,"
+1: Was I sitting on a black chair yesterday?
+2: Are you sitting on a blue chair today?
+3: Was I sitting on a blue chair yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,You are sitting on a blue chair today,I was sitting on a black chair yesterday.,,Was I sitting on a black chair yesterday?,Are you sitting on a blue chair today?,Was I sitting on a blue chair yesterday?
+85,14,"['You are sitting on a blue chair today', 'I was sitting on a black chair yesterday.']",['IPdoing+temporal'],"Select all questions to which the answer is 'yes'.
+You are sitting on a blue chair today. I was sitting on a black chair yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[1, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: Would I have been sitting on a blue chair yesterday?
+2: Would you be sitting on a black chair today?
+3: Would you be sitting on a blue chair today?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,You are sitting on a blue chair today,I was sitting on a black chair yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would I have been sitting on a blue chair yesterday?,Would you be sitting on a black chair today?,Would you be sitting on a blue chair today?
+86,15,"['I am reading a magazine today', 'You were watching TikToks yesterday.']",['IPdoing+temporal'],"Select all questions to which the answer is 'no'.
+I am reading a magazine today. You were watching TikToks yesterday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Were you watching TikToks yesterday?
+2: Am I reading a magazine today?
+3: Am I watching TikToks today?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,I am reading a magazine today,You were watching TikToks yesterday.,,Were you watching TikToks yesterday?,Am I reading a magazine today?,Am I watching TikToks today?
+87,16,"['I am reading a magazine today', 'You were watching TikToks yesterday.']",['IPdoing+temporal'],"Select all questions to which the answer is 'yes'.
+I am reading a magazine today. You were watching TikToks yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[1, 0, 0]",IP+Temporal Reversal,2,Mutual,"
+1: Would you have been reading a magazine yesterday?
+2: Would you have been watching TikToks yesterday?
+3: Would I be reading a magazine today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,I am reading a magazine today,You were watching TikToks yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would you have been reading a magazine yesterday?,Would you have been watching TikToks yesterday?,Would I be reading a magazine today?
+88,17,"['I am reading a newspaper today', 'You were scrolling Instagram yesterday.']",['IPdoing+temporal'],"Select all questions to which the answer is 'yes'.
+I am reading a newspaper today. You were scrolling Instagram yesterday.","[1, 0, 1]",Regular,2,Mutual,"
+1: Am I reading a newspaper today?
+2: Am I scrolling Instagram today?
+3: Were you scrolling Instagram yesterday?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,I am reading a newspaper today,You were scrolling Instagram yesterday.,,Am I reading a newspaper today?,Am I scrolling Instagram today?,Were you scrolling Instagram yesterday?
+89,18,"['I am reading a newspaper today', 'You were scrolling Instagram yesterday.']",['IPdoing+temporal'],"Select all questions to which the answer is 'yes'.
+I am reading a newspaper today. You were scrolling Instagram yesterday. If I were you and you were me and if today were yesterday and yesterday were today;","[1, 0, 1]",IP+Temporal Reversal,2,Mutual,"
+1: Would you have been reading a newspaper yesterday?
+2: Would I be reading a newspaper today?
+3: Would I be scrolling Instagram today?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,I am reading a newspaper today,You were scrolling Instagram yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,Would you have been reading a newspaper yesterday?,Would I be reading a newspaper today?,Would I be scrolling Instagram today?
+90,1,"['I think football is the best sport here', 'You think football is a nuisance there.']",['IPthinking+spatial'],"Select all questions to which the answer is 'yes'.
+I think football is the best sport here. You think football is a nuisance there.","[1, 0, 0]",Regular,2,Mutual,"
+1: Do I think football is the best sport here?
+2: Do you think football is the best sport there?
+3: Do I think football is a nuisance here?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,I think football is the best sport here,You think football is a nuisance there.,,Do I think football is the best sport here?,Do you think football is the best sport there?,Do I think football is a nuisance here?
+91,2,"['I think football is the best sport here', 'You think football is a nuisance there.']",['IPthinking+spatial'],"Select all questions to which the answer is 'yes'.
+I think football is the best sport here. You think football is a nuisance there. If I were you and you were me and if here were there and there were here;","[1, 0, 1]",IP+Spatial Reversal,2,Mutual,"
+1: Would I think football is a nuisance here?
+2: Would you think football is a nuisance there?
+3: Would you think football is the best sport there?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,I think football is the best sport here,You think football is a nuisance there.,If I were you and you were me and if here were there and there were here;,Would I think football is a nuisance here?,Would you think football is a nuisance there?,Would you think football is the best sport there?
+92,3,"['I think tennis is boring to watch here', 'You think tennis is very entertaining there.']",['IPthinking+spatial'],"Select all questions to which the answer is 'no'.
+I think tennis is boring to watch here. You think tennis is very entertaining there.","[1, 0, 1]",Regular,2,Mutual,"
+1: Do I think tennis is very entertaining here?
+2: Do I think tennis is boring to watch here?
+3: Do you think tennis is boring to watch there?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,I think tennis is boring to watch here,You think tennis is very entertaining there.,,Do I think tennis is very entertaining here?,Do I think tennis is boring to watch here?,Do you think tennis is boring to watch there?
+93,4,"['I think tennis is boring to watch here', 'You think tennis is very entertaining there.']",['IPthinking+spatial'],"Select all questions to which the answer is 'yes'.
+I think tennis is boring to watch here. You think tennis is very entertaining there. If I were you and you were me and if here were there and there were here;","[1, 0, 0]",IP+Spatial Reversal,2,Mutual,"
+1: Would I think tennis is very entertaining here?
+2: Would I think tennis is boring to watch here?
+3: Would you think tennis is very entertaining there?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,I think tennis is boring to watch here,You think tennis is very entertaining there.,If I were you and you were me and if here were there and there were here;,Would I think tennis is very entertaining here?,Would I think tennis is boring to watch here?,Would you think tennis is very entertaining there?
+94,5,"['I think reading is fun here', 'You think reading is boring there.']",['IPthinking+spatial'],"Select all questions to which the answer is 'no'.
+I think reading is fun here. You think reading is boring there.","[1, 0, 0]",Regular,2,Mutual,"
+1: Do you think reading is fun there?
+2: Do I think reading is fun here?
+3: Do you think reading is boring there?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,I think reading is fun here,You think reading is boring there.,,Do you think reading is fun there?,Do I think reading is fun here?,Do you think reading is boring there?
+95,6,"['I think reading is fun here', 'You think reading is boring there.']",['IPthinking+spatial'],"Select all questions to which the answer is 'no'.
+I think reading is fun here. You think reading is boring there. If I were you and you were me and if here were there and there were here;","[1, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: Would I think reading is fun here?
+2: Would you think reading is boring there?
+3: Would you think reading is fun there?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I think reading is fun here,You think reading is boring there.,If I were you and you were me and if here were there and there were here;,Would I think reading is fun here?,Would you think reading is boring there?,Would you think reading is fun there?
+96,7,"['You feel awfull here', 'I feel guilty there.']",['IPfeeling+spatial'],"Select all questions to which the answer is 'yes'.
+You feel awfull here. I feel guilty there.","[1, 0, 0]",Regular,2,Mutual,"
+1: Do you feel awfull here?
+2: Do you feel guilty here?
+3: Do I feel awfull there?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,You feel awfull here,I feel guilty there.,,Do you feel awfull here?,Do you feel guilty here?,Do I feel awfull there?
+97,8,"['You feel awfull here', 'I feel guilty there.']",['IPfeeling+spatial'],"Select all questions to which the answer is 'yes'.
+You feel awfull here. I feel guilty there. If I were you and you were me and if here were there and there were here;","[1, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: Would you feel guilty here?
+2: Would I feel awfull there?
+3: Would you feel awfull here?","['select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,You feel awfull here,I feel guilty there.,If I were you and you were me and if here were there and there were here;,Would you feel guilty here?,Would I feel awfull there?,Would you feel awfull here?
+98,9,"['I feel a little sick here', 'You feel fine there.']",['IPfeeling+spatial'],"Select all questions to which the answer is 'no'.
+I feel a little sick here. You feel fine there.","[1, 1, 0]",Regular,2,Mutual,"
+1: Do I feel fine here?
+2: Do you feel a little sick there?
+3: Do I feel a little sick here?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I feel a little sick here,You feel fine there.,,Do I feel fine here?,Do you feel a little sick there?,Do I feel a little sick here?
+99,10,"['I feel a little sick here', 'You feel fine there.']",['IPfeeling+spatial'],"Select all questions to which the answer is 'no'.
+I feel a little sick here. You feel fine there. If I were you and you were me and if here were there and there were here;","[0, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: Would you feel a little sick there?
+2: Would I feel a little sick here?
+3: Would I feel fine here?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I feel a little sick here,You feel fine there.,If I were you and you were me and if here were there and there were here;,Would you feel a little sick there?,Would I feel a little sick here?,Would I feel fine here?
+100,11,"['I feel agitated here', 'You feel relaxed there.']",['IPfeeling+spatial'],"Select all questions to which the answer is 'yes'.
+I feel agitated here. You feel relaxed there.","[0, 1, 0]",Regular,2,Mutual,"
+1: Do you feel agitated there?
+2: Do I feel agitated here?
+3: Do I feel relaxed here?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,I feel agitated here,You feel relaxed there.,,Do you feel agitated there?,Do I feel agitated here?,Do I feel relaxed here?
+101,12,"['I feel agitated here', 'You feel relaxed there.']",['IPfeeling+spatial'],"Select all questions to which the answer is 'no'.
+I feel agitated here. You feel relaxed there. If I were you and you were me and if here were there and there were here;","[0, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: Would I feel relaxed here?
+2: Would I feel agitated here?
+3: Would you feel agitated there?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I feel agitated here,You feel relaxed there.,If I were you and you were me and if here were there and there were here;,Would I feel relaxed here?,Would I feel agitated here?,Would you feel agitated there?
+102,13,"['You are sitting on a blue chair here', 'I am sitting on a black chair there.']",['IPdoing+spatial'],"Select all questions to which the answer is 'no'.
+You are sitting on a blue chair here. I am sitting on a black chair there.","[1, 0, 0]",Regular,2,Mutual,"
+1: Am I sitting on a blue chair there?
+2: Are you sitting on a blue chair here?
+3: Am I sitting on a black chair there?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,You are sitting on a blue chair here,I am sitting on a black chair there.,,Am I sitting on a blue chair there?,Are you sitting on a blue chair here?,Am I sitting on a black chair there?
+103,14,"['You are sitting on a blue chair here', 'I am sitting on a black chair there.']",['IPdoing+spatial'],"Select all questions to which the answer is 'no'.
+You are sitting on a blue chair here. I am sitting on a black chair there. If I were you and you were me and if here were there and there were here;","[1, 0, 0]",IP+Spatial Reversal,2,Mutual,"
+1: Would I be sitting on a black chair there?
+2: Would I be sitting on a blue chair there?
+3: Would you be sitting on a black chair here?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,You are sitting on a blue chair here,I am sitting on a black chair there.,If I were you and you were me and if here were there and there were here;,Would I be sitting on a black chair there?,Would I be sitting on a blue chair there?,Would you be sitting on a black chair here?
+104,15,"['I am reading a magazine here', 'You are watching TikToks there.']",['IPdoing+spatial'],"Select all questions to which the answer is 'yes'.
+I am reading a magazine here. You are watching TikToks there.","[0, 1, 1]",Regular,2,Mutual,"
+1: Are you reading a magazine there?
+2: Are you watching TikToks there?
+3: Am I reading a magazine here?","['no select', 'select', 'select']",Select all questions to which the answer is 'yes'.,I am reading a magazine here,You are watching TikToks there.,,Are you reading a magazine there?,Are you watching TikToks there?,Am I reading a magazine here?
+105,16,"['I am reading a magazine here', 'You are watching TikToks there.']",['IPdoing+spatial'],"Select all questions to which the answer is 'no'.
+I am reading a magazine here. You are watching TikToks there. If I were you and you were me and if here were there and there were here;","[1, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: Would I be reading a magazine here?
+2: Would you be watching TikToks there?
+3: Would you be reading a magazine there?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I am reading a magazine here,You are watching TikToks there.,If I were you and you were me and if here were there and there were here;,Would I be reading a magazine here?,Would you be watching TikToks there?,Would you be reading a magazine there?
+106,17,"['I am reading a newspaper here', 'You are scrolling Instagram there.']",['IPdoing+spatial'],"Select all questions to which the answer is 'no'.
+I am reading a newspaper here. You are scrolling Instagram there.","[0, 1, 1]",Regular,2,Mutual,"
+1: Are you scrolling Instagram there?
+2: Am I scrolling Instagram here?
+3: Are you reading a newspaper there?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,I am reading a newspaper here,You are scrolling Instagram there.,,Are you scrolling Instagram there?,Am I scrolling Instagram here?,Are you reading a newspaper there?
+107,18,"['I am reading a newspaper here', 'You are scrolling Instagram there.']",['IPdoing+spatial'],"Select all questions to which the answer is 'no'.
+I am reading a newspaper here. You are scrolling Instagram there. If I were you and you were me and if here were there and there were here;","[0, 1, 1]",IP+Spatial Reversal,2,Mutual,"
+1: Would you be reading a newspaper there?
+2: Would you be scrolling Instagram there?
+3: Would I be reading a newspaper here?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,I am reading a newspaper here,You are scrolling Instagram there.,If I were you and you were me and if here were there and there were here;,Would you be reading a newspaper there?,Would you be scrolling Instagram there?,Would I be reading a newspaper here?
+108,1,"['You think it is okay to cry sometimes here today', 'I thought crying is for children there yesterday.']",['IPthinking+temporal+spatial'],"Select all questions to which the answer is 'no'.
+You think it is okay to cry sometimes here today. I thought crying is for children there yesterday.","[1, 1, 0]",Regular,2,Mutual,"
+1: Do you think crying is for children here today?
+2: Did I think it is okay to cry sometimes there yesterday?
+3: Do you think it is okay to cry sometimes here today?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,You think it is okay to cry sometimes here today,I thought crying is for children there yesterday.,,Do you think crying is for children here today?,Did I think it is okay to cry sometimes there yesterday?,Do you think it is okay to cry sometimes here today?
+109,2,"['You think it is okay to cry sometimes here today', 'I thought crying is for children there yesterday.']",['IPthinking+temporal+spatial'],"Select all questions to which the answer is 'no'.
+You think it is okay to cry sometimes here today. I thought crying is for children there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[0, 0, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you think crying is for children here today?
+2: Would I have thought it is okay to cry sometimes there yesterday?
+3: Would you think it is okay to cry sometimes here today?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,You think it is okay to cry sometimes here today,I thought crying is for children there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you think crying is for children here today?,Would I have thought it is okay to cry sometimes there yesterday?,Would you think it is okay to cry sometimes here today?
+110,3,"['I think psychology is a science here today', 'You thought psychology is pseudoscience there yesterday.']",['IPthinking+temporal+spatial'],"Select all questions to which the answer is 'no'.
+I think psychology is a science here today. You thought psychology is pseudoscience there yesterday.","[1, 0, 1]",Regular,2,Mutual,"
+1: Did you think psychology is a science there yesterday?
+2: Did you think psychology is pseudoscience there yesterday?
+3: Do I think psychology is pseudoscience here today?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,I think psychology is a science here today,You thought psychology is pseudoscience there yesterday.,,Did you think psychology is a science there yesterday?,Did you think psychology is pseudoscience there yesterday?,Do I think psychology is pseudoscience here today?
+111,4,"['I think psychology is a science here today', 'You thought psychology is pseudoscience there yesterday.']",['IPthinking+temporal+spatial'],"Select all questions to which the answer is 'no'.
+I think psychology is a science here today. You thought psychology is pseudoscience there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[1, 1, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you have thought psychology is pseudoscience there yesterday?
+2: Would I think psychology is a science here today?
+3: Would you have thought psychology is a science there yesterday?","['select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I think psychology is a science here today,You thought psychology is pseudoscience there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you have thought psychology is pseudoscience there yesterday?,Would I think psychology is a science here today?,Would you have thought psychology is a science there yesterday?
+112,5,"['I think Titanic is a great movie here today', 'You thought Titanic is a boring movie there yesterday.']",['IPthinking+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+I think Titanic is a great movie here today. You thought Titanic is a boring movie there yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Do I think Titanic is a great movie here today?
+2: Did you think Titanic is a great movie there yesterday?
+3: Do I think Titanic is a boring movie here today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'yes'.,I think Titanic is a great movie here today,You thought Titanic is a boring movie there yesterday.,,Do I think Titanic is a great movie here today?,Did you think Titanic is a great movie there yesterday?,Do I think Titanic is a boring movie here today?
+113,6,"['I think Titanic is a great movie here today', 'You thought Titanic is a boring movie there yesterday.']",['IPthinking+temporal+spatial'],"Select all questions to which the answer is 'no'.
+I think Titanic is a great movie here today. You thought Titanic is a boring movie there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[1, 0, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you have thought Titanic is a boring movie there yesterday?
+2: Would I think Titanic is a boring movie here today?
+3: Would I think Titanic is a great movie here today?","['select', 'no select', 'select']",Select all questions to which the answer is 'no'.,I think Titanic is a great movie here today,You thought Titanic is a boring movie there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you have thought Titanic is a boring movie there yesterday?,Would I think Titanic is a boring movie here today?,Would I think Titanic is a great movie here today?
+114,7,"['I feel a little hot here today', 'You felt a little cold there yesterday.']",['IPfeeling+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+I feel a little hot here today. You felt a little cold there yesterday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Do I feel a little cold here today?
+2: Did you feel a little hot there yesterday?
+3: Did you feel a little cold there yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,I feel a little hot here today,You felt a little cold there yesterday.,,Do I feel a little cold here today?,Did you feel a little hot there yesterday?,Did you feel a little cold there yesterday?
+115,8,"['I feel a little hot here today', 'You felt a little cold there yesterday.']",['IPfeeling+temporal+spatial'],"Select all questions to which the answer is 'no'.
+I feel a little hot here today. You felt a little cold there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[0, 1, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you have felt a little hot there yesterday?
+2: Would you have felt a little cold there yesterday?
+3: Would I feel a little cold here today?","['no select', 'select', 'no select']",Select all questions to which the answer is 'no'.,I feel a little hot here today,You felt a little cold there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you have felt a little hot there yesterday?,Would you have felt a little cold there yesterday?,Would I feel a little cold here today?
+116,9,"['You feel a little sick here today', 'I felt completely healthy there yesterday.']",['IPfeeling+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+You feel a little sick here today. I felt completely healthy there yesterday.","[1, 0, 1]",Regular,2,Mutual,"
+1: Did I feel completely healthy there yesterday?
+2: Do you feel completely healthy here today?
+3: Do you feel a little sick here today?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,You feel a little sick here today,I felt completely healthy there yesterday.,,Did I feel completely healthy there yesterday?,Do you feel completely healthy here today?,Do you feel a little sick here today?
+117,10,"['You feel a little sick here today', 'I felt completely healthy there yesterday.']",['IPfeeling+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+You feel a little sick here today. I felt completely healthy there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[0, 0, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you feel a little sick here today?
+2: Would I have felt completely healthy there yesterday?
+3: Would I have felt a little sick there yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,You feel a little sick here today,I felt completely healthy there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you feel a little sick here today?,Would I have felt completely healthy there yesterday?,Would I have felt a little sick there yesterday?
+118,11,"['I feel scared at night here today', 'You felt comfortable there yesterday.']",['IPfeeling+temporal+spatial'],"Select all questions to which the answer is 'no'.
+I feel scared at night here today. You felt comfortable there yesterday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Do I feel scared at night here today?
+2: Did you feel comfortable there yesterday?
+3: Did you feel scared at night there yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'no'.,I feel scared at night here today,You felt comfortable there yesterday.,,Do I feel scared at night here today?,Did you feel comfortable there yesterday?,Did you feel scared at night there yesterday?
+119,12,"['I feel scared at night here today', 'You felt comfortable there yesterday.']",['IPfeeling+temporal+spatial'],"Select all questions to which the answer is 'no'.
+I feel scared at night here today. You felt comfortable there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[0, 1, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you have felt scared at night there yesterday?
+2: Would I feel scared at night here today?
+3: Would you have felt comfortable there yesterday?","['no select', 'select', 'select']",Select all questions to which the answer is 'no'.,I feel scared at night here today,You felt comfortable there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you have felt scared at night there yesterday?,Would I feel scared at night here today?,Would you have felt comfortable there yesterday?
+120,13,"['You are working in the garden here today', 'I was doing the dishes there yesterday.']",['IPdoing+temporal+spatial'],"Select all questions to which the answer is 'no'.
+You are working in the garden here today. I was doing the dishes there yesterday.","[1, 0, 0]",Regular,2,Mutual,"
+1: Are you doing the dishes here today?
+2: Was I doing the dishes there yesterday?
+3: Are you working in the garden here today?","['select', 'no select', 'no select']",Select all questions to which the answer is 'no'.,You are working in the garden here today,I was doing the dishes there yesterday.,,Are you doing the dishes here today?,Was I doing the dishes there yesterday?,Are you working in the garden here today?
+121,14,"['You are working in the garden here today', 'I was doing the dishes there yesterday.']",['IPdoing+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+You are working in the garden here today. I was doing the dishes there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[1, 0, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you be doing the dishes here today?
+2: Would you be working in the garden here today?
+3: Would I have been working in the garden there yesterday?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,You are working in the garden here today,I was doing the dishes there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you be doing the dishes here today?,Would you be working in the garden here today?,Would I have been working in the garden there yesterday?
+122,15,"['You are taking a bath here today', 'I was taking a shower there yesterday.']",['IPdoing+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+You are taking a bath here today. I was taking a shower there yesterday.","[1, 0, 1]",Regular,2,Mutual,"
+1: Was I taking a shower there yesterday?
+2: Are you taking a shower here today?
+3: Are you taking a bath here today?","['select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,You are taking a bath here today,I was taking a shower there yesterday.,,Was I taking a shower there yesterday?,Are you taking a shower here today?,Are you taking a bath here today?
+123,16,"['You are taking a bath here today', 'I was taking a shower there yesterday.']",['IPdoing+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+You are taking a bath here today. I was taking a shower there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[0, 0, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would you be taking a bath here today?
+2: Would I have been taking a shower there yesterday?
+3: Would you be taking a shower here today?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,You are taking a bath here today,I was taking a shower there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would you be taking a bath here today?,Would I have been taking a shower there yesterday?,Would you be taking a shower here today?
+124,17,"['I am doing laundry here today', 'You were hanging out with friends there yesterday.']",['IPdoing+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+I am doing laundry here today. You were hanging out with friends there yesterday.","[0, 0, 1]",Regular,2,Mutual,"
+1: Am I hanging out with friends here today?
+2: Were you doing laundry there yesterday?
+3: Were you hanging out with friends there yesterday?","['no select', 'no select', 'select']",Select all questions to which the answer is 'yes'.,I am doing laundry here today,You were hanging out with friends there yesterday.,,Am I hanging out with friends here today?,Were you doing laundry there yesterday?,Were you hanging out with friends there yesterday?
+125,18,"['I am doing laundry here today', 'You were hanging out with friends there yesterday.']",['IPdoing+temporal+spatial'],"Select all questions to which the answer is 'yes'.
+I am doing laundry here today. You were hanging out with friends there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;","[0, 1, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: Would I be doing laundry here today?
+2: Would I be hanging out with friends here today?
+3: Would you have been hanging out with friends there yesterday?","['no select', 'select', 'no select']",Select all questions to which the answer is 'yes'.,I am doing laundry here today,You were hanging out with friends there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",Would I be doing laundry here today?,Would I be hanging out with friends here today?,Would you have been hanging out with friends there yesterday?

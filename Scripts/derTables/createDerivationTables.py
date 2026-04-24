@@ -2,17 +2,9 @@
 """
 Created on Thu Jan  8 15:38:11 2026
 
-Newer version of function that generates symmetry and transitivity tables for 
-given set of relations.
-Tables can then be used for automatic derivation, task generation, etc..
+Function that generates symmetry and transitivity tables for input relations.
+Tables can then be used for automatic derivation, visualization, task generation, ...
 
-Changes relative to old version:
-    - Just takes a list as input, not dict (more user-friendly?)
-    - Can take individual items from paired relations and complete the pair
-        (e.g., if only 'more than' included in input, output will include
-         both more than and less than)
-    - Made code robust against variable inputs (e.g., same not included, so not index 0)
-    - Added plotting functionality
     
 Input:
     - 'Relations': (optional) list of strings specifying to-be-included relations 
@@ -24,12 +16,17 @@ Input:
             - More than & Less than
             - Contains & Is part of
             - Before & After
+            - ... (add new ones)
+        NOTE that incomplete 'sets' of relations will be completed 
+        (e.g., if only 'more than' is provided in input, mutually entailed 'less than'
+         will be included in tables/plots)
     
 Output:
     - mutual: 
         list that contains the (indices) of the relations that are mutually 
-        entailed by those provided in input
-        e.g., [0, 1, 2]
+        entailed by those provided in input (in same order, with optional missing 
+                                             relations included)
+        e.g., [0, 1, 2] for input ['same', 'different', 'opposite']
         
         
     - combi: 
@@ -38,25 +35,27 @@ Output:
         for all possible combinations of the relations provided in input
         e.g., [0, 1, 2;
                1, -1, -1;
-               2, -1, 0]
+               2, -1, 0] for input ['same', 'different', 'opposite']
         
 TO DO:
-    - Account for entailed relations not included in input
-        (e.g., sameness if only opposition included)
-    - Add more relations
-        e.g. other relations that follow same type of derivations 
-    - Add shorter relation-labels for plot
-    - subplots for combi heatmap -> one instead of four
+    - Combinations of two relations (meets, starts, overlaps)
+        -> Simply convert 'rel' to more than less than or same between pairs
+            then derive relations and convert back?
+            Check notebook for algo
         
 @author: mraemaek
 """
 
 # Dependencies
 import numpy as np
-from utils import *
-from plot_utils import *
 import pandas as pd
 import pdb
+from derTables.utils_tables import (cleanRelationLabels, # helpers
+                   completeRelations,
+                   findGeneralRelations
+    )
+from derTables.plot_utils import plotTablesHeatmap # plot function
+
 
 
 def createDerivationTables(relations=None, *, plotTables=False):
@@ -82,7 +81,11 @@ def createDerivationTables(relations=None, *, plotTables=False):
                             'Here': 'There', # Not sure about the deictics?
                             'There': 'Here',
                             'Now': 'Then',
-                            'Then': 'Now'})
+                            'Then': 'Now',
+                            'Left of': 'Right of',
+                            'Right of': 'Left of',
+                            'In front': 'Behind',
+                            'Behind': 'In front'})
     
     compatible = {'Same as': [], # anything really
                  'Different from': ['Same as', 'Different from', 'Opposite to'],
@@ -103,7 +106,11 @@ def createDerivationTables(relations=None, *, plotTables=False):
                 'Contains': ['Is part of', 'Contains'],
                 'Is part of': ['Contains', 'Is part of'],
                 'Before': ['After', 'Before'],
-                'After': ['Before', 'After'], 
+                'After': ['Before', 'After'],
+                'Left of': ['Right of', 'Left of'],
+                'Right of': ['Left of', 'Right of'],
+                'In front': ['Behind', 'In front'],
+                'Behind': ['In front', 'Behind']
         }
     if relations is None:
         # If no source relations are specified, use default list 
@@ -165,8 +172,6 @@ def createDerivationTables(relations=None, *, plotTables=False):
     for i in combi.keys(): # loop possible combinations
         for r1lab, rel1 in relations.items():
             for r2lab, rel2 in relations.items(): # loop relationss
-                # if rel1 == 1 and rel2 == 1: pdb.set_trace()
-                # if rel1 == 2 and rel2 == 2: pdb.set_trace()
                 cleanR1 = r1lab[r1lab.index('- ')+ 2:]
                 cleanR2 = r2lab[r2lab.index('- ')+2:]
                 if not ('Same as' in cleanR1 or 'Same as' in cleanR2) and \
