@@ -150,7 +150,7 @@ relations_1dim = dict({
                 'spatial': [places, things]
 })
 relations_2dim = dict({
-                # 'temporal+spatial': [things, times, places],
+                'temporal+spatial': [things, times, places],
                 'IPthinking+temporal': [thinking, past_think, thoughts, times],
                 'IPfeeling+temporal': [feeling, past_feelings, feelings, times],
                 'IPdoing+temporal': [doing, actions, times],
@@ -206,24 +206,27 @@ import pandas as pd
 from derTables.utils_deictics import * 
 from derTables.generateDeicticSyllogisms import generateDeicticSyllogisms2
 
-relations = [
+relations_1dim_ip = [
     'interpersonal-doing',
     'interpersonal-thinking', 
-    'interpersonal-feeling',
+    'interpersonal-feeling']
+relations_1dim = [
     'temporal',
-    'spatial',
+    'spatial']
+relations_2dim = [
     'temporal+spatial',
     'IPthinking+temporal',
     'IPfeeling+temporal',
     'IPdoing+temporal',
     'IPthinking+spatial', # Maybe a little weird?7
     'IPfeeling+spatial', # Maybe a little weird?
-    'IPdoing+spatial',
+    'IPdoing+spatial']
+relations_3dim = [
     'IPthinking+temporal+spatial', 
     'IPfeeling+temporal+spatial',
     'IPdoing+temporal+spatial'
 ]
-n_reps = 5
+
 reversal = True
 allReversals = False
 irrelevant = False
@@ -232,10 +235,43 @@ n_opt = 3
 printTrials = True
 output = 'labjs'
 csv_file = "MorganeTestTrials.csv"
-trial_data = generateDeicticSyllogisms2(relations, n_reps, reversal, allReversals,
-                                        irrelevant, forcedChoice, n_opt, printTrials, output)
 
-trial_data_df = pd.DataFrame.from_dict(trial_data) # create pandas dataframe
+# combine trials
+blocks = {'1dim': relations_1dim,
+          '1dim_ip': relations_1dim_ip,
+          '2dim': relations_2dim,
+          '3dim': relations_3dim
+          }
+reps = {'1dim': 1,
+        '1dim_ip': 1,
+          '2dim': 1,
+          '3dim': 1
+          }
+trial_data_combined = dict()
+t =-1
+for block, rels in blocks.items():
+    t+=1
+    relations = rels
+    n_reps = reps[block]
+    trial_data = generateDeicticSyllogisms2(relations, n_reps, reversal, allReversals,
+                                            irrelevant, forcedChoice, n_opt, printTrials, output)
+    
+    # combine all block data
+    if not trial_data_combined:
+        trial_data_combined = {k: list(v) for k, v in trial_data.items()}
+    else:
+        prev_len = len(next(iter(trial_data_combined.values()))) # align
+        for k in trial_data.keys(): # check for new keys
+            if k not in trial_data_combined:
+                trial_data_combined[k] = [None] * prev_len
+        for k in trial_data_combined.keys(): # check for missing keys
+            if k not in trial_data:
+                trial_data[k] = [None] * len(trial_data.get('id', next(iter(trial_data.values()))))
+   
+        for k, v in trial_data.items(): # extend dict
+            trial_data_combined[k].extend(v)
+            
+trial_data_df = pd.DataFrame.from_dict(trial_data_combined) # create pandas dataframe
 trial_data_df.to_csv(csv_file) # store in csv for later use
   # %% Select models & set filename to store data
 
