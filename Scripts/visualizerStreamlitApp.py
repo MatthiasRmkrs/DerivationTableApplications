@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 
 # IMPORT FUNCTION
-from derTables.plotRelNetworkGraph import plotRelNetworkGraph
+from derTables.plot_utils import plotRelNetworkGraph
 
 st.set_page_config(layout="wide")
 
