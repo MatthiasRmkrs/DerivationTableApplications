@@ -29,9 +29,8 @@ This app plots:
 using graph-network visualizations.
 """)
 
-# =========================================================
+
 # SIDEBAR
-# =========================================================
 
 st.sidebar.header("Network specification")
 
