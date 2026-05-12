@@ -10,7 +10,7 @@ import pandas as pd
 import numpy as np
 import ast
 
-from derTables.generateTrials import generateTrials
+from derTables.GenerateMTS_wip import generateTrials
 
 # =========================================================
 # PAGE CONFIG
