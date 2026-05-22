@@ -57,6 +57,7 @@ sLabs = [x.strip() for x in label_string.split(",")]
 relation_options = [
     "Same as",
     "Different from",
+    "Opposite to",
     "More than",
     "Less than",
     "Before",
@@ -137,18 +138,10 @@ plotTitle = st.sidebar.text_input(
     value="Relational Network"
 )
 
-# BUILD BASELINE DICT
-
-baseline = {
-    selected_relation: baseline_pairs
-}
-
 # GENERATE
 
 if st.button("Generate network graph"):
-
     try:
-
         fig = plt.figure(figsize=(12,12))
 
         plotRelNetworkGraph(
