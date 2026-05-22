@@ -25,6 +25,12 @@ Users can specify:
 - baseline relations
 - optional derived relations (mutually entailed and combinatorially entailed relations)
 
+Workflow:
+- Select the number of stimuli in the network
+- Select the relations to include in the network
+- Specify baseline relations (two stimuli connected by a relation you selected)
+
+
 """)
 
 
@@ -59,7 +65,7 @@ relation_options = [
     "Is part of"
 ]
 
-selected_relation = st.sidebar.multiselect(
+selected_relations = st.sidebar.multiselect(
     "Relation type",
     relation_options
 )
@@ -67,29 +73,57 @@ selected_relation = st.sidebar.multiselect(
 st.sidebar.markdown("---")
 st.sidebar.subheader("Baseline relations")
 
-baseline_pairs = []
+baseline = {}
 
-for i in range(n_stim - 1):
+if selected_relations and len(sLabs) == n_stim:
 
-    c1, c2 = st.sidebar.columns(2)
+    for relation in selected_relations:
 
-    with c1:
-        s1 = st.selectbox(
-            f"Source {i+1}",
-            sLabs,
-            key=f"s1_{i}"
+        st.sidebar.markdown(f"### {relation}")
+
+        n_pairs = st.sidebar.number_input(
+            f"Number of stimulus pairs for '{relation}'",
+            min_value=0,
+            max_value=50,
+            value=1,
+            step=1,
+            key=f"n_pairs_{relation}"
         )
 
-    with c2:
-        s2 = st.selectbox(
-            f"Target {i+1}",
-            sLabs,
-            index=min(i+1, len(sLabs)-1),
-            key=f"s2_{i}"
-        )
+        relation_pairs = []
 
-    baseline_pairs.append((sLabs.index(s1), sLabs.index(s2)))
+        for i in range(n_pairs):
 
+            c1, c2 = st.sidebar.columns(2)
+
+            with c1:
+                s1 = st.selectbox(
+                    f"{relation}: source {i + 1}",
+                    sLabs,
+                    key=f"{relation}_s1_{i}"
+                )
+
+            with c2:
+                default_target_index = min(i + 1, len(sLabs) - 1)
+
+                s2 = st.selectbox(
+                    f"{relation}: target {i + 1}",
+                    sLabs,
+                    index=default_target_index,
+                    key=f"{relation}_s2_{i}"
+                )
+
+            relation_pairs.append(
+                (sLabs.index(s1), sLabs.index(s2))
+            )
+
+        baseline[relation] = relation_pairs
+
+else:
+    if not selected_relations:
+        st.sidebar.info("Select at least one relation type.")
+    if len(sLabs) != n_stim:
+        st.sidebar.info("Fix the stimulus labels before defining pairs.")
 st.sidebar.markdown("---")
 
 plotRels = st.sidebar.multiselect(
