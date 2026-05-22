@@ -19,14 +19,12 @@ st.set_page_config(layout="wide")
 st.title("Relational Network Graph Visualizer")
 
 st.markdown("""
-Visualize trained and derived relational networks.
+Visualize a relational network as a graph network.
 
-This app plots:
+Users can specify:
 - baseline relations
-- mutually entailed relations
-- combinatorially entailed relations
+- optional derived relations (mutually entailed and combinatorially entailed relations)
 
-using graph-network visualizations.
 """)
 
 
@@ -37,8 +35,8 @@ st.sidebar.header("Network specification")
 n_stim = st.sidebar.slider(
     "Number of stimuli",
     min_value=2,
-    max_value=10,
-    value=3
+    max_value=15,
+    value=0
 )
 
 default_labels = [chr(65+i) for i in range(n_stim)]
@@ -61,7 +59,7 @@ relation_options = [
     "Is part of"
 ]
 
-selected_relation = st.sidebar.selectbox(
+selected_relation = st.sidebar.multiselect(
     "Relation type",
     relation_options
 )

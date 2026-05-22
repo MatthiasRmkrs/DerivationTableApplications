@@ -365,7 +365,7 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
         
     """
     
-    
+    from derTables.createDerivationTables import createDerivationTables
     # determine which plotting parameters to allow user to tweak?
     
     relations = cleanRelationLabels(list(baseline.keys()))
