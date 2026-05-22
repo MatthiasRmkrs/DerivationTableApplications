@@ -365,7 +365,6 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
         
     """
     
-    from derTables.createDerivationTables import createDerivationTables
     # determine which plotting parameters to allow user to tweak?
     
     relations = cleanRelationLabels(list(baseline.keys()))
@@ -416,8 +415,8 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
     # Maybe better to let user specify circle or line?
     
     # should be loaded already, but in case not
-    from createDerivationTables import createDerivationTables
-    from deriveRelationsFromBaseline import deriveRelationsFromBaseline
+    from derTables.createDerivationTables import createDerivationTables
+    from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
     # create derivation tables
     mutual, combi, relations = createDerivationTables(list(baseline.keys()))
     # derive relations (or do on the spot while plotting?)

@@ -13,7 +13,7 @@ from io import BytesIO
 
 # IMPORT FUNCTION
 from derTables.plot_utils import plotRelNetworkGraph
-from derTables.createDerivationTables import createDerivationTables
+# from derTables.createDerivationTables import createDerivationTables
 
 st.set_page_config(layout="wide")
 
