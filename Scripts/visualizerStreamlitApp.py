@@ -177,7 +177,7 @@ crelColor = st.sidebar.text_input("Combinatorially Entailed Relation Color",
 
 
 radius = st.sidebar.slider('Arrow Radius',
-                           min_value = 0, max_value = .5, step = .01, value = .18,
+                           min_value = .0, max_value = .5, step = .01, value = .18,
                            help = "Determines curvature of lines between stimuli.")
     # #       "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
     # relArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
