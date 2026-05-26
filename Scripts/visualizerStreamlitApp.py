@@ -24,10 +24,11 @@ Visualize a relational network as a graph network.
 
 Users can specify:
 - baseline relations
-- optional derived relations (mutually entailed and combinatorially entailed relations)
+- optional derived relations (mutually entailed and combinatorially entailed relations, can also be automatically derived)
+
 
 Workflow:
-- Select the number of stimuli in the network
+- Select the number of stimuli in the network and give them desired labels
 - Select the relations to include in the network
 - Specify baseline relations (two stimuli connected by a relation you selected)
 
@@ -37,20 +38,22 @@ Workflow:
 
 # SIDEBAR
 
-st.sidebar.header("Network specification")
+st.sidebar.header("Network Specification")
 
 n_stim = st.sidebar.slider(
     "Number of stimuli",
     min_value=2,
     max_value=15,
-    value=0
+    value=0,
+    help = "Specify the number of stimuli in the relational network."
 )
 
 default_labels = [chr(65+i) for i in range(n_stim)]
 
 label_string = st.sidebar.text_input(
     "Stimulus labels (comma-separated)",
-    value=",".join(default_labels)
+    value=",".join(default_labels),
+    help = "Provide as many labels as the number of stimuli you want to include in the network, spearated by commas"
 )
 
 sLabs = [x.strip() for x in label_string.split(",")]
@@ -68,8 +71,10 @@ relation_options = [
 ]
 
 selected_relations = st.sidebar.multiselect(
-    "Relation type",
-    relation_options
+    "Relations",
+    relation_options,
+    help = "Select all relations you want to include in the network. \
+        You will be able to specify stimulus-pairs for each relation below."
 )
 
 st.sidebar.markdown("---")
@@ -84,7 +89,7 @@ if selected_relations and len(sLabs) == n_stim:
         st.sidebar.markdown(f"### {relation}")
 
         n_pairs = st.sidebar.number_input(
-            f"Number of stimulus pairs for '{relation}'",
+            f"Number of '{relation}' relations",
             min_value=0,
             max_value=50,
             value=1,
@@ -123,20 +128,22 @@ if selected_relations and len(sLabs) == n_stim:
 
 else:
     if not selected_relations:
-        st.sidebar.info("Select at least one relation type.")
+        st.sidebar.info("Select at least one relation type to include in the network.")
     if len(sLabs) != n_stim:
-        st.sidebar.info("Fix the stimulus labels before defining pairs.")
+        st.sidebar.info("Define the stimulus labels before defining pairs.")
 st.sidebar.markdown("---")
 
 plotRels = st.sidebar.multiselect(
     "Relations to display",
     ["baseline", "mutual", "combi"],
-    default=["baseline", "mutual", "combi"]
+    default=["baseline", "mutual", "combi"],
+    help = "Select which relations to plot. To create separate plots for baseline and derived network, first generate plot with only baseline, then with only derived relations."
 )
 
 plotTitle = st.sidebar.text_input(
     "Plot title",
-    value="Relational Network"
+    value="Relational Network",
+    help = "Specifiy the title for the plot, if any."
 )
 
 # GENERATE
