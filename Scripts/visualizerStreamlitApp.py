@@ -10,10 +10,15 @@ Streamlit app for relational network visualizer
 import streamlit as st
 import matplotlib.pyplot as plt
 from io import BytesIO
+import inspect
 
 # IMPORT FUNCTION
 from derTables.plot_utils import plotRelNetworkGraph
 # from derTables.createDerivationTables import createDerivationTables
+
+st.write("Function file:", inspect.getfile(plotRelNetworkGraph))
+st.write("Function signature:", inspect.signature(plotRelNetworkGraph))
+
 
 st.set_page_config(layout="wide")
 
