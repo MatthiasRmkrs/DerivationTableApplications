@@ -54,7 +54,6 @@ from derTables.utils_tables import (cleanRelationLabels, # helpers
                    completeRelations,
                    findGeneralRelations
     )
-from derTables.plot_utils import plotTablesHeatmap # plot function
 
 
 
@@ -277,6 +276,8 @@ def createDerivationTables(relations=None, *, plotTables=False):
                             else:
                                 combi[i][rel1, rel2] = -1
     if plotTables: # Plot derivation tables as heatmaps
+        from derTables.plot_utils import plotTablesHeatmap # plot function
+
         plotTablesHeatmap(cleanRelations, mutual, combi)
         # use clean input labels for plot
 
