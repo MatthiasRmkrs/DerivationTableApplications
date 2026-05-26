@@ -345,8 +345,13 @@ def findLabelPosition(x_start, x_end, y_start, y_end, radius, label_offset):
 
 
 
-def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None, 
-                        plotTitle = None):
+def plotRelNetworkGraph(baseline, 
+                        derived = None, 
+                        sLabs = None, 
+                        plotRels = None, 
+                        plotTitle = None, 
+                        layout = 'auto', 
+                        positions = None):
     
     """
     Plots a network of (baseline and derived) relations as a graph network
@@ -362,43 +367,25 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
         plotRels: list of str, which relations to include in plot
                 choose from 'baseline', 'mutual', 'combi'. Default is all types.
         plotTitle: optional str to serve as plot title.
+        layout: choose from: 
+                'auto': function creates network structure based on relations
+                'circle': circular polygon, good for small networks
+                'spring': 
+                'degree': for one-to-many or many-to-one, highly connecte stimuli central in network
+                'hierarchical': for ordered relations
+                'manual'
+                
         
     """
-    
-    # determine which plotting parameters to allow user to tweak?
-    
-    relations = cleanRelationLabels(list(baseline.keys()))
-    
+    # Plot parameteres    
     if plotRels is None:
         plotRels = ['baseline', 'mutual', 'combi']
-    # Do I need to input derived? Want user to also use it in stand-alone case
-    # so derive on the spot anyways, should produce same result anyway
-    
-
-    # plot parameteres
     
     relColor = 'black'
     mrelColor = '#0072B2' # mutually entailed relations
     crelColor = '#CC79A7' # combinatorially entailed relations
-    
-    # move to one param later?
-    legendCombi = False
-    legendBaseline = False # include in legend?
-    legendMutual = False
-    
     # accessible colors: '#0072B2', '#009E73', '#D55E00', '#CC79A7'
-    
-    # title (move down?)
-    if plotTitle == '' or plotTitle is None: 
-        if not 'mutual' in plotRels and 'combi' not in plotRels:
-            title = 'Trained Relational Network'
-        elif 'mutual' in plotRels and not 'combi' in plotRels:
-            title = 'Trained and Mutually Entailed Relational Network'
-        else:
-            title = 'Trained and Derived Relational Network'
-    else:
-        title = plotTitle
-        
+
     # graph parameters
     radius = .18 # Determines curvature of lines between stimuli, can tweak to make plot more readable
     # Between .15 and .3 seems to provide best results
@@ -414,6 +401,8 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
     protocol = 'OneToMany' # For one-to-many or many-to-one, the 'one' is plotted in the middle
     # Maybe better to let user specify circle or line?
     
+    # clean input relation labels    
+    relations = cleanRelationLabels(list(baseline.keys()))
     # should be loaded already, but in case not
     from derTables.createDerivationTables import createDerivationTables
     from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
@@ -521,17 +510,26 @@ def plotRelNetworkGraph(baseline, derived = None, sLabs = None, plotRels = None,
 
     
     legend_handles = []
-    if legendBaseline:
+    if 'baseline' in plotRels:
         legend_handles.append(Line2D([0],[0], color=relColor, linestyle='-', linewidth=5, label='Baseline'))
-    if legendMutual:
+    if 'mutual' in plotRels:
         legend_handles.append(Line2D([0],[0], color=mrelColor, linestyle=':', linewidth=5, label='Mutual'))
-    if legendCombi:
+    if 'combi' in plotRels:
         legend_handles.append(Line2D([0],[0], color=crelColor, linestyle='--', linewidth=5, label='Combinatorial'))
     if legend_handles:
         plt.legend(handles=legend_handles, loc='best', fontsize=50, frameon=False)
 
     # title
-    if plotTitle: plt.title(title, fontsize=72, fontweight = 'bold')
+    if plotTitle == '' or plotTitle is None: 
+        if not 'mutual' in plotRels and 'combi' not in plotRels:
+            title = 'Trained Relational Network'
+        elif 'mutual' in plotRels and not 'combi' in plotRels:
+            title = 'Trained and Mutually Entailed Relational Network'
+        else:
+            title = 'Trained and Derived Relational Network'
+    else:
+        title = plotTitle
+    plt.title(title, fontsize=72, fontweight = 'bold')
     
     # Ensure grid is not displayed
     plt.grid(False)

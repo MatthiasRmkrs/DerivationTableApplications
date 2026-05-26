@@ -131,7 +131,10 @@ else:
         st.sidebar.info("Select at least one relation type to include in the network.")
     if len(sLabs) != n_stim:
         st.sidebar.info("Define the stimulus labels before defining pairs.")
+        
+# Plot settings
 st.sidebar.markdown("---")
+st.sidebar.subheader("Plot Settings")
 
 plotRels = st.sidebar.multiselect(
     "Relations to display",
@@ -146,6 +149,45 @@ plotTitle = st.sidebar.text_input(
     help = "Specifiy the title for the plot, if any."
 )
 
+layout = st.sidebar.selectbox(
+    "Stimulus layout",
+    [
+        "auto",
+        "circle",
+        "spring",
+        "degree",
+        "hierarchical",
+        "manual"
+    ],
+    index=0,
+    help = "Determine the layout for the network. 'Auto' will adapt based on the specified network. \
+        'circle' draws network as a circular polygon, works well for small networks. 'spring' adapts\
+            based on network density (more connected stimuli centered).'degree' ..."
+)
+    
+relColor = st.sidebar.text_input("Baseline Relation Color",
+                                 value = 'black',
+                                 help = "Color of baseline relation arrows.")
+mrelColor = st.sidebar.color_picker("Mutually Entailed Relation Color", 
+                                  value = '#0072B2',
+                                  help = "Color of arrows for mutually entailed relations.")
+crelColor = st.sidebar.text_input("Combinatorially Entailed Relation Color",
+                                  value = '#CC79A7',
+                                  help = "Color of arrows for combinatorially entailed relations.")
+
+
+radius = st.Sidebar.slider('Arrow Radius',
+                           min_value = 0, max_value = .5, step = .01, value = .18,
+                           help = "Determines curvature of lines between stimuli.")
+    # #       "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
+    # relArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
+    # drelArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
+    # label_offset = .55 # Play around with how close labels are plotted to lines
+    # relLabelFontSize = 50
+    # sLabelFontSize = 60
+    # sDotSize = 100
+
+###########
 # GENERATE
 
 if st.button("Generate network graph"):
