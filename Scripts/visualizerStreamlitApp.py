@@ -187,7 +187,7 @@ fontSize = st.sidebar.slider('Fontsize',
                            min_value = 10, max_value = 100, step = 1, value = 60,
                            help = "Determines fontsize for relation and stimulus labels.")
 
-sDotSize = st.sidebar.slider('Fontsize',
+sDotSize = st.sidebar.slider('Stimulus Node Size',
                            min_value = 0, max_value = 150, step = 1, value = 100,
                            help = "Determines fontsize for relation and stimulus labels.")
 
@@ -205,6 +205,7 @@ if st.button("Generate network graph"):
             plotRels=plotRels,
             plotTitle=plotTitle,
             layout = layout,
+            includeDerivedInLayout = False,
             relColor = relColor,
             mrelColor= mrelColor,
             crelColor = crelColor,
