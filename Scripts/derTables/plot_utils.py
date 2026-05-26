@@ -33,6 +33,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyArrowPatch
 from matplotlib.lines import Line2D  # <— for legend proxies
+import networkx as nx # Graph network
 
 from derTables.utils_tables import (createRelationTable, 
                    countUniqueStimuli, 
@@ -341,9 +342,249 @@ def findLabelPosition(x_start, x_end, y_start, y_end, radius, label_offset):
     azimuth_x = mid_x - offset * np.cos(angle) *label_offset
     azimuth_y = mid_y - offset * np.sin(angle) *label_offset
     return azimuth_x, azimuth_y
+
+# %% Helpers for graph network plotter
+
+def build_layout_graph(baseline, sLabs, derived=None, include_derived=False):
+    """
+    Build a NetworkX directed graph from baseline and optionally derived relations.
+    Nodes are stimulus labels. Edges are directed relations.
+    """
+
+    G = nx.DiGraph()
+
+    for lab in sLabs:
+        G.add_node(lab)
+
+    for rel_name, rel_instances in baseline.items():
+        for i, j in rel_instances:
+            G.add_edge(
+                sLabs[i],
+                sLabs[j],
+                relation=rel_name,
+                kind="baseline"
+            )
+
+    if include_derived and derived is not None:
+        for rel_name, rel_instances in derived.items():
+            for i, j in rel_instances:
+                G.add_edge(
+                    sLabs[i],
+                    sLabs[j],
+                    relation=rel_name,
+                    kind="derived"
+                )
+
+    return G
+
+
+def degree_layout(G, scale=100):
+    """
+    Places the most connected node in the center and all other nodes around it.
+    Good for one-to-many and many-to-one networks.
+    """
+
+    if G.number_of_nodes() == 0:
+        return {}
+
+    degrees = dict(G.degree())
+    center_node = max(degrees, key=degrees.get)
+
+    other_nodes = [node for node in G.nodes if node != center_node]
+
+    pos = {
+        center_node: (0.0, 0.0)
+    }
+
+    n = len(other_nodes)
+
+    if n == 0:
+        return pos
+
+    for k, node in enumerate(other_nodes):
+        angle = 2 * np.pi * k / n
+        pos[node] = (
+            scale * np.cos(angle),
+            scale * np.sin(angle)
+        )
+
+    return pos
+
+
+def hierarchical_layout(G, scale=100):
+    """
+    Places nodes in directed layers.
+    Good for ordered or chain-like relations, such as:
+    A > B > C > D
+    """
+
+    try:
+        generations = list(nx.topological_generations(G))
+    except nx.NetworkXUnfeasible:
+        # Graph contains a cycle, so hierarchy is not well-defined.
+        return nx.spring_layout(G, scale=scale, seed=123)
+
+    pos = {}
+
+    for x_level, generation in enumerate(generations):
+        generation = list(generation)
+        n = len(generation)
+
+        for y_index, node in enumerate(generation):
+            y = y_index - (n - 1) / 2
+
+            pos[node] = (
+                x_level * scale,
+                -y * scale
+            )
+
+    return pos
+
+
+def normalize_positions(pos, scale=100, margin=50):
+    """
+    Converts any NetworkX-style position dictionary into positive plotting
+    coordinates with a margin around the graph.
+    """
+
+    if not pos:
+        return {}
+
+    xs = [xy[0] for xy in pos.values()]
+    ys = [xy[1] for xy in pos.values()]
+
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+
+    width = max(max_x - min_x, 1e-9)
+    height = max(max_y - min_y, 1e-9)
+
+    normalized = {}
+
+    for node, (x, y) in pos.items():
+        new_x = margin + ((x - min_x) / width) * scale
+        new_y = margin + ((y - min_y) / height) * scale
+
+        normalized[node] = (float(new_x), float(new_y))
+
+    return normalized
+
+
+def compute_stimulus_layout(
+    baseline,
+    sLabs,
+    derived=None,
+    layout="auto",
+    positions=None,
+    include_derived=False,
+    scale=1000,
+    margin=100
+):
+    """
+    Computes stimulus coordinates for plotting.
+
+    layout options:
+    - 'auto'
+    - 'circle'
+    - 'spring'
+    - 'degree'
+    - 'hierarchical'
+    - 'manual'
+    """
+
+    if sLabs is None:
+        raise ValueError("sLabs must be provided to compute stimulus layout.")
+
+    if layout == "manual":
+        if positions is None:
+            raise ValueError(
+                "layout='manual' requires a positions dictionary."
+            )
+
+        # Allow either:
+        # positions = {"A": (x, y), "B": (x, y)}
+        # or:
+        # positions = {0: (x, y), 1: (x, y)}
+        converted_positions = {}
+
+        for i, lab in enumerate(sLabs):
+            if lab in positions:
+                converted_positions[lab] = positions[lab]
+            elif i in positions:
+                converted_positions[lab] = positions[i]
+            else:
+                raise ValueError(
+                    f"No manual position provided for stimulus '{lab}'."
+                )
+
+        return converted_positions
+
+    G = build_layout_graph(
+        baseline=baseline,
+        sLabs=sLabs,
+        derived=derived,
+        include_derived=include_derived
+    )
+
+    n_stim = len(sLabs)
+
+    if layout == "auto":
+        degrees = dict(G.degree())
+        max_degree = max(degrees.values()) if degrees else 0
+        n_edges = G.number_of_edges()
+
+        density = nx.density(G.to_undirected()) if n_stim > 1 else 0
+
+        is_chain_like = (
+            n_edges >= max(n_stim - 1, 1)
+            and sum(d <= 2 for d in degrees.values()) >= max(n_stim - 1, 1)
+        )
+
+        has_hub = max_degree >= max(3, n_stim // 2)
+
+        if n_stim <= 5:
+            selected_layout = "circle"
+        elif has_hub:
+            selected_layout = "degree"
+        elif is_chain_like:
+            selected_layout = "hierarchical"
+        elif density > 0.35:
+            selected_layout = "spring"
+        else:
+            selected_layout = "spring"
+
+    else:
+        selected_layout = layout
+
+    if selected_layout == "circle":
+        pos = nx.circular_layout(G, scale=scale)
+
+    elif selected_layout == "spring":
+        pos = nx.spring_layout(
+            G,
+            scale=scale,
+            seed=123
+        )
+
+    elif selected_layout == "degree":
+        pos = degree_layout(G, scale=scale)
+
+    elif selected_layout == "hierarchical":
+        pos = hierarchical_layout(G, scale=scale)
+
+    else:
+        raise ValueError(
+            f"Unknown layout '{layout}'. "
+            "Choose from 'auto', 'circle', 'spring', 'degree', "
+            "'hierarchical', or 'manual'."
+        )
+
+    return normalize_positions(
+        pos,
+        scale=scale,
+        margin=margin
+    )
 # %% Plot relational network as graph network
-
-
 
 def plotRelNetworkGraph(baseline, 
                         derived = None, 
@@ -351,7 +592,16 @@ def plotRelNetworkGraph(baseline,
                         plotRels = None, 
                         plotTitle = None, 
                         layout = 'auto', 
-                        positions = None):
+                        positions = None,
+                        includeDerivedInLayout = False,
+                        relColor = 'black',
+                        mrelColor = '#0072B2',
+                        crelColor = '#CC79A7',
+                        radius = .18,
+                        label_offset = .55,
+                        fontSize = 50,
+                        sDotSize = 100
+                        ):
     
     """
     Plots a network of (baseline and derived) relations as a graph network
@@ -381,53 +631,70 @@ def plotRelNetworkGraph(baseline,
     if plotRels is None:
         plotRels = ['baseline', 'mutual', 'combi']
     
-    relColor = 'black'
-    mrelColor = '#0072B2' # mutually entailed relations
-    crelColor = '#CC79A7' # combinatorially entailed relations
+    # relColor = 'black'
+    # mrelColor = '#0072B2' # mutually entailed relations
+    # crelColor = '#CC79A7' # combinatorially entailed relations
     # accessible colors: '#0072B2', '#009E73', '#D55E00', '#CC79A7'
 
     # graph parameters
-    radius = .18 # Determines curvature of lines between stimuli, can tweak to make plot more readable
+    # radius = .18 # Determines curvature of lines between stimuli, can tweak to make plot more readable
     # Between .15 and .3 seems to provide best results
     #       "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
     relArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
     drelArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
-    label_offset = .55 # Play around with how close labels are plotted to lines
-    relLabelFontSize = 50
-    sLabelFontSize = 60
-    sDotSize = 100
+    # label_offset = .55 # Play around with how close labels are plotted to lines
+    relLabelFontSize = fontSize
+    sLabelFontSize = fontSize
+    # sDotSize = 100
 
-    # Specify training protocol
-    protocol = 'OneToMany' # For one-to-many or many-to-one, the 'one' is plotted in the middle
-    # Maybe better to let user specify circle or line?
-    
-    # clean input relation labels    
-    relations = cleanRelationLabels(list(baseline.keys()))
+    # create derivation tables and derive from baseline if needed
+    relations = cleanRelationLabels(list(baseline.keys()))  # clean input relation labels 
     # should be loaded already, but in case not
     from derTables.createDerivationTables import createDerivationTables
     from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
-    # create derivation tables
-    mutual, combi, relations = createDerivationTables(list(baseline.keys()))
+    
+    if derived is None:
+        mutual, combi, relations = createDerivationTables(list(baseline.keys()))
     # derive relations (or do on the spot while plotting?)
     relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
     
-    n_stim = countUniqueStimuli(baseline)
-
-    vertices = []    
-    vertices = polygon_coords(n_stim, protocol)
-
+    
+    # Determine stimulus positions in graph
+    n_stim = len(sLabs)
+    
+    layout_positions = compute_stimulus_layout(
+        baseline=baseline,
+        derived=derived,
+        sLabs=sLabs,
+        layout=layout,
+        positions=positions,
+        include_derived=includeDerivedInLayout,
+        scale=max(700, n_stim * 150),
+        margin=150
+    )
+    
     # Create a Cartesian grid plot without showing the grid
-    figsize = (25,25) # make dependent on n_nodes?
-    plt.figure(figsize=figsize)  # Set figure size
-    plt.plot([], [])  # Create an empty plot (optional for axes setup)
-    plt.xlim(0,  n_stim*100)  # Set x-axis range
-    plt.ylim(0,  n_stim*100)  # Set y-axis range
-
-    # Intitialize to ensure network is constructed the same for baseline/derived
-    plottedS = dict({}) # init empty dict to avoid double-plotting
-    for i in range(n_stim):
-        plottedS[sLabs[i]] =  [vertices[len(plottedS.keys())]]
-    plottedRels = dict({}) # init empty dict to avoid double-plotting
+    figsize = (25, 25)
+    plt.figure(figsize=figsize)
+    plt.plot([], [])
+    
+    # Use dynamic plot limits based on computed coordinates
+    xs = [xy[0] for xy in layout_positions.values()]
+    ys = [xy[1] for xy in layout_positions.values()]
+    
+    x_margin = max(100, (max(xs) - min(xs)) * 0.15)
+    y_margin = max(100, (max(ys) - min(ys)) * 0.15)
+    
+    plt.xlim(min(xs) - x_margin, max(xs) + x_margin)
+    plt.ylim(min(ys) - y_margin, max(ys) + y_margin)
+    
+    # Initialize to ensure network is constructed the same for baseline/derived
+    plottedS = {
+        lab: [layout_positions[lab]]
+        for lab in sLabs
+    }
+    
+    plottedRels = dict({})
 
     if 'baseline' in plotRels:
         # Loop through baseline relations

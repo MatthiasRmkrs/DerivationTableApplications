@@ -162,30 +162,35 @@ layout = st.sidebar.selectbox(
     index=0,
     help = "Determine the layout for the network. 'Auto' will adapt based on the specified network. \
         'circle' draws network as a circular polygon, works well for small networks. 'spring' adapts\
-            based on network density (more connected stimuli centered).'degree' ..."
+            based on network density (more connected stimuli near each other, network spread out to avoid overlap). \
+                'degree' places highly connected nodes in centre. 'Hierarchical' orders node on a directed line."
 )
     
-relColor = st.sidebar.text_input("Baseline Relation Color",
-                                 value = 'black',
+relColor = st.sidebar.color_picker("Baseline Relation Color",
+                                   value = '#000000',
                                  help = "Color of baseline relation arrows.")
 mrelColor = st.sidebar.color_picker("Mutually Entailed Relation Color", 
                                   value = '#0072B2',
                                   help = "Color of arrows for mutually entailed relations.")
-crelColor = st.sidebar.text_input("Combinatorially Entailed Relation Color",
+crelColor = st.sidebar.color_picker("Combinatorially Entailed Relation Color",
                                   value = '#CC79A7',
                                   help = "Color of arrows for combinatorially entailed relations.")
-
 
 radius = st.sidebar.slider('Arrow Radius',
                            min_value = .0, max_value = .5, step = .01, value = .18,
                            help = "Determines curvature of lines between stimuli.")
-    # #       "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
-    # relArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
-    # drelArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
-    # label_offset = .55 # Play around with how close labels are plotted to lines
-    # relLabelFontSize = 50
-    # sLabelFontSize = 60
-    # sDotSize = 100
+label_offset = st.sidebar.slider('Relation Label Offset',
+                           min_value = .0, max_value = 1.0, step = .01, value = .55,
+                           help = "Determines offset of label relative to arrows.")
+
+fontSize = st.sidebar.slider('Fontsize',
+                           min_value = 10, max_value = 100, step = 1, value = 60,
+                           help = "Determines fontsize for relation and stimulus labels.")
+
+sDotSize = st.sidebar.slider('Fontsize',
+                           min_value = 0, max_value = 150, step = 1, value = 100,
+                           help = "Determines fontsize for relation and stimulus labels.")
+
 
 ###########
 # GENERATE
@@ -198,7 +203,15 @@ if st.button("Generate network graph"):
             baseline=baseline,
             sLabs=sLabs,
             plotRels=plotRels,
-            plotTitle=plotTitle
+            plotTitle=plotTitle,
+            layout = layout,
+            relColor = relColor,
+            mrelColor= mrelColor,
+            crelColor = crelColor,
+            radius = radius,
+            label_offset= label_offset,
+            fontSize = fontSize,
+            sDotSize = sDotSize
         )
 
         st.pyplot(plt.gcf())
