@@ -21,17 +21,17 @@ st.set_page_config(layout="wide")
 st.title("Relational Network Graph Visualizer")
 
 st.markdown("""
-Visualize a relational network as a graph network.
+Visualize a relational network of your choosing as a graph network.
 
-Users can specify:
-- baseline relations
-- optional derived relations (mutually entailed and combinatorially entailed relations, can also be automatically derived)
+Simplest use-case is for users to specify a set of baseline relations, the function 
+will then automatically compute all relations that can be derived from those baseline 
+relations, and plot the full network as a labeled graph network.
 
+Users can optionally choose to specify the derived relations as well, instead of
+automatically deriving all relations.
 
-Workflow:
-- Select the number of stimuli in the network and give them desired labels
-- Select the relations to include in the network
-- Specify baseline relations (two stimuli connected by a relation you selected)
+Users can specify the layout of the network (circular, degree-based, linear, etc.)
+and tweak various other plot settings (colors, labels, ...).
 
 
 """)
@@ -140,8 +140,8 @@ manual_derived = st.sidebar.checkbox(
     "Manually define derived relations",
     value=False,
     help=(
-        "If selected, manually specify derived relations. "
-        "If not selected, derived relations will be computed automatically "
+        "Check this box to manually specify derived relations (similar to baseline above)."
+        "If not checked, derived relations will be computed automatically "
         "from the baseline relations."
     )
 )
@@ -214,6 +214,7 @@ if manual_derived:
 st.sidebar.markdown("---")
 st.sidebar.subheader("Plot Settings")
 
+
 plotRels = st.sidebar.multiselect(
     "Relations to display",
     ["baseline", "mutual", "combi"],
@@ -270,6 +271,29 @@ sDotSize = st.sidebar.slider('Stimulus Node Size',
                            help = "Determines fontsize for relation and stimulus labels.")
 
 
+# INFORMATION
+
+with st.expander("What do the relation types mean?"):
+
+    st.markdown("""
+- **baseline** → directly trained relations  
+- **mutual** → mutually entailed relations  
+- **combi** → combinatorially entailed relations  
+""")
+
+with st.expander("Example"):
+
+    st.markdown("""
+Example baseline:
+
+- A more than B
+- B more than C
+
+Derived:
+- A more than C (combinatorial)
+- B less than A (mutual)
+""")
+
 ###########
 # GENERATE
 
@@ -312,25 +336,3 @@ if st.button("Generate network graph"):
     except Exception as e:
         st.error(f"Error: {e}")
 
-# INFORMATION
-
-with st.expander("What do the relation types mean?"):
-
-    st.markdown("""
-- **baseline** → directly trained relations  
-- **mutual** → mutually entailed relations  
-- **combi** → combinatorially entailed relations  
-""")
-
-with st.expander("Example"):
-
-    st.markdown("""
-Example baseline:
-
-- A more than B
-- B more than C
-
-Derived:
-- A more than C (combinatorial)
-- B less than A (mutual)
-""")
