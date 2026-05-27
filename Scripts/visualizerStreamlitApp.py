@@ -14,10 +14,6 @@ import inspect
 
 # IMPORT FUNCTION
 from derTables.plot_utils import plotRelNetworkGraph
-# from derTables.createDerivationTables import createDerivationTables
-
-st.write("Function file:", inspect.getfile(plotRelNetworkGraph))
-st.write("Function signature:", inspect.signature(plotRelNetworkGraph))
 
 
 st.set_page_config(layout="wide")
@@ -136,6 +132,83 @@ else:
         st.sidebar.info("Select at least one relation type to include in the network.")
     if len(sLabs) != n_stim:
         st.sidebar.info("Define the stimulus labels before defining pairs.")
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Derived relations")
+
+manual_derived = st.sidebar.checkbox(
+    "Manually define derived relations",
+    value=False,
+    help=(
+        "If selected, manually specify derived relations. "
+        "If not selected, derived relations will be computed automatically "
+        "from the baseline relations."
+    )
+)
+
+derived = None
+
+if manual_derived:
+
+    derived = {}
+
+    derived_relations = st.sidebar.multiselect(
+        "Derived relation types",
+        relation_options,
+        default=[],
+        help="Select which relation types occur as derived relations."
+    )
+
+    if derived_relations and len(sLabs) == n_stim:
+
+        for relation in derived_relations:
+
+            st.sidebar.markdown(f"### Derived: {relation}")
+
+            n_derived_pairs = st.sidebar.number_input(
+                f"Number of derived stimulus pairs for '{relation}'",
+                min_value=0,
+                max_value=100,
+                value=1,
+                step=1,
+                key=f"n_derived_pairs_{relation}"
+            )
+
+            derived_pairs = []
+
+            for i in range(n_derived_pairs):
+
+                c1, c2 = st.sidebar.columns(2)
+
+                with c1:
+                    s1 = st.selectbox(
+                        f"Derived {relation}: source {i + 1}",
+                        sLabs,
+                        key=f"derived_{relation}_s1_{i}"
+                    )
+
+                with c2:
+                    default_target_index = min(i + 1, len(sLabs) - 1)
+
+                    s2 = st.selectbox(
+                        f"Derived {relation}: target {i + 1}",
+                        sLabs,
+                        index=default_target_index,
+                        key=f"derived_{relation}_s2_{i}"
+                    )
+
+                derived_pairs.append(
+                    (sLabs.index(s1), sLabs.index(s2))
+                )
+
+            derived[relation] = derived_pairs
+
+    else:
+        if not derived_relations:
+            st.sidebar.info("Select at least one derived relation type.")
+        if len(sLabs) != n_stim:
+            st.sidebar.info("Fix the stimulus labels before defining derived pairs.")
+        
         
 # Plot settings
 st.sidebar.markdown("---")
