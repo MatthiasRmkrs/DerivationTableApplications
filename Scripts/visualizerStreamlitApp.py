@@ -21,7 +21,7 @@ st.set_page_config(layout="wide")
 st.title("Relational Network Graph Visualizer")
 
 st.markdown("""
-Visualize a relational network of your choosing as a graph network.
+This app helps you visualize a relational network of your choosing as a directed graph network.
 
 Simplest use-case is for users to specify a set of baseline relations, the function 
 will then automatically compute all relations that can be derived from those baseline 
@@ -33,6 +33,7 @@ automatically deriving all relations.
 Users can specify the layout of the network (circular, degree-based, linear, etc.)
 and tweak various other plot settings (colors, labels, ...).
 
+Hover over the question marks in the sidebar for more information.
 
 """)
 
@@ -273,25 +274,27 @@ sDotSize = st.sidebar.slider('Stimulus Node Size',
 
 # INFORMATION
 
-with st.expander("What do the relation types mean?"):
+with st.expander("How to use the function?"):
 
     st.markdown("""
-- **baseline** → directly trained relations  
-- **mutual** → mutually entailed relations  
-- **combi** → combinatorially entailed relations  
+- Specify the number of stimuli in the network, their labels and the types of relations in the network
+- Specify the number of instances of each relation and specify which stimuli are related (optionally also define derived relations in same way)
+- Specify the layout you want for the network (circular, degree-based, hierarchical, ...), which relations to plot and other plot settings.
+- Press the 'Generate Network Graph' to create the plot and download it. 
 """)
 
-with st.expander("Example"):
+with st.expander("Example use"):
 
     st.markdown("""
-Example baseline:
+Say we wanted to illustrate a basic version of the relational network trained in the seminal Steele and Hayes (1991) study.
+The basic network involved seven stimuli arranged in a one-to-many protocol, so select 7 stimuli and give them labels A1, B1, B2, B3, C1, C2, C3.
+Steele and Hayes trained sameness, difference and opposition relations, so select those.
 
-- A more than B
-- B more than C
+Then, we specify two sameness relations (A1-B1 and A1-C1), two difference relations (A1-B2 and A1-C2) and two opposition relations (A1-B3 and A1-C3).
 
-Derived:
-- A more than C (combinatorial)
-- B less than A (mutual)
+If no derived relations are specified, the function will comoute all possible derived relations from baseline network and plot them.
+
+Given the one-to-many structure, let's choose a degree-based layout and create a separate plot for the baseline (only 'baseline' in relations to display) and derived relations ('mutual' and 'combi' in relations to display).
 """)
 
 ###########
