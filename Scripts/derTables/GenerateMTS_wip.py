@@ -51,8 +51,8 @@ TODO - Function would ideally allow to:
 
 import numpy as np
 import pdb
-from deriveRelationsFromBaseline import deriveRelationsFromBaseline
-from derivationTablesFromSourceRelations import derivationTablesFromSourceRelations
+from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
+from derTables.createDerivationTables import createDerivationTables
 
 #%% Generate MTS function workflow
 # Create random trials based on set of baseline relations and task parameters
@@ -180,7 +180,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
     
     relations = dict({}) # Create relations dict (for creating and indexing tables)
     for i in range(len(baseline.keys())): relations[list(baseline.keys())[i]] = i   
-    mutual, combi = derivationTablesFromSourceRelations(relations)
+    mutual, combi, cleanRelations = createDerivationTables(relations)
     # First create all unique trials (i.e., different configurations of comparison stimuli)
     unique_scs = [] # init to store unique baseline relations
     unique_cmps = dict() # init to store unique comparison sets

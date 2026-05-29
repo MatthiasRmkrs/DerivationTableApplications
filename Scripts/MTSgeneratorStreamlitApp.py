@@ -12,24 +12,20 @@ import ast
 
 from derTables.GenerateMTS_wip import generateTrials
 
-# =========================================================
-# PAGE CONFIG
-# =========================================================
+
 
 st.set_page_config(
     page_title="MTS Trial Generator",
     layout="wide"
 )
 
-# =========================================================
-# TITLE
-# =========================================================
+# INFO
 
 st.title("MTS Trial Generator")
 
 st.markdown("""
 Generate matching-to-sample (MTS) training and testing trials
-from relational networks.
+for user-specified relational networks.
 
 This app allows you to:
 - define baseline relations
@@ -38,32 +34,218 @@ This app allows you to:
 - preview/export generated tasks
 """)
 
-# =========================================================
 # SIDEBAR — GENERAL SETTINGS
-# =========================================================
 
-st.sidebar.header("General settings")
+st.sidebar.header("Network Specification")
 
-preset = st.sidebar.selectbox(
-    "Preset",
-    ["Manual", "SH91", "TransitiveInference"],
-    help="Use predefined relational structures or specify your own manually."
+use_preset = st.sidebar.checkbox(
+    "Relational Network Preset",
+    value=False,
+    help=(
+        "Check this box if you want to use a preset relational network to create the MTS procedure for"
+        "If not checked, you will have to manually specify the network"
+        "Currently supported presets are the Steele and Hayes (1991) procedure and a typical transitive inference task (but more will be added)."
+    )
 )
 
+if use_preset:
+    preset = st.sidebar.selectbox(
+        "Preset",
+        ["SH91", "TransitiveInference"],
+        help="Use predefined relational structures or specify your own manually."
+    )
+else: 
+    preset = "manual"
+
+
+if preset == "manual":
+    
+    n_stim = st.sidebar.slider(
+        "Number of stimuli",
+        min_value=2,
+        max_value=15,
+        value=0,
+        help = "Specify the number of stimuli in the relational network."
+    )
+    
+    default_labels = [chr(65+i) for i in range(n_stim)]
+    
+    label_string = st.sidebar.text_input(
+        "Stimulus labels (comma-separated)",
+        value=",".join(default_labels),
+        help = "Provide as many labels as the number of stimuli you want to include in the network, spearated by commas"
+    )
+    
+    sLabs = [x.strip() for x in label_string.split(",")]
+    
+    relation_options = [
+        "Same as",
+        "Different from",
+        "Opposite to",
+        "More than",
+        "Less than",
+        "Before",
+        "After",
+        "Contains",
+        "Is part of"
+    ]
+    
+    selected_relations = st.sidebar.multiselect(
+        "Relations",
+        relation_options,
+        help = "Select all relations you want to include in the network. \
+            You will be able to specify stimulus-pairs for each relation below."
+    )
+    
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("Baseline relations")
+    
+    baseline = {}
+    
+    if selected_relations and len(sLabs) == n_stim:
+    
+        for relation in selected_relations:
+    
+            st.sidebar.markdown(f"### {relation}")
+    
+            n_pairs = st.sidebar.number_input(
+                f"Number of '{relation}' relations",
+                min_value=0,
+                max_value=50,
+                value=1,
+                step=1,
+                key=f"n_pairs_{relation}"
+            )
+    
+            relation_pairs = []
+    
+            for i in range(n_pairs):
+    
+                c1, c2 = st.sidebar.columns(2)
+    
+                with c1:
+                    s1 = st.selectbox(
+                        f"{relation}: source {i + 1}",
+                        sLabs,
+                        key=f"{relation}_s1_{i}"
+                    )
+    
+                with c2:
+                    default_target_index = min(i + 1, len(sLabs) - 1)
+    
+                    s2 = st.selectbox(
+                        f"{relation}: target {i + 1}",
+                        sLabs,
+                        index=default_target_index,
+                        key=f"{relation}_s2_{i}"
+                    )
+    
+                relation_pairs.append(
+                    (sLabs.index(s1), sLabs.index(s2))
+                )
+    
+            baseline[relation] = relation_pairs
+    
+    else:
+        if not selected_relations:
+            st.sidebar.info("Select at least one relation type to include in the network.")
+        if len(sLabs) != n_stim:
+            st.sidebar.info("Define the stimulus labels before defining pairs.")
+    
+    st.sidebar.markdown("---")
+    st.sidebar.subheader("Derived relations")
+    
+    manual_derived = st.sidebar.checkbox(
+        "Manually define derived relations",
+        value=False,
+        help=(
+            "Check this box to manually specify derived relations (similar to baseline above)."
+            "If not checked, derived relations will be computed automatically "
+            "from the baseline relations."
+        )
+    )
+    
+    derived = None
+    
+    if manual_derived:
+    
+        derived = {}
+    
+        derived_relations = st.sidebar.multiselect(
+            "Derived relation types",
+            relation_options,
+            default=[],
+            help="Select which relation types occur as derived relations."
+        )
+    
+        if derived_relations and len(sLabs) == n_stim:
+    
+            for relation in derived_relations:
+    
+                st.sidebar.markdown(f"### Derived: {relation}")
+    
+                n_derived_pairs = st.sidebar.number_input(
+                    f"Number of derived stimulus pairs for '{relation}'",
+                    min_value=0,
+                    max_value=100,
+                    value=1,
+                    step=1,
+                    key=f"n_derived_pairs_{relation}"
+                )
+    
+                derived_pairs = []
+    
+                for i in range(n_derived_pairs):
+    
+                    c1, c2 = st.sidebar.columns(2)
+    
+                    with c1:
+                        s1 = st.selectbox(
+                            f"Derived {relation}: source {i + 1}",
+                            sLabs,
+                            key=f"derived_{relation}_s1_{i}"
+                        )
+    
+                    with c2:
+                        default_target_index = min(i + 1, len(sLabs) - 1)
+    
+                        s2 = st.selectbox(
+                            f"Derived {relation}: target {i + 1}",
+                            sLabs,
+                            index=default_target_index,
+                            key=f"derived_{relation}_s2_{i}"
+                        )
+    
+                    derived_pairs.append(
+                        (sLabs.index(s1), sLabs.index(s2))
+                    )
+    
+                derived[relation] = derived_pairs
+    
+        else:
+            if not derived_relations:
+                st.sidebar.info("Select at least one derived relation type.")
+            if len(sLabs) != n_stim:
+                st.sidebar.info("Fix the stimulus labels before defining derived pairs.")
+            
+
+st.sidebar.markdown("---")
+st.sidebar.subheader("Procedure Settings")
+
 n_baseline = st.sidebar.number_input(
-    "Baseline repetitions",
+    "Baseline Trial Repetitions",
     min_value=1,
     max_value=100,
-    value=2,
-    help="Number of repetitions for each baseline trial."
+    value=10,
+    help="Number times each baseline trial is repeated."
 )
 
 n_test = st.sidebar.number_input(
-    "Test repetitions",
+    "Test Trial Repetitions",
     min_value=1,
     max_value=100,
-    value=2,
-    help="Number of repetitions for each derived/test trial."
+    value=1,
+    help="Number of repetitions for each derived relational responding/test trial."
 )
 
 n_comp = st.sidebar.selectbox(
@@ -72,137 +254,6 @@ n_comp = st.sidebar.selectbox(
     index=1,
     help="Number of comparison options shown on each trial."
 )
-
-# =========================================================
-# STIMULUS SETTINGS
-# =========================================================
-
-st.sidebar.header("Stimulus settings")
-
-n_stim = st.sidebar.slider(
-    "Number of stimuli",
-    min_value=2,
-    max_value=20,
-    value=5
-)
-
-default_labels = [chr(65+i) for i in range(n_stim)]
-
-label_string = st.sidebar.text_input(
-    "Stimulus labels (comma-separated)",
-    value=",".join(default_labels)
-)
-
-sLabs = [x.strip() for x in label_string.split(",")]
-
-# =========================================================
-# BASELINE RELATIONS
-# =========================================================
-
-st.sidebar.header("Baseline relations")
-
-relation_options = [
-    "Same as",
-    "Different from",
-    "Opposite to",
-    "More Than",
-    "Less Than"
-]
-
-n_relations = st.sidebar.number_input(
-    "Number of relation types",
-    min_value=1,
-    max_value=10,
-    value=1
-)
-
-baseline = {}
-
-for r in range(n_relations):
-
-    st.sidebar.markdown(f"### Relation set {r+1}")
-
-    rel_type = st.sidebar.selectbox(
-        f"Relation type {r+1}",
-        relation_options,
-        key=f"reltype_{r}"
-    )
-
-    n_pairs = st.sidebar.number_input(
-        f"Number of pairs for {rel_type}",
-        min_value=1,
-        max_value=30,
-        value=2,
-        key=f"npairs_{r}"
-    )
-
-    rel_pairs = []
-
-    for i in range(n_pairs):
-
-        c1, c2 = st.sidebar.columns(2)
-
-        with c1:
-
-            s1 = st.selectbox(
-                f"Source {r}_{i}",
-                sLabs,
-                key=f"s1_{r}_{i}"
-            )
-
-        with c2:
-
-            s2 = st.selectbox(
-                f"Target {r}_{i}",
-                sLabs,
-                index=min(i+1, len(sLabs)-1),
-                key=f"s2_{r}_{i}"
-            )
-
-        rel_pairs.append(
-            (sLabs.index(s1), sLabs.index(s2))
-        )
-
-    baseline[rel_type] = rel_pairs
-
-# =========================================================
-# OPTIONAL DERIVED DICTIONARY
-# =========================================================
-
-st.sidebar.header("Derived relations")
-
-derived_mode = st.sidebar.selectbox(
-    "Derived relation mode",
-    ["Auto-compute", "Manual dictionary"]
-)
-
-derived = None
-
-if derived_mode == "Manual dictionary":
-
-    st.sidebar.markdown("""
-Example:
-
-{
-    "Same as": [(1,0)],
-    "Opposite to": [(2,3)]
-}
-""")
-
-    derived_text = st.sidebar.text_area(
-        "Derived dictionary",
-        height=200
-    )
-
-    if derived_text.strip():
-
-        try:
-
-            derived = ast.literal_eval(derived_text)
-
-        except Exception:
-
-            st.sidebar.error("Could not parse dictionary.")
 
 # =========================================================
 # SHOW CURRENT CONFIGURATION
