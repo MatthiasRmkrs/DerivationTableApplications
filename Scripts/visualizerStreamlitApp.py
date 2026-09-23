@@ -356,7 +356,7 @@ if st.button("Generate network graph"):
             plotTitle=plotTitle,
             layout = layout,
             includeDerivedInLayout = False,
-            relColor = relation_colors,
+            relation_colors = relation_colors,
             labels = labels,
             radius = radius,
             label_offset= label_offset,
