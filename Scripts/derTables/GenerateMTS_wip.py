@@ -108,7 +108,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                         
         #     # Also by default pick first stim in list as sample 
         #     o2m_Samp = s_mp[0]    
-        case 'SH91': # Steele & Hayes set-up
+        case 'Steele&Hayes91': # Steele & Hayes set-up
             # Predefined relations/trials
             sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'N1', 'N2']
             allRels = ["Same", "Different", "Opposite"] # To be continued
@@ -158,7 +158,16 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                                                       printRels, n_stim, sLabs)
             elif derived == 'nonAdjacent':
                 derived = dict({'More Than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
-            
+        case '2-class equivalence':
+            baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
+                                    (4,5), (4,6), (4,7)    # class 2
+                                    ]}
+            # to be added
+        case '3-class equivalence':
+            baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
+                                    (4,5), (4,6), (4,7)    # class 2
+                                    (8, 9), (8, 10), (8,11) # class 3
+                                    ]}
     # initialize dicts for storing trial info
     nt_b, nt_t = 0,0
     for i in baseline.keys():
@@ -178,9 +187,11 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                      'label': np.empty(nt_b + nt_t, dtype=object),
                      "type": np.empty(nt_b + nt_t, dtype=object)}
     
+    # create derivation tables
     relations = dict({}) # Create relations dict (for creating and indexing tables)
     for i in range(len(baseline.keys())): relations[list(baseline.keys())[i]] = i   
     mutual, combi, cleanRelations = createDerivationTables(relations)
+    
     # First create all unique trials (i.e., different configurations of comparison stimuli)
     unique_scs = [] # init to store unique baseline relations
     unique_cmps = dict() # init to store unique comparison sets

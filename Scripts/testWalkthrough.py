@@ -9,11 +9,12 @@ Test walkthrough of derivation table functions
 """
 
 # dependencies
-from createDerivationTables import createDerivationTables
-from deriveRelationsFromBaseline import deriveRelationsFromBaseline
-from utils import *
-from plot_utils import *
-
+from derTables.createDerivationTables import createDerivationTables
+from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
+from derTables.utils_syllogisms import *
+from derTables.plot_utils import *
+from derTables.utils_tables import *
+from derTables.utils_deictics import *
 
 # %% create default derivation tables or specific for user-input list
 

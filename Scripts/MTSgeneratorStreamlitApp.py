@@ -42,8 +42,8 @@ use_preset = st.sidebar.checkbox(
     "Relational Network Preset",
     value=False,
     help=(
-        "Check this box if you want to use a preset relational network to create the MTS procedure for"
-        "If not checked, you will have to manually specify the network"
+        "Check this box if you want to use a preset relational network to create the MTS procedure for. "
+        "If not checked, you will have to manually specify the network. "
         "Currently supported presets are the Steele and Hayes (1991) procedure and a typical transitive inference task (but more will be added)."
     )
 )
@@ -51,7 +51,7 @@ use_preset = st.sidebar.checkbox(
 if use_preset:
     preset = st.sidebar.selectbox(
         "Preset",
-        ["SH91", "TransitiveInference"],
+        ["Steele&Hayes91", "TransitiveInference"],
         help="Use predefined relational structures or specify your own manually."
     )
 else: 
@@ -255,19 +255,6 @@ n_comp = st.sidebar.selectbox(
     help="Number of comparison options shown on each trial."
 )
 
-# =========================================================
-# SHOW CURRENT CONFIGURATION
-# =========================================================
-
-with st.expander("Current baseline dictionary"):
-
-    st.json(baseline)
-
-if derived is not None:
-
-    with st.expander("Current derived dictionary"):
-
-        st.json(derived)
 
 # =========================================================
 # GENERATE BUTTON

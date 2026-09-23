@@ -143,9 +143,9 @@ def plotTablesHeatmap(relations, mutual, combi):
     ax.set_title('Mutual Entailment for User Input', fontsize=14, fontweight='bold')
     ax.set_ylabel('Input Relation AxB', fontsize=12, fontweight='bold')
     ax.set_xlabel('Mutually Entailed Relation BxA', fontsize=12, fontweight='bold')
-    
+    ax.set_xticks([])
     # Adjust x and y ticks
-    plt.xticks(rotation=45, ha='right', fontsize=10, fontweight='bold')
+    # plt.xticks(rotation=45, ha='right', fontsize=10, fontweight='bold')
     plt.yticks(rotation=0, fontsize=10, fontweight='bold')
     
     plt.tight_layout()
@@ -594,13 +594,13 @@ def plotRelNetworkGraph(baseline,
                         layout = 'auto', 
                         positions = None,
                         includeDerivedInLayout = False,
-                        relColor = 'black',
-                        mrelColor = '#0072B2',
-                        crelColor = '#CC79A7',
+                        relation_colors = None,
+                        labels = False,
                         radius = .18,
                         label_offset = .55,
                         fontSize = 50,
-                        sDotSize = 100
+                        sDotSize = 100,
+                        legend = None,
                         ):
     
     """
@@ -631,17 +631,24 @@ def plotRelNetworkGraph(baseline,
     if plotRels is None:
         plotRels = ['baseline', 'mutual', 'combi']
     
-    # relColor = 'black'
+
+    if legend is None:
+        legend = ["Relation type", "Relation colors"]
+    
+    
     # mrelColor = '#0072B2' # mutually entailed relations
     # crelColor = '#CC79A7' # combinatorially entailed relations
-    # accessible colors: '#0072B2', '#009E73', '#D55E00', '#CC79A7'
+    # accessible colors: 
 
     # graph parameters
     # radius = .18 # Determines curvature of lines between stimuli, can tweak to make plot more readable
     # Between .15 and .3 seems to provide best results
     #       "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
-    relArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
-    drelArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
+    # relArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
+    # drelArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
+    relArrowStyle = "-|>"
+    drelArrowStyle = "-|>"
+    
     # label_offset = .55 # Play around with how close labels are plotted to lines
     relLabelFontSize = fontSize
     sLabelFontSize = fontSize
@@ -650,15 +657,46 @@ def plotRelNetworkGraph(baseline,
     # create derivation tables and derive from baseline if needed
     relations = cleanRelationLabels(list(baseline.keys()))  # clean input relation labels 
     # should be loaded already, but in case not
+    
+    
     from derTables.createDerivationTables import createDerivationTables
     from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
     
-    if derived is None:
-        mutual, combi, relations = createDerivationTables(list(baseline.keys()))
+    mutual, combi, relations = createDerivationTables(list(baseline.keys()))
     # derive relations (or do on the spot while plotting?)
     relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
     
+    default_relation_colors = [
+        "#E69F00",  # orange
+        "#56B4E9",  # sky blue
+        "#009E73",  # bluish green
+        "#F0E442",  # yellow
+        "#0072B2",  # blue
+        "#D55E00",  # vermillion
+        "#CC79A7",  # reddish purple
+        "#000000",  # black
+    ]
     
+    if derived is None:
+        derived_for_colors = {}
+    else:
+        derived_for_colors = derived
+    
+    all_relation_labels = list(dict.fromkeys(
+        list(baseline.keys()) + list(derived_for_colors.keys())
+    ))
+    
+    if relation_colors is None:
+        relation_colors = {
+            rel_label: default_relation_colors[i % len(default_relation_colors)]
+            for i, rel_label in enumerate(all_relation_labels)
+        }
+    else:
+        # Add fallback colors for any relations missing from the supplied dictionary
+        for i, rel_label in enumerate(all_relation_labels):
+            if rel_label not in relation_colors:
+                relation_colors[rel_label] = default_relation_colors[i % len(default_relation_colors)]
+        
     # Determine stimulus positions in graph
     n_stim = len(sLabs)
     
@@ -711,9 +749,11 @@ def plotRelNetworkGraph(baseline,
                 x_start, y_start = plottedS[sLabs[rel[0]]][0][0], plottedS[sLabs[rel[0]]][0][1]        
                 x_end, y_end = plottedS[sLabs[rel[1]]][0][0], plottedS[sLabs[rel[1]]][0][1]
                 # Plot a curved line using FancyArrowPatch 
+                
+                currentColor = relation_colors[rels]
                 baselineArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                        arrowstyle= relArrowStyle, color=relColor, linewidth=1.5)
+                                        arrowstyle= relArrowStyle, color=currentColor, linewidth=5)
                 plt.gca().add_patch(baselineArrow)
                 
                 # calculate position of label
@@ -721,7 +761,8 @@ def plotRelNetworkGraph(baseline,
                                                          y_start, y_end,
                                                          radius,
                                                          label_offset)
-                plt.text(azimuth_x, azimuth_y, shortrels[rels], color=relColor, 
+                if labels:
+                    plt.text(azimuth_x, azimuth_y, shortrels[rels], color=currentColor, 
                          fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
             
     plotted = []
@@ -753,38 +794,110 @@ def plotRelNetworkGraph(baseline,
                                                      y_start, y_end,
                                                      radius,
                                                      label_offset)                
-            
+            currentColor = relation_colors[drels]
             if 'mutual' in plotRels and dtype == 'mutual': # No duplicates (better to filter in derivation script!!)
                 # Plot a curved line using FancyArrowPatch 
                 derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                        arrowstyle=drelArrowStyle, color=mrelColor, 
-                                        linestyle = ':', linewidth=1)
+                                        arrowstyle=drelArrowStyle, color=currentColor, 
+                                        linestyle = ':', linewidth=5)
                 plt.gca().add_patch(derivedArrow)
-                plt.text(azimuth_x, azimuth_y, shortrels[drels], color=mrelColor, 
+                if labels:
+                    plt.text(azimuth_x, azimuth_y, shortrels[drels], color=currentColor, 
                          fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
                 plotted.append((drel))
             if 'combi' in plotRels and dtype == 'combi':
                 # Plot a curved line using FancyArrowPatch 
                 derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                        arrowstyle=drelArrowStyle, color=crelColor, 
-                                        linestyle = '--', linewidth=1)
+                                        arrowstyle=drelArrowStyle, color=currentColor, 
+                                        linestyle = '--', linewidth=5)
                 plt.gca().add_patch(derivedArrow)
-                plt.text(azimuth_x, azimuth_y, shortrels[drels], color=crelColor, 
-                         fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
+                if labels:
+                    plt.text(azimuth_x, azimuth_y, shortrels[drels], color=currentColor, 
+                             fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
                 plotted.append((drel))
 
     
-    legend_handles = []
-    if 'baseline' in plotRels:
-        legend_handles.append(Line2D([0],[0], color=relColor, linestyle='-', linewidth=5, label='Baseline'))
-    if 'mutual' in plotRels:
-        legend_handles.append(Line2D([0],[0], color=mrelColor, linestyle=':', linewidth=5, label='Mutual'))
-    if 'combi' in plotRels:
-        legend_handles.append(Line2D([0],[0], color=crelColor, linestyle='--', linewidth=5, label='Combinatorial'))
-    if legend_handles:
-        plt.legend(handles=legend_handles, loc='best', fontsize=50, frameon=False)
+    if legend:
+
+        ax = plt.gca()
+    
+        # Legend 1: relation class / derivation type by line style
+        if "Relation type" in legend:
+    
+            type_legend_handles = []
+    
+            if 'baseline' in plotRels:
+                type_legend_handles.append(
+                    Line2D(
+                        [0], [0],
+                        color='black',
+                        linestyle='-',
+                        linewidth=5,
+                        label='Baseline'
+                    )
+                )
+    
+            if 'mutual' in plotRels:
+                type_legend_handles.append(
+                    Line2D(
+                        [0], [0],
+                        color='black',
+                        linestyle=':',
+                        linewidth=5,
+                        label='Mutual'
+                    )
+                )
+    
+            if 'combi' in plotRels:
+                type_legend_handles.append(
+                    Line2D(
+                        [0], [0],
+                        color='black',
+                        linestyle='--',
+                        linewidth=5,
+                        label='Combinatorial'
+                    )
+                )
+    
+            if type_legend_handles:
+                type_legend = ax.legend(
+                    handles=type_legend_handles,
+                    title="Relation type",
+                    loc="upper left",
+                    fontsize=35,
+                    title_fontsize=40,
+                    frameon=False
+                )
+    
+                ax.add_artist(type_legend)
+    
+        # Legend 2: specific relation labels by color
+        if "Relation colors" in legend:
+    
+            relation_legend_handles = []
+    
+            for rel_label in all_relation_labels:
+                relation_legend_handles.append(
+                    Line2D(
+                        [0], [0],
+                        color=relation_colors[rel_label],
+                        linestyle='-',
+                        linewidth=5,
+                        label=rel_label
+                    )
+                )
+    
+            if relation_legend_handles:
+                ax.legend(
+                    handles=relation_legend_handles,
+                    title="Relation",
+                    loc="upper right",
+                    fontsize=35,
+                    title_fontsize=40,
+                    frameon=False
+                )
 
     # title
     if plotTitle == '' or plotTitle is None: 

@@ -84,7 +84,9 @@ def createDerivationTables(relations=None, *, plotTables=False):
                             'Left of': 'Right of',
                             'Right of': 'Left of',
                             'In front': 'Behind',
-                            'Behind': 'In front'})
+                            'Behind': 'In front',
+                            'Above': 'Below',
+                            'Below': 'Above'})
     
     compatible = {'Same as': [], # anything really
                  'Different from': ['Same as', 'Different from', 'Opposite to'],
@@ -109,7 +111,9 @@ def createDerivationTables(relations=None, *, plotTables=False):
                 'Left of': ['Right of', 'Left of'],
                 'Right of': ['Left of', 'Right of'],
                 'In front': ['Behind', 'In front'],
-                'Behind': ['In front', 'Behind']
+                'Behind': ['In front', 'Behind'],
+                'Above': ['Above', 'Below'],
+                'Below': ['Above', 'Below']
         }
     if relations is None:
         # If no source relations are specified, use default list 

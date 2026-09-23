@@ -226,7 +226,7 @@ plotRels = st.sidebar.multiselect(
 plotTitle = st.sidebar.text_input(
     "Plot title",
     value="Relational Network",
-    help = "Specifiy the title for the plot, if any."
+    help = "Specifiy the title for the plot, if any. If left empty, no title will be plotted"
 )
 
 layout = st.sidebar.selectbox(
@@ -245,23 +245,57 @@ layout = st.sidebar.selectbox(
             based on network density (more connected stimuli near each other, network spread out to avoid overlap). \
                 'degree' places highly connected nodes in centre. 'Hierarchical' orders node on a directed line."
 )
-    
-relColor = st.sidebar.color_picker("Baseline Relation Color",
-                                   value = '#000000',
-                                 help = "Color of baseline relation arrows.")
-mrelColor = st.sidebar.color_picker("Mutually Entailed Relation Color", 
-                                  value = '#0072B2',
-                                  help = "Color of arrows for mutually entailed relations.")
-crelColor = st.sidebar.color_picker("Combinatorially Entailed Relation Color",
-                                  value = '#CC79A7',
-                                  help = "Color of arrows for combinatorially entailed relations.")
+
+# relation colors
+st.sidebar.subheader("Relation colors")
+
+default_relation_colors = [
+    "#E69F00",  # orange
+    "#56B4E9",  # sky blue
+    "#009E73",  # bluish green
+    "#F0E442",  # yellow
+    "#0072B2",  # blue
+    "#D55E00",  # vermillion
+    "#CC79A7",  # reddish purple
+    "#000000",  # black
+]
+
+# Make sure derived is at least an empty dictionary
+if derived is None:
+    derived_for_colors = {}
+else:
+    derived_for_colors = derived
+
+all_relation_labels = list(dict.fromkeys(
+    list(baseline.keys()) + list(derived_for_colors.keys())
+))
+
+relation_colors = {}
+
+for i, rel_label in enumerate(all_relation_labels):
+
+    default_color = default_relation_colors[i % len(default_relation_colors)]
+
+    relation_colors[rel_label] = st.sidebar.color_picker(
+        f"Color for '{rel_label}'",
+        value=default_color,
+        key=f"color_{rel_label}",
+        help=f"Color used for all '{rel_label}' arrows."
+    )
 
 radius = st.sidebar.slider('Arrow Radius',
                            min_value = .0, max_value = .5, step = .01, value = .18,
                            help = "Determines curvature of lines between stimuli.")
+
+labels = st.sidebar.checkbox(
+    "Plot labels",
+    value=False,
+    help="Show abbreviated relation labels for arrows in the graph."
+)
+
 label_offset = st.sidebar.slider('Relation Label Offset',
                            min_value = .0, max_value = 1.0, step = .01, value = .55,
-                           help = "Determines offset of label relative to arrows.")
+                           help = "Determines offset of label relative to arrows. Can be adapted to improve readability.")
 
 fontSize = st.sidebar.slider('Fontsize',
                            min_value = 10, max_value = 100, step = 1, value = 60,
@@ -271,6 +305,17 @@ sDotSize = st.sidebar.slider('Stimulus Node Size',
                            min_value = 0, max_value = 150, step = 1, value = 100,
                            help = "Determines fontsize for relation and stimulus labels.")
 
+legend = st.sidebar.multiselect(
+    "Legends to plot",
+    ["Relation type", "Relation colors"],
+    default=["Relation type", "Relation colors"],
+    help=(
+        "Choose which legends to show. "
+        "'Relation type' explains solid/dotted/dashed arrows for baseline and derived relations. "
+        "'Relation colors' explains which color belongs to each unique relation (same, different, ...)."
+        "Deselect both to display NO legend."
+    )
+)
 
 # INFORMATION
 
@@ -311,13 +356,13 @@ if st.button("Generate network graph"):
             plotTitle=plotTitle,
             layout = layout,
             includeDerivedInLayout = False,
-            relColor = relColor,
-            mrelColor= mrelColor,
-            crelColor = crelColor,
+            relColor = relation_colors,
+            labels = labels,
             radius = radius,
             label_offset= label_offset,
             fontSize = fontSize,
-            sDotSize = sDotSize
+            sDotSize = sDotSize,
+            legend = legend
         )
 
         st.pyplot(plt.gcf())
