@@ -143,11 +143,11 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             
             
         case 'TransitiveInference': # transitive inference task in MTS
-            sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+            if sLabs is None: sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
             baseline = dict({'More than': []})
             for i in range(len(sLabs)):
                 baseline['More than'].append((i, i+1))  
-            
+            n_stim = countUniqueStimuli(baseline)
             if derived is None: # Test all derived relations is not specified
                 relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
             elif derived == 'nonAdjacent':
