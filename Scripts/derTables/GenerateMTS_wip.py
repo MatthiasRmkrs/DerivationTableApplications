@@ -53,6 +53,7 @@ import numpy as np
 import pdb
 from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
 from derTables.createDerivationTables import createDerivationTables
+from derTables.utils_tables import *
 
 #%% Generate MTS function workflow
 # Create random trials based on set of baseline relations and task parameters
@@ -119,12 +120,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             baseline = dict({'Same as': [(0,1), (0,4)],
                          'Different from': [(0,3), (0,6)],
                          'Opposite to': [(0,2), (0,5)]})
-            unique = [] # find number of unique stimuli for array dimensions
-            for i in baseline.keys(): 
-                for j in baseline[i]: 
-                    for s in j: 
-                        if s not in unique: unique.append(s)
-            n_stim = len(unique)
+            n_stim = countUniqueStimuli(baseline)
             if derived is None or derived == 'All':
                 relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)                
             elif derived == 'Relnet':
@@ -153,16 +149,23 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                 relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
             elif derived == 'nonAdjacent':
                 derived = dict({'More Than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
-        case '2-class equivalence':
+        case 'Equivalence 2 4-member classes':
+            sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
+                     'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
             baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
                                     (4,5), (4,6), (4,7)    # class 2
                                     ]}
+            relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
             # to be added
-        case '3-class equivalence':
+        case 'Equivalence 3 4-member classes':
+            sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
+                     'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
             baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
                                     (4,5), (4,6), (4,7)    # class 2
                                     (8, 9), (8, 10), (8,11) # class 3
                                     ]}
+            relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
+            
     # initialize dicts for storing trial info
     nt_b, nt_t = 0,0
     for i in baseline.keys():

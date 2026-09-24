@@ -51,8 +51,8 @@ use_preset = st.sidebar.checkbox(
 if use_preset:
     preset = st.sidebar.selectbox(
         "Preset",
-        ["Steele&Hayes91", "TransitiveInference", "Equivalence 2 3-member classes",
-         "Equivalence 2 4-member classes"],
+        ["Steele&Hayes91", "TransitiveInference", "Equivalence 2 4-member classes",
+         "Equivalence 3 4-member classes"],
         help="Use predefined relational structures or specify your own manually."
     )
     baseline = None
