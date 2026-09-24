@@ -126,11 +126,9 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                         if s not in unique: unique.append(s)
             n_stim = len(unique)
             if derived is None or derived == 'All':
-                relTab, derived = deriveRelationsFromBaseline(baseline, plot, 
-                                                      printRels, n_stim, sLabs)                
+                relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)                
             elif derived == 'Relnet':
-                relTab, derived_all = deriveRelationsFromBaseline(baseline, plot, 
-                                                      printRels, n_stim, sLabs)  
+                relTab, derived_all = deriveRelationsFromBaseline(baseline, sLabs)  
                 derived = dict({'Same as': [(1,0), (4, 0), (1,4), (4,1), (2,5), (5,2)],
                                'Different from': [(3,0), (6,0), (1, 3), (3, 1), (3, 4), (4, 3), 
                                                (1, 6), (6, 1), (6, 4), (4, 6)],
@@ -152,8 +150,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                 baseline['More Than'].append((i, i+1))  
             
             if derived is None: # Test all derived relations is not specified
-                relTab, derived = deriveRelationsFromBaseline(baseline, plot, 
-                                                      printRels, n_stim, sLabs)
+                relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
             elif derived == 'nonAdjacent':
                 derived = dict({'More Than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
         case '2-class equivalence':
