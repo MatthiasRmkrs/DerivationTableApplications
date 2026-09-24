@@ -140,16 +140,22 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             relations = dict({'Same as': 0,
                               'Different from': 1,
                               'Opposite to': 2})
-        case 'TransitiveInference':
-            baseline = dict({'More Than': []})
-            for i in range(n_stim):
-                baseline['More Than'].append((i, i+1))  
+            
+            
+        case 'TransitiveInference': # transitive inference task in MTS
+            sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+            baseline = dict({'More than': []})
+            for i in range(len(sLabs)):
+                baseline['More than'].append((i, i+1))  
             
             if derived is None: # Test all derived relations is not specified
                 relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
             elif derived == 'nonAdjacent':
-                derived = dict({'More Than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
-        case 'Equivalence 2 4-member classes':
+                derived = dict({'More than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
+            allRels = ['More than', 'Less than']
+            n_comp = 2
+            
+        case 'Equivalence 2 4-member classes': # train and test two four-member equivalence classes
             sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
                      'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
             baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
@@ -241,6 +247,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
 
             cmp = np.random.choice(np.linspace(0, len(unique_cmps[scc])-1, len(unique_cmps[scc]), dtype = 'int'))
             trial_data['comparisons'][tr] = np.random.permutation(unique_cmps[scc][cmp])
+            pdb.set_trace()
             trial_data['correct'][tr] = unique_scs[r][2] # Correct comparison stored last in sample-cue-comparison list
             trial_data['type'][tr] = 'Baseline'
             trial_data['tID'][tr] = r

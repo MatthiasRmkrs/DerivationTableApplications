@@ -57,9 +57,35 @@ if use_preset:
     )
     baseline = None
     derived = None
-    sLabs = None
+    if preset == "Steele&Hayes91":
+        sLabs = ["A", "B1", "B2", "B3", "C1", "C2", "C3", "N1", "N2"]
+    
+    elif preset == "TransitiveInference":
+        n_stim = st.sidebar.slider(
+            "Number of stimuli",
+            min_value=3,
+            max_value=15,
+            value=5,
+            help="Number of stimuli in the transitive inference chain."
+        )
+    
+        sLabs = [chr(65 + i) for i in range(n_stim)]
+    
+    elif preset == "Equivalence 2 4-member classes":
+        sLabs = [
+            "A1", "B1", "C1", "D1",
+            "A2", "B2", "C2", "D2"
+        ]
+    
+    elif preset == "Equivalence 3 4-member classes":
+        sLabs = [
+            "A1", "B1", "C1", "D1",
+            "A2", "B2", "C2", "D2",
+            "A3", "B3", "C3", "D3"
+        ]
 else: 
     preset = "manual"
+
 
 
 if preset == "manual":
