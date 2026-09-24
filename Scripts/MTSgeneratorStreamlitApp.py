@@ -57,6 +57,7 @@ if use_preset:
     )
     baseline = None
     derived = None
+    sLabs = None
 else: 
     preset = "manual"
 
