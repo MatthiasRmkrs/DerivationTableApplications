@@ -85,11 +85,9 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                          'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 
                          'W', 'X', 'Y', 'Z'] # Default to fall back on
             if derived is None or derived == 'All':
-                relTab, derived = deriveRelationsFromBaseline(baseline, plot, 
-                                                       printRels, n_stim, sLabs)
+                relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
             else:
-                relTab, derived = deriveRelationsFromBaseline(baseline, plot, 
-                                                       printRels, n_stim, sLabs)
+                relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
             
         # case 'Random':  # Create a list of generic stimulus labels to represent stimuli
         #     alf = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",

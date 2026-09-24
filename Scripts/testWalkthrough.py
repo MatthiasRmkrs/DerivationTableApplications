@@ -11,6 +11,7 @@ Test walkthrough of derivation table functions
 # dependencies
 from derTables.createDerivationTables import createDerivationTables
 from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
+from derTables.GenerateMTS_wip import generateTrials
 from derTables.utils_syllogisms import *
 from derTables.plot_utils import *
 from derTables.utils_tables import *
@@ -97,6 +98,29 @@ baseline = {'More than': [(0,1), (1,2), (2,3), (3,4), (4,5)]}
 
 relTab, derived = deriveRelationsFromBaseline(baseline, sLabs, illustrate)
 
-# %%
+# %% Generate a MTS procedure to train the baseline relations and test derived relational responding;
 
+preset = 'Manual'
+baseline = dict({'Same as': [(0,1), (0,4)],
+             'Different from': [(0,3), (0,6)],
+             'Opposite to': [(0,2), (0,5)]})
+sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'N1', 'N2']
+
+# Define the MTS procedure parameters
+n_baseline = 1 # baseline training iterations 
+n_test = 1 # test trial iterations
+n_comp = 3 # number of comparison stimuli
+
+printTrials = True
+
+trial_data = generateTrials(
+    baseline,
+    n_baseline,
+    preset,
+    n_test,
+    n_comp,
+    # derived=derived,
+    printTrials = True,
+    sLabs=sLabs
+)
 
