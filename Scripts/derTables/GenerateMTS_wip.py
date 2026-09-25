@@ -77,20 +77,19 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                     for s in j: 
                         if s not in unique: unique.append(s)
             n_stim = len(unique)
-            # if n_rel == 1: # catch labeling error WIP ()
-            #     if len(s_mp) > len(srel_mp)+n_comps:
-            #         print('Warning Please add more stimuli to serve as comparison stimuli!')
-            #         pdb.set_trace()
-            plot = False
-            printRels = False
+
             if sLabs is None:
                 sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K',
                          'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 
                          'W', 'X', 'Y', 'Z'] # Default to fall back on
-            if derived is None or derived == 'All':
-                relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
-            else:
-                relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
+            relTab, all_derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+            
+            if derived is None or derived == "All":
+                derived = all_derived
+            
             
         # case 'Random':  # Create a list of generic stimulus labels to represent stimuli
         #     alf = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
@@ -191,6 +190,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                      'tID': np.zeros(nt_b+nt_t, dtype=int),
                      'label': np.empty(nt_b + nt_t, dtype=object),
                      "type": np.empty(nt_b + nt_t, dtype=object)}
+    extra_stimuli = []
     
     # create derivation tables
     relations = dict({}) # Create relations dict (for creating and indexing tables)
@@ -216,14 +216,17 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                 unique_cmps[scc] = []
            
             # add comparison stimuli
-            add_comparison_sets(
+            new_extra_stimuli  = add_comparison_sets(
                 unique_cmps=unique_cmps,
                 scc=scc,
                 source=source,
                 options=options,
-                n_comp=n_comp
+                n_comp=n_comp,
+                sLabs=sLabs
             )
-                            
+            for stim in new_extra_stimuli:
+                if stim not in extra_stimuli:
+                    extra_stimuli.append(stim)   
             
     # Then create trial list by looping over baseline relations, storing trial data,
     # And randomly choosing comparison stimuli
@@ -266,14 +269,17 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                 unique_cmps[scc] = []
                 
             # add comparison stimuli
-            add_comparison_sets(
+            new_extra_stimuli  = add_comparison_sets(
                 unique_cmps=unique_cmps,
                 scc=scc,
                 source=source,
                 options=options,
-                n_comp=n_comp
+                n_comp=n_comp,
+                sLabs=sLabs
             )
-                
+            for stim in new_extra_stimuli:
+                if stim not in extra_stimuli:
+                    extra_stimuli.append(stim)
 
     # Then create trial list by looping over test relations, storing trial data,
     # And randomly choosing comparison stimuli from created set
@@ -327,6 +333,9 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                 sLabs=sLabs,
                 relations=relations
             )
+        
+    trial_data["sLabs"] = sLabs
+    trial_data["extra_stimuli"] = extra_stimuli
 
     return trial_data
 

@@ -18,51 +18,57 @@ from itertools import combinations
 
 # %% Find comparison stimulus options (not related to sample)
 
-def findComparisonOptions(sLabs, relTab, rel, source):
+def findComparisonOptions(sLabs, relTab, rel, relLab, relations, source):
     options = [] # init 
 
     for i in range(len(sLabs)):
         if i < len(relTab[rel, source[0], :]):
             if not relTab[rel, source[0], i] and not relTab[rel, i, source[0]]:
-                if i != source[0]: options = [*options, i]
-                
-                # !!! ADD Clause for no opposite/comparative comparisons if difference relation
+                if i != source[0]: 
+                    if relLab == 'Different from' and 'Opposite to' in relations.keys():
+                        if not relTab[relations['Opposite to'], source[0], i] and not relTab[relations['Opposite to'], i, source[0]]:
+                            options = [*options, i]
+                    else:
+                        options = [*options, i]
 
         else: # stimuli not included in relations
             options = [*options, i]
     
-    # # Find comparison stimuli (other than correct): given sample and cue, find unrelated S
-    # rels = relTab[rel, source[0], :] != 1 # Find non-rels in table
-
     
-    # for o in range(len(rels)): # Loop stimuli
-    #     if rels[o]: 
-    #         if not o == source[0]: # Select and add to option list if valid
-    #             options = [*options, o] # Store possible comparison index
     
     return options
 
 # %% add comparison stimuli for trial
 
 
-def add_comparison_sets(unique_cmps, scc, source, options, n_comp):
+from itertools import combinations
+import warnings
+
+
+def add_comparison_sets(
+    unique_cmps,
+    scc,
+    source,
+    options,
+    n_comp,
+    sLabs
+):
     """
     Generate all valid comparison sets for an MTS trial.
 
-    Parameters
-    ----------
-    unique_cmps : dict
-        Dictionary in which comparison sets are stored.
-    scc : tuple
-        Key identifying the sample-cue-correct comparison combination.
-    source : tuple
-        Relation pair (sample, correct comparison).
-    options : list
-        Candidate incorrect comparison stimuli.
-    n_comp : int
-        Total number of comparison stimuli on the trial,
-        including the correct comparison.
+    If there are insufficient unrelated stimuli to serve as distractors,
+    additional neutral stimuli (XTR1, XTR2, ...) are created automatically.
+
+    Extra stimuli are appended to sLabs and can occur as comparison stimuli,
+    but are not part of the relational network.
+
+    Returns
+    -------
+    added_stimuli : list
+        Labels of any extra stimuli that were created.
     """
+
+    n_distractors = n_comp - 1
 
     # Remove sample and correct comparison from distractor pool
     valid_options = [
@@ -70,21 +76,60 @@ def add_comparison_sets(unique_cmps, scc, source, options, n_comp):
         if option not in source
     ]
 
-    if len(valid_options) < n_comp - 1:
-        raise ValueError(
-            f"Not enough valid comparison stimuli for n_comp={n_comp}. "
-            f"Need {n_comp - 1} distractors, but only "
-            f"{len(valid_options)} are available."
+    added_stimuli = []
+
+    # -------------------------------------------------------
+    # Add extra neutral stimuli if necessary
+    # -------------------------------------------------------
+
+    n_missing = n_distractors - len(valid_options)
+
+    if n_missing > 0:
+
+        for _ in range(n_missing):
+
+            # Find the first unused XTR label
+            xtr_number = 1
+
+            while f"XTR{xtr_number}" in sLabs:
+                xtr_number += 1
+
+            xtr_label = f"XTR{xtr_number}"
+
+            # Add label to stimulus list
+            sLabs.append(xtr_label)
+
+            # Its index is its new position in sLabs
+            xtr_index = len(sLabs) - 1
+
+            # Make it available as an incorrect comparison
+            valid_options.append(xtr_index)
+
+            added_stimuli.append(xtr_label)
+
+        warnings.warn(
+            f"Not enough unrelated comparison stimuli were available for "
+            f"n_comp={n_comp}. Added {n_missing} extra neutral stimulus/stimuli: "
+            f"{', '.join(added_stimuli)}."
         )
 
-    for distractors in combinations(valid_options, n_comp - 1):
+    # -------------------------------------------------------
+    # Generate comparison sets
+    # -------------------------------------------------------
+
+    for distractors in combinations(
+        valid_options,
+        n_distractors
+    ):
 
         comparison_set = [
-            source[1],      # correct comparison
-            *distractors    # incorrect comparisons
+            source[1],       # correct comparison
+            *distractors     # incorrect comparisons
         ]
 
         unique_cmps[scc].append(comparison_set)
+
+    return added_stimuli
         
 # %% join comparison stimulus labels for printing
 

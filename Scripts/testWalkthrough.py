@@ -103,10 +103,13 @@ relTab, derived = deriveRelationsFromBaseline(baseline, sLabs, illustrate)
 # %% Generate a MTS procedure to train the baseline relations and test derived relational responding;
 
 preset = 'Manual'
-baseline = dict({'Same as': [(0,1), (0, 2), (0, 3)]})
+baseline = dict({'Same as': [(0,1), (0, 2), (0, 3),
+                             (4, 5), (4,6), (4,7)]})
 # derived = 'non-adjacent'
 # sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'N1', 'N2']
-sLabs = ['A1', 'A2', 'A3', 'A4' , 'B1', 'B2', 'B3', 'B4',]
+sLabs = ['A1', 'A2', 'A3', 'A4' , 'B1', 'B2', 'B3', 'B4',
+         'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
+
 # Define the MTS procedure parameters
 n_baseline = 1 # baseline training iterations 
 n_test = 1 # test trial iterations

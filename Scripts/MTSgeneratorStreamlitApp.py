@@ -9,9 +9,11 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import ast
+import matplotlib.pyplot as plt
+from io import BytesIO
 
 from derTables.GenerateMTS_wip import generateTrials
-
+from derTables.plot_utils import plotRelNetworkGraph
 
 
 st.set_page_config(
@@ -82,6 +84,7 @@ if use_preset:
                  'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
         baseline = None
         derived = None
+        
     elif preset == "Equivalence 3 4-member classes":
         sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
                  'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
@@ -262,6 +265,14 @@ if preset == "Manual":
             if len(sLabs) != n_stim:
                 st.sidebar.info("Fix the stimulus labels before defining derived pairs.")
             
+visualize = st.sidebar.checkbox(
+    "Visualize Relational Network",
+    value=False,
+    help=(
+        "Check this box if you want to visualize the relational network as a graph network. "
+        "If checked, the baseline (trained) relations and derived (tested) relations for which you are generating the MTS procedure will be plotted as two graphs. "
+    )
+)
 
 st.sidebar.markdown("---")
 st.sidebar.subheader("Procedure Settings")
@@ -312,6 +323,89 @@ if st.button("Generate trials"):
             printTrials=False,
             sLabs=sLabs
         )
+        if trial_data["extra_stimuli"]:
+
+            st.warning(
+                "Insufficient unrelated stimuli were available to create all "
+                f"{n_comp}-comparison trials. The following neutral comparison "
+                "stimuli were added automatically: "
+                + ", ".join(trial_data["extra_stimuli"])
+            )
+        # Use the final stimulus list returned by generateTrials
+        sLabs = trial_data["sLabs"]
+        
+        # =================================================
+        # VISUALIZATION
+        #=================================================
+        if visualize:
+                try:
+                    fig = plt.figure(figsize=(12,12))
+
+                    plotRelNetworkGraph(
+                        baseline=baseline,
+                        sLabs=sLabs,
+                        plotRels=['baseline'],
+                        plotTitle='Trained Relations',
+                        layout = 'auto',
+                        includeDerivedInLayout = False,
+                        relation_colors = None,
+                        labels = False,
+                        radius = .3,
+                        label_offset= .2,
+                        fontSize = 60,
+                        sDotSize = 100,
+                        legend = ['Relation Type']
+                    )
+
+                    st.pyplot(plt.gcf())
+
+                    # DOWNLOAD BUTTON
+                    buf = BytesIO()
+                    plt.savefig(buf, format="png", bbox_inches="tight")
+                    buf.seek(0)
+
+                    st.download_button(
+                        "Download PNG",
+                        data=buf,
+                        file_name="relational_network.png",
+                        mime="image/png"
+                    )
+
+                    st.success("Graph generated successfully.")
+
+                    plotRelNetworkGraph(
+                        baseline=baseline,
+                        sLabs=sLabs,
+                        plotRels=['mutual', 'combi'],
+                        plotTitle='Tested Derived Relations',
+                        layout = 'auto',
+                        includeDerivedInLayout = False,
+                        relation_colors = None,
+                        labels = False,
+                        radius = .3,
+                        label_offset= .2,
+                        fontSize = 60,
+                        sDotSize = 100,
+                        legend = ['Relation Color']
+                    )
+
+                    st.pyplot(plt.gcf())
+
+                    # DOWNLOAD BUTTON
+                    buf = BytesIO()
+                    plt.savefig(buf, format="png", bbox_inches="tight")
+                    buf.seek(0)
+
+                    st.download_button(
+                        "Download PNG",
+                        data=buf,
+                        file_name="relational_network.png",
+                        mime="image/png"
+                    )
+
+                    st.success("Graph generated successfully.")
+                except Exception as e:
+                    st.error(f"Error: {e}")
 
         # =================================================
         # CREATE DATAFRAME
