@@ -190,7 +190,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                      'tID': np.zeros(nt_b+nt_t, dtype=int),
                      'label': np.empty(nt_b + nt_t, dtype=object),
                      "type": np.empty(nt_b + nt_t, dtype=object),
-                     "extra_stimuli": np.empty(),
+                     "extra_stimuli": [],
                      "sLabs": sLabs
                      }
     extra_stimuli = []
