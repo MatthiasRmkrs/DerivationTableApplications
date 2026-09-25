@@ -336,6 +336,8 @@ if st.button("Generate trials"):
             )
         # Use the final stimulus list returned by generateTrials
         sLabs = trial_data["sLabs"]
+        baseline = trial_data['baseline']
+        derived = trial_data['derived']
         
         # =================================================
         # VISUALIZATION
@@ -370,7 +372,7 @@ if st.button("Generate trials"):
                     st.download_button(
                         "Download PNG",
                         data=buf,
-                        file_name="relational_network.png",
+                        file_name="trained_network.png",
                         mime="image/png"
                     )
 
@@ -402,7 +404,7 @@ if st.button("Generate trials"):
                     st.download_button(
                         "Download PNG",
                         data=buf,
-                        file_name="relational_network.png",
+                        file_name="test_network.png",
                         mime="image/png"
                     )
 

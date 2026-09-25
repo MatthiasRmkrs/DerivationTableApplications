@@ -191,7 +191,9 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                      'label': np.empty(nt_b + nt_t, dtype=object),
                      "type": np.empty(nt_b + nt_t, dtype=object),
                      "extra_stimuli": [],
-                     "sLabs": sLabs
+                     "sLabs": sLabs,
+                     'baseline': {},
+                     'derived': {}
                      }
     extra_stimuli = []
     
@@ -339,7 +341,8 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
         
     trial_data["sLabs"] = sLabs
     trial_data["extra_stimuli"] = extra_stimuli
-
+    trial_data["baseline"] = baseline
+    trial_data["derived"] = derived
     return trial_data
 
 
