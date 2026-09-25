@@ -78,26 +78,21 @@ if use_preset:
         baseline = None
         derived = None
     elif preset == "Equivalence 2 4-member classes":
-        sLabs = [
-            "A1", "B1", "C1", "D1",
-            "A2", "B2", "C2", "D2"
-        ]
+        sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
+                 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
         baseline = None
         derived = None
     elif preset == "Equivalence 3 4-member classes":
-        sLabs = [
-            "A1", "B1", "C1", "D1",
-            "A2", "B2", "C2", "D2",
-            "A3", "B3", "C3", "D3"
-        ]
+        sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
+                 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
         baseline = None
         derived = None
 else: 
-    preset = "manual"
+    preset = "Manual"
 
 
 
-if preset == "manual":
+if preset == "Manual":
     
     n_stim = st.sidebar.slider(
         "Number of stimuli",

@@ -162,15 +162,16 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                                     (4,5), (4,6), (4,7)    # class 2
                                     ]}
             relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
-            # to be added
+            allRels = ["Same as"]
         case 'Equivalence 3 4-member classes':
             sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
                      'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
             baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
-                                    (4,5), (4,6), (4,7)    # class 2
+                                    (4,5), (4,6), (4,7),    # class 2
                                     (8, 9), (8, 10), (8,11) # class 3
                                     ]}
             relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
+            allRels = ["Same as"]
             
     # initialize dicts for storing trial info
     nt_b, nt_t = 0,0
