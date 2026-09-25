@@ -55,11 +55,16 @@ if use_preset:
          "Equivalence 3 4-member classes"],
         help="Use predefined relational structures or specify your own manually."
     )
-    baseline = None
-    derived = None
+    
     if preset == "Steele&Hayes91":
         sLabs = ["A", "B1", "B2", "B3", "C1", "C2", "C3", "N1", "N2"]
-    
+        baseline = None
+        derived = st.sidebar.selectbox(
+            "Preset",
+            ["All", "Relnet"],
+            help="Select which derived relations to test. 'All' creates trials for all possible derivations. 'Relnet' only creates trials for derived relations assessed by Barnes & Hampson (1993)."
+        )
+        
     elif preset == "TransitiveInference":
         n_stim = st.sidebar.slider(
             "Number of stimuli",
@@ -70,19 +75,23 @@ if use_preset:
         )
     
         sLabs = [chr(65 + i) for i in range(n_stim)]
-    
+        baseline = None
+        derived = None
     elif preset == "Equivalence 2 4-member classes":
         sLabs = [
             "A1", "B1", "C1", "D1",
             "A2", "B2", "C2", "D2"
         ]
-    
+        baseline = None
+        derived = None
     elif preset == "Equivalence 3 4-member classes":
         sLabs = [
             "A1", "B1", "C1", "D1",
             "A2", "B2", "C2", "D2",
             "A3", "B3", "C3", "D3"
         ]
+        baseline = None
+        derived = None
 else: 
     preset = "manual"
 

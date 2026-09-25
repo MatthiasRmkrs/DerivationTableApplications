@@ -54,6 +54,8 @@ import pdb
 from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
 from derTables.createDerivationTables import createDerivationTables
 from derTables.utils_tables import *
+from derTables.utils_mts import findComparisonOptions, add_comparison_sets, print_mts_trial, format_comparisons
+
 
 #%% Generate MTS function workflow
 # Create random trials based on set of baseline relations and task parameters
@@ -145,13 +147,11 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
         case 'TransitiveInference': # transitive inference task in MTS
             if sLabs is None: sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
             baseline = dict({'More than': []})
-            for i in range(len(sLabs)):
+            for i in range(len(sLabs)-1):
                 baseline['More than'].append((i, i+1))  
             n_stim = countUniqueStimuli(baseline)
-            if derived is None: # Test all derived relations is not specified
-                relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
-            elif derived == 'nonAdjacent':
-                derived = dict({'More than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
+            relTab,  all_derived = deriveRelationsFromBaseline(baseline, sLabs)
+            derived = dict({'More than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
             allRels = ['More than', 'Less than']
             n_comp = 2
             
@@ -195,7 +195,6 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
     relations = dict({}) # Create relations dict (for creating and indexing tables)
     for i in range(len(baseline.keys())): relations[list(baseline.keys())[i]] = i   
     mutual, combi, cleanRelations = createDerivationTables(relations)
-    
     # First create all unique trials (i.e., different configurations of comparison stimuli)
     unique_scs = [] # init to store unique baseline relations
     unique_cmps = dict() # init to store unique comparison sets
@@ -206,33 +205,24 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             source = (list(baseline.values())[i][j]) # Store current relation
             relLab = list(baseline.keys())[i] # relation label
             rel = list.index(list(relations.keys()), relLab) # find index
-            # Find comparison stimuli (other than correct): given sample and cue, find unrelated S
-            rels = relTab[rel, source[0], :] != 1 # Find non-rels in table
-            options = [] # init 
-            for o in range(len(rels)): # Loop stimuli
-                if rels[o]: 
-                    if not o == source[0]: # Select and add to option list if valid
-                        options = [*options, o] # Store possible comparison index
+            
+            # Find comparison stimulus options
+            options = findComparisonOptions(sLabs, relTab, rel, source)
             
             scc = (source[0], rel, source[1]) # Create tuple to index trial info 
             unique_scs.append([source[0], rel, source[1]]) # Store this trial
             if scc not in list(unique_cmps.keys()):
                 unique_cmps[scc] = []
-            
-            if n_comp == 2:
-                for c2 in range(len(options)): # find a second comparison
-                    if not options[c2] in source: # exclude two identical comparisons
-                        unique_cmps[scc].append([source[1], options[c2]])
-            if n_comp == 3:
-                for c2 in range(len(options)-1): # Find second comparison
-                    for c3 in range(len(options[c2:])): # Find third comparison
-                        if c3 == 0: # account for zero-indexing to get second S from list
-                            unique_cmps[scc].append([source[1], options[c2], options[c2+c3+1]])
-                        else:
-                            unique_cmps[scc].append([source[1], options[c2], options[c2+c3]])
-            # Can add more comparison stimuli, but not needed for now?
-                
-            # !!! ADD Clause for no opposite/comparative comparisons if difference relation
+           
+            # add comparison stimuli
+            add_comparison_sets(
+                unique_cmps=unique_cmps,
+                scc=scc,
+                source=source,
+                options=options,
+                n_comp=n_comp
+            )
+                            
             
     # Then create trial list by looping over baseline relations, storing trial data,
     # And randomly choosing comparison stimuli
@@ -244,10 +234,8 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             trial_data['relation'][tr] = list(baseline.keys())[unique_scs[r][1]] # Store relation
             # Randomly choose a set of comparison stimuli 
             scc = (unique_scs[r][0],unique_scs[r][1], unique_scs[r][2])
-
             cmp = np.random.choice(np.linspace(0, len(unique_cmps[scc])-1, len(unique_cmps[scc]), dtype = 'int'))
             trial_data['comparisons'][tr] = np.random.permutation(unique_cmps[scc][cmp])
-            pdb.set_trace()
             trial_data['correct'][tr] = unique_scs[r][2] # Correct comparison stored last in sample-cue-comparison list
             trial_data['type'][tr] = 'Baseline'
             trial_data['tID'][tr] = r
@@ -268,31 +256,22 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             
             # Find comparison stimuli (oter than correct): given sample and cue, find unrelated S
             rels = relTab[rel, source[0], :] != 1 # Find unrelated stimuli
-            options = []
-            for o in range(len(rels)): # Loop stimuli
-                if rels[o]: 
-                    if not o == source[0]: # Only store valid
-                        options = [*options, o] # Store possible comparison index
-#            pdb.set_trace()
+            options = findComparisonOptions(sLabs, relTab, rel, source)
             scc = (source[0], rel, source[1])
             unique_scs.append([source[0], rel, source[1]])
             
             if scc not in list(unique_cmps.keys()):
                 # Create novel key for source relation if not yet in trial list
                 unique_cmps[scc] = []
-            if n_comp == 2:
-                for c2 in range(len(options)): # find a second comparison
-                    if not options[c2] in source: # exclude two identical comparisons
-                        unique_cmps[scc].append([source[1], options[c2]])
-            if n_comp == 3:
-                for c2 in range(len(options)-1): # Find second comparison
-                    for c3 in range(len(options[c2:])): # Find third comparison
-                        if c3 == 0: # account for zero-indexing to get second S from list
-                            unique_cmps[scc].append([source[1], options[c2], options[c2+c3+1]])
-                        else:
-                            unique_cmps[scc].append([source[1], options[c2], options[c2+c3]])
-
-            # Can add more comparison stimuli, but not needed for now?
+                
+            # add comparison stimuli
+            add_comparison_sets(
+                unique_cmps=unique_cmps,
+                scc=scc,
+                source=source,
+                options=options,
+                n_comp=n_comp
+            )
                 
 
     # Then create trial list by looping over test relations, storing trial data,
@@ -310,7 +289,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             trial_data['comparisons'][tr] = np.random.permutation(unique_cmps[scc][cmp])
             trial_data['correct'][tr] = unique_scs[r][2] # Correct comparison stored last in sample-cue-comparison list  
             # Check if mutually entailed relation is in baseline set,
-            mrel = list(relations.keys())[mutual[list.index(list(relations.keys()),trial_data['relation'][tr])]]
+            mrel = list(cleanRelations.keys())[mutual[relations[trial_data['relation'][tr]]]]
             if mrel in baseline.keys(): # always?
                 if (trial_data['correct'][tr], trial_data['sample'][tr]) in baseline[mrel]:
                     trial_data['type'][tr] = 'Mutually entailed'                
@@ -322,44 +301,31 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                                                                 sLabs[trial_data['sample'][tr]],
                                                                  sLabs[trial_data['correct'][tr]])
     if printTrials:
-        # Print trials (for now assuming 3 comparison stimuli)
-        for b in range(nt_b): # Loop baseline trials
-            if n_comp == 2: # find a better solution so any number is accounted for!!
-                print('\n Training Trial {} (#{}, {}): Sample stimulus {} is {} {} or {}? \n\nCorrect answer is {}!'.format(
-                        b+1, trial_data['tID'][b], trial_data['type'][b],
-                        sLabs[trial_data['sample'][b]], 
-                        list(relations.keys())[trial_data['cue'][b]],
-                        sLabs[trial_data['comparisons'][b][0]],
-                        sLabs[trial_data['comparisons'][b][1]],
-                        sLabs[trial_data['correct'][b]]))
-            elif n_comp == 3:
-                print('\n Training Trial {} (#{}, {}): Sample stimulus {} is {} {}, {} or {}? \n\nCorrect answer is {}!'.format(
-                        b+1, trial_data['tID'][b], trial_data['type'][b],
-                        sLabs[trial_data['sample'][b]], 
-                        list(relations.keys())[trial_data['cue'][b]],
-                        sLabs[trial_data['comparisons'][b][0]],
-                        sLabs[trial_data['comparisons'][b][1]],
-                        sLabs[trial_data['comparisons'][b][2]],
-                        sLabs[trial_data['correct'][b]]))
-            
-        for t in range(nt_t): # Loop trials
-            if n_comp == 2:
-                print('\n Test Trial {} (#{}, {}): Sample stimulus {} is {} {} or {}? \n\nCorrect answer is {}!'.format(
-                        t+1, trial_data['tID'][nt_b+t], trial_data['type'][nt_b+t],
-                        sLabs[trial_data['sample'][nt_b+t]], 
-                        list(relations.keys())[trial_data['cue'][nt_b+t]],
-                        sLabs[trial_data['comparisons'][nt_b+t][0]],
-                        sLabs[trial_data['comparisons'][nt_b+t][1]],
-                        sLabs[trial_data['correct'][nt_b+t]]))
-            elif n_comp == 3:
-                print('\n Test Trial {} (#{}, {}): Sample stimulus {} is {} {}, {} or {}? \n\nCorrect answer is {}!'.format(
-                        t+1, trial_data['tID'][nt_b+t], trial_data['type'][nt_b+t],
-                        sLabs[trial_data['sample'][nt_b+t]], 
-                        list(relations.keys())[trial_data['cue'][nt_b+t]],
-                        sLabs[trial_data['comparisons'][nt_b+t][0]],
-                        sLabs[trial_data['comparisons'][nt_b+t][1]],
-                        sLabs[trial_data['comparisons'][nt_b+t][2]],
-                        sLabs[trial_data['correct'][nt_b+t]]))
+        # Print baseline/training trials
+        for b in range(nt_b):
+        
+            print_mts_trial(
+                trial_data=trial_data,
+                idx=b,
+                trial_number=b + 1,
+                trial_name="Training",
+                sLabs=sLabs,
+                relations=relations
+            )
+        
+        # Print test trials
+        for t in range(nt_t):
+        
+            idx = nt_b + t
+        
+            print_mts_trial(
+                trial_data=trial_data,
+                idx=idx,
+                trial_number=t + 1,
+                trial_name="Test",
+                sLabs=sLabs,
+                relations=relations
+            )
 
     return trial_data
 

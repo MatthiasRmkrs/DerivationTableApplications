@@ -16,6 +16,7 @@ from derTables.utils_syllogisms import *
 from derTables.plot_utils import *
 from derTables.utils_tables import *
 from derTables.utils_deictics import *
+from derTables.utils_mts import *
 
 # %% create default derivation tables or specific for user-input list
 
@@ -95,19 +96,21 @@ relTab, derived = deriveRelationsFromBaseline(baseline, sLabs, illustrate)
 
 sLabs = ['A', 'B', 'C', 'D', 'E', 'F']
 baseline = {'More than': [(0,1), (1,2), (2,3), (3,4), (4,5)]}
+illustrate = 'graph'
 
 relTab, derived = deriveRelationsFromBaseline(baseline, sLabs, illustrate)
 
 # %% Generate a MTS procedure to train the baseline relations and test derived relational responding;
 
-preset = 'TransitiveInference'
-baseline = dict()
-sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'N1', 'N2']
-
+preset = 'Manual'
+baseline = dict({'Same as': [(0,1), (0, 2), (0, 3)]})
+# derived = 'non-adjacent'
+# sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'N1', 'N2']
+sLabs = ['A1', 'A2', 'A3', 'A4' , 'B1', 'B2', 'B3', 'B4',]
 # Define the MTS procedure parameters
 n_baseline = 1 # baseline training iterations 
 n_test = 1 # test trial iterations
-n_comp = 3 # number of comparison stimuli
+n_comp = 4 # number of comparison stimuli
 
 printTrials = True
 
