@@ -359,7 +359,7 @@ if st.button("Generate trials"):
                         label_offset= .2,
                         fontSize = 60,
                         sDotSize = 100,
-                        legend = ['Relation Type']
+                        legend = ['Relation type']
                     )
 
                     st.pyplot(plt.gcf())
@@ -380,6 +380,7 @@ if st.button("Generate trials"):
 
                     plotRelNetworkGraph(
                         baseline=baseline,
+                        derived = derived,
                         sLabs=sLabs,
                         plotRels=['mutual', 'combi'],
                         plotTitle='Tested Derived Relations',
@@ -391,7 +392,7 @@ if st.button("Generate trials"):
                         label_offset= .2,
                         fontSize = 60,
                         sDotSize = 100,
-                        legend = ['Relation Color']
+                        legend = ['Relation colors']
                     )
 
                     st.pyplot(plt.gcf())
