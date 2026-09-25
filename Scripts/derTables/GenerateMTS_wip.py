@@ -189,7 +189,10 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                      "correct": np.zeros(nt_b+nt_t, dtype=int),
                      'tID': np.zeros(nt_b+nt_t, dtype=int),
                      'label': np.empty(nt_b + nt_t, dtype=object),
-                     "type": np.empty(nt_b + nt_t, dtype=object)}
+                     "type": np.empty(nt_b + nt_t, dtype=object),
+                     "extra_stimuli": np.empty(),
+                     "sLabs": sLabs
+                     }
     extra_stimuli = []
     
     # create derivation tables

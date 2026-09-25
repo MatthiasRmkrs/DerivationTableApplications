@@ -264,7 +264,10 @@ if preset == "Manual":
                 st.sidebar.info("Select at least one derived relation type.")
             if len(sLabs) != n_stim:
                 st.sidebar.info("Fix the stimulus labels before defining derived pairs.")
-            
+        
+st.sidebar.markdown("---")
+st.sidebar.subheader("Network Visualization")
+
 visualize = st.sidebar.checkbox(
     "Visualize Relational Network",
     value=False,
