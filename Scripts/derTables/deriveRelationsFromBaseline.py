@@ -205,7 +205,9 @@ def deriveRelationsFromBaseline(baseline, sLabs = None, illustrate = None):
                                         \nFrom that, I cannot derive anything...\n\n'.format(
                                             sLabs[source1[0]], rel1Lab, sLabs[source1[1]],
                                             sLabs[source2[0]], rel2Lab, sLabs[source2[1]]))  
-                            # Can go beyond two step derivations? Parametrize?
+                            
+    
+                                # Can go beyond two step derivations? Parametrize?
                             # Probably have to for things like transitive inference
     
     # create table for heatmap illustration of relational network 

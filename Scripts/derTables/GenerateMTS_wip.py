@@ -51,7 +51,7 @@ TODO - Function would ideally allow to:
 
 import numpy as np
 import pdb
-from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
+from derTables.deriveRelationsFromBaseline2 import deriveRelationsFromBaseline
 from derTables.createDerivationTables import createDerivationTables
 from derTables.utils_tables import *
 from derTables.utils_mts import findComparisonOptions, add_comparison_sets, print_mts_trial, format_comparisons
