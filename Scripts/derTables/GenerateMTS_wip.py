@@ -211,7 +211,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             rel = list.index(list(relations.keys()), relLab) # find index
             
             # Find comparison stimulus options
-            options = findComparisonOptions(sLabs, relTab, rel, source)
+            options = findComparisonOptions(sLabs, relTab, rel, relLab, relations, source)
             
             scc = (source[0], rel, source[1]) # Create tuple to index trial info 
             unique_scs.append([source[0], rel, source[1]]) # Store this trial
@@ -263,7 +263,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             
             # Find comparison stimuli (oter than correct): given sample and cue, find unrelated S
             rels = relTab[rel, source[0], :] != 1 # Find unrelated stimuli
-            options = findComparisonOptions(sLabs, relTab, rel, source)
+            options = findComparisonOptions(sLabs, relTab, rel, relLab, relations, source)
             scc = (source[0], rel, source[1])
             unique_scs.append([source[0], rel, source[1]])
             
