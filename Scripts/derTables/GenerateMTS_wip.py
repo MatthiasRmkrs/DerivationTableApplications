@@ -2,7 +2,7 @@
 """
 Created on Fri Aug  4 14:56:53 2023
 
-MTS Trial procedure generator for model training and testing
+MTS Trial procedure generator for training and testing preset or custim relational networks.
 
 Function generates a dict containing trial information, based on some settings
 input by the user: 
@@ -12,6 +12,7 @@ input by the user:
             default settings are defined
     - n_baseline and n_test - number of repetitions for all baseline and test trials7
     - n_comp - number of comparison stimuli presented on a trial
+    - n_test - number of iterations of test trials
     - (optional) derived - a dict or string preset containing the derived 
                             relations to be tested
     - (optional) Slabs - list of stimulus labels for printing, 
@@ -89,26 +90,6 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             
             if derived is None or derived == "All":
                 derived = all_derived
-            
-            
-        # case 'Random':  # Create a list of generic stimulus labels to represent stimuli
-        #     alf = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-        #            "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
-        #     s_mp = {} # Initializa Stimulus label dict
-        #     n_a = 1
-        #     for i in range(n_nodes):
-        #         if i % 26 == 0: #· Account for multiple trips around the alfabet
-        #             n_a += 1
-        #         s_mp[alf[i]*n_a] = int(i)
-        #         if n_func == 1:
-        #             # Stimulus features label to index mapping (used for feature-level array?)
-        #             f_mp = {"Reward": 0}
-        #             for s in range(n_nodes):
-        #                 fs_mp[0]
-                        
-        #     # Also by default pick first stim in list as sample 
-        #     o2m_Samp = s_mp[0]    
-        
             
             
         case 'TransitiveInference': # transitive inference task in MTS

@@ -2,6 +2,8 @@
 """
 Created on Tue May 12 15:40:28 2026
 
+Streamlit app for generateTrials function to create MTS procedures.
+
 @author: mraemaek
 """
 
@@ -30,9 +32,11 @@ Generate matching-to-sample (MTS) training and testing trials
 for user-specified relational networks.
 
 This app allows you to:
-- define baseline relations
+- define baseline relations (or select a preset)
 - optionally define derived relations
+- manually set MTS procedure settings
 - generate baseline and derived test trials
+- visualize trained and tested relations
 - preview/export generated tasks
 """)
 
@@ -57,8 +61,13 @@ if use_preset:
             "Stimulus Equivalence",
             "RFT",
             "Other"
-        ]
-    )
+        ],
+            help= """Select subset of MTS protocols. 
+            'Stimulus Equivalence' allows you to compare training protocols or specify equivalence classes.
+            'RFT' allows you to choose from various procedures from relational frame theory literature.
+            'Other' contains a few other procedures.
+        """
+        )
     
     if preset_category == 'Stimulus Equivalence':
         preset = st.sidebar.selectbox(
@@ -68,7 +77,10 @@ if use_preset:
             "Equivalence Linear vs OTM 5-member",
             "Equivalence Linear vs MTO 5-member",
             "Equivalence OTM vs MTO 5-member"],
-                help="Select Equivalence protocol or Custom Equivalence to define # classes, # members and training structure."
+                help=""""
+                        Select Equivalence protocol or Custom Equivalence 
+                        to define # classes, # members and training structure.
+                    """
             )
     elif preset_category == 'RFT':
         
@@ -81,7 +93,14 @@ if use_preset:
             "RFT Hierarchical Contains-PartOf",
             "RFT Same-Opposite",
             "RFT Same-Different"],
-            help="Select MTS protocol. Steele&Hayes91 replicates seminal procedure by Steele and Hayes (1991). "
+            help="""
+            Select MTS protocol. Steele&Hayes91 replicates seminal procedure by 
+            Steele and Hayes (1991) involving same-different-opposite responding.
+            Comparison More-Less trains two more-than and less-than relations and tests derived relations.
+            Hierachical trains 'Contains' relations and tests derived 'is part of'.
+            Same-Opposite combines coordination and opposition frames.
+            Same-Different combines coordination and distinction frames.
+            """
         )
             
     else: 
@@ -92,7 +111,11 @@ if use_preset:
             "Identity Matching",
             "Arbitrary Conditional Discrimination"
         ],
-            help="Select predefined MTS protocol. Transitive inference allows for specifying number of nodes. Identity matching is simple identity matching task. Arbitrary Conditional discriminations trains arbitrary relations."
+            help="""
+            "Select predefined MTS protocol. 
+            Transitive inference allows for specifying number of nodes. 
+            Identity matching is simple identity matching task. 
+            Arbitrary Conditional discriminations trains arbitrary relations."""
         )
     
 
@@ -204,10 +227,7 @@ if use_preset:
     # ALL OTHER FIXED PRESETS
     # =====================================================
 
-    else:
-
-        # Their baseline, derived relations and labels
-        # are created inside generateTrials().
+    else: # created inside generateTrials().
         baseline = None
         derived = None
         sLabs = None
@@ -234,7 +254,8 @@ if preset == "Manual":
     label_string = st.sidebar.text_input(
         "Stimulus labels (comma-separated)",
         value=",".join(default_labels),
-        help = "Provide as many labels as the number of stimuli you want to include in the network, spearated by commas"
+        help = "Provide as many labels as the number of stimuli you want to include in the network, spearated by commas."
+        "Optionally, also include extra labels (not included in relations) to serve as comparison stimuli."
     )
     
     sLabs = [x.strip() for x in label_string.split(",")]
@@ -255,7 +276,7 @@ if preset == "Manual":
         "Relations",
         relation_options,
         help = "Select all relations you want to include in the network. \
-            You will be able to specify stimulus-pairs for each relation below."
+            You will be able to specify unique stimulus-pairs for each relation below."
     )
     
     st.sidebar.markdown("---")
@@ -321,8 +342,7 @@ if preset == "Manual":
         value=False,
         help=(
             "Check this box to manually specify derived relations (similar to baseline above)."
-            "If not checked, derived relations will be computed automatically "
-            "from the baseline relations."
+            "If not checked, derived relations will be computed automatically from the baseline relations."
         )
     )
     
@@ -336,7 +356,7 @@ if preset == "Manual":
             "Derived relation types",
             relation_options,
             default=[],
-            help="Select which relation types occur as derived relations."
+            help="Select which relations you want to test derived relations for."
         )
     
         if derived_relations and len(sLabs) == n_stim:
@@ -346,7 +366,7 @@ if preset == "Manual":
                 st.sidebar.markdown(f"### Derived: {relation}")
     
                 n_derived_pairs = st.sidebar.number_input(
-                    f"Number of derived stimulus pairs for '{relation}'",
+                    f"Number of derived '{relation} relations'",
                     min_value=0,
                     max_value=100,
                     value=1,
@@ -483,7 +503,7 @@ if st.button("Generate trials"):
                         label_offset= .2,
                         fontSize = 60,
                         sDotSize = 100,
-                        legend = ['Relation type']
+                        legend = ['Relation type', 'Relation colors']
                     )
 
                     st.pyplot(plt.gcf())
@@ -516,7 +536,7 @@ if st.button("Generate trials"):
                         label_offset= .2,
                         fontSize = 60,
                         sDotSize = 100,
-                        legend = ['Relation colors']
+                        legend = ['Relation type', 'Relation colors']
                     )
 
                     st.pyplot(plt.gcf())
@@ -642,6 +662,28 @@ if st.button("Generate trials"):
 # DOCUMENTATION
 # =========================================================
 
+with st.expander("How to use the app?"):
+    st.markdown("""
+                The app allows you to generate matching-to-sample (MTS) procedures to train
+                and test relational networks that you define, or choose from a range of presets.
+                
+                If you want to use a preset, see the explainer below for the list of options.
+                If you select no preset, you will be asked to manually efine your own relational network by specifying:
+                - stimulus labels
+                - baseline relation types
+                - baseline stimulus pairs
+                - optionally, derived relations to test (automatically derived if not specified)
+                
+                You can also select to visualize the trained and tested relations as graph networks,
+                and adapt procedure settings.
+                
+                The generated trial structure is displayed and can be downloded as a csv-file.
+                
+                The question marks next to the settings in the sidebar (left) provide more detailed info.
+                
+                """
+                )
+
 with st.expander("What are baseline and derived relations?"):
 
     st.markdown("""
@@ -655,11 +697,13 @@ Example:
 }
 
 ### Derived relations
-Relations inferred from the baseline network.
+Relations inferred from the baseline network and tested in the absence of feedback.
 
 From the example above:
 
-(0,2)
+{
+ 'More than': [(0,2)]
+ }
 
 can be derived.
 """)
@@ -673,17 +717,149 @@ Each generated trial contains:
 - comparison stimuli
 - correct comparison
 - trial type
+- trial labels
+
+
 """)
 
 with st.expander("Presets"):
 
     st.markdown("""
-### Manual
-User-defined relational network.
 
-### SH91
-Steele & Hayes (1991)-style setup.
+### Stimulus Equivalence
 
-### TransitiveInference
-Linear transitive inference network.
+#### Custom Equivalence
+Create an equivalence procedure with user-defined:
+- number of equivalence classes
+- number of members per class
+- training structure
+
+Available training structures:
+
+- **Linear series**  
+  Relations are trained sequentially, for example:  
+  `A1 → B1 → C1 → D1`
+
+- **One-to-many (OTM)**  
+  One anchor stimulus is related to all other class members, for example:  
+  `A1 → B1`, `A1 → C1`, `A1 → D1`
+
+- **Many-to-one (MTO)**  
+  Multiple stimuli are related to a common anchor, for example:  
+  `B1 → A1`, `C1 → A1`, `D1 → A1`
+
+Derived equivalence relations are generated automatically.
+
+#### Linear vs OTM — 5-member classes
+Two 5-member equivalence classes are trained using different structures:
+- one class with a linear-series protocol
+- one class with a one-to-many protocol
+
+Useful for comparing the relational networks generated by the two training structures.
+
+#### Linear vs MTO — 5-member classes
+Two 5-member equivalence classes:
+- one trained as a linear series
+- one trained using many-to-one training
+
+#### OTM vs MTO — 5-member classes
+Two 5-member equivalence classes:
+- one trained using one-to-many
+- one trained using many-to-one
+
+---
+
+### Relational Frame Theory
+
+#### Steele & Hayes (1991)
+Preset based on the classic Steele and Hayes relational-frame procedure.
+
+Includes three relational cues:
+- **Same as**
+- **Different from**
+- **Opposite to**
+
+The app can either test:
+- **All** relations derived from the trained network, or
+- **Relnet**, a predefined subset corresponding to the intended relational network.
+
+#### Comparison: More–Less
+A comparative relational frame using a linear chain such as:
+
+`A > B > C > D > E`
+
+The procedure derives:
+- mutual relations such as `B < A`
+- longer combinatorial relations such as `A > C`, `A > D`, and `A > E`
+
+#### Temporal: Before–After
+A temporal relational frame such as:
+
+`A before B`, `B before C`, `C before D`
+
+Derived relations include:
+- `B after A`
+- `A before C`
+- longer temporal relations when the chain permits them
+
+#### Hierarchical: Contains–Part Of
+A hierarchical/containment network such as:
+
+`A contains B`, `B contains C`, `C contains D`
+
+Derived relations include:
+- `A contains C`
+- `A contains D`
+- reciprocal **is part of** relations
+
+#### Same–Opposite
+A mixed relational network combining coordination and opposition, for example:
+
+`A same as B`  
+`B opposite to C`  
+`C same as D`
+
+Useful for testing derivation across different relation types.
+
+#### Same–Different
+A mixed network combining coordination and distinction, for example:
+
+`A same as B`  
+`B different from C`  
+`C same as D`
+
+---
+
+### Other MTS Procedures
+
+#### Transitive Inference
+Creates a linear comparative chain such as:
+
+`A > B > C > D > E`
+
+The number of stimuli can be selected in the sidebar.
+
+Derived relations are generated from the trained adjacent relations.
+
+#### Identity Matching
+Simple identity matching-to-sample.
+
+Examples:
+
+`A → A`  
+`B → B`  
+`C → C`  
+`D → D`
+
+No derived-relation tests are added by default.
+
+#### Arbitrary Conditional Discrimination
+Trains arbitrary sample–comparison mappings, for example:
+
+`A1 → B1`  
+`A2 → B2`  
+`A3 → B3`  
+`A4 → B4`
+
+This preset trains arbitrary conditional discriminations without automatically treating them as equivalence-test relations.
 """)
