@@ -142,8 +142,8 @@ if use_preset:
         sLabs = None
     
         generator_preset = preset
-
-
+else:
+    preset = 'Manual'
 
 if preset == "Manual":
     
