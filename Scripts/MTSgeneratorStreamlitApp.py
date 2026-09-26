@@ -51,51 +51,67 @@ use_preset = st.sidebar.checkbox(
 )
 
 if use_preset:
-    preset = st.sidebar.selectbox(
-    "Preset",
-    [
-        "Custom Equivalence",
-        "Equivalence Linear vs OTM 5-member class",
-        "Equivalence Linear vs MTO 5-member class",
-        "Equivalence OTM vs MTO 5-member class",
-        "Steele&Hayes91",
-        "TransitiveInference",
-        "RFT Comparison More-Less",
-        "RFT Temporal Before-After",
-        "RFT Hierarchical Contains-PartOf",
-        "RFT Same-Opposite",
-        "RFT Same-Different",
-        "Identity Matching",
-        "Arbitrary Conditional Discrimination"
-    ],
-        help="Select predefined relational structures (and MTS protocol)."
+    preset_category = st.sidebar.selectbox(
+        "Preset category",
+        [
+            "Stimulus Equivalence",
+            "RFT",
+            "Other"
+        ]
     )
     
-    if preset == "Steele&Hayes91":
-        sLabs = ["A", "B1", "B2", "B3", "C1", "C2", "C3", "N1", "N2"]
-        baseline = None
-        derived = st.sidebar.selectbox(
-            "Preset",
-            ["All", "Relnet"],
-            help="Select which derived relations to test. 'All' creates trials for all possible derivations. 'Relnet' only creates trials for derived relations assessed by Barnes & Hampson (1993)."
-        )
+    if preset_category == 'Stimulus Equivalence':
+        preset = st.sidebar.selectbox(
+        "Preset",
+        [
+            "Custom Equivalence",
+            "Equivalence Linear vs OTM 5-member",
+            "Equivalence Linear vs MTO 5-member",
+            "Equivalence OTM vs MTO 5-member"],
+                help="Select Equivalence protocol or Custom Equivalence to define # classes, # members and training structure."
+            )
+    elif preset_category == 'RFT':
         
-    elif preset == "TransitiveInference":
-        n_stim = st.sidebar.slider(
-            "Number of stimuli",
-            min_value=3,
-            max_value=15,
-            value=5,
-            help="Number of stimuli in the transitive inference chain."
+        preset = st.sidebar.selectbox(
+        "Preset",
+        [
+            "Steele&Hayes91",
+            "RFT Comparison More-Less",
+            "RFT Temporal Before-After",
+            "RFT Hierarchical Contains-PartOf",
+            "RFT Same-Opposite",
+            "RFT Same-Different"],
+            help="Select MTS protocol. Steele&Hayes91 replicates seminal procedure by Steele and Hayes (1991). "
+        )
+            
+    else: 
+        preset = st.sidebar.selectbox(
+        "Preset",
+        [
+            "TransitiveInference",
+            "Identity Matching",
+            "Arbitrary Conditional Discrimination"
+        ],
+            help="Select predefined MTS protocol. Transitive inference allows for specifying number of nodes. Identity matching is simple identity matching task. Arbitrary Conditional discriminations trains arbitrary relations."
         )
     
-        sLabs = [chr(65 + i) for i in range(n_stim)]
-        baseline = None
-        derived = None
+
+    
+    # Default: fixed presets are handled by generateTrials()
+    generator_preset = preset
+    baseline = None
+    derived = None
+    sLabs = None
+
+
+    # =====================================================
+    # CUSTOM EQUIVALENCE
+    # =====================================================
+
     if preset == "Custom Equivalence":
 
         st.sidebar.subheader("Equivalence settings")
-    
+
         n_classes = st.sidebar.number_input(
             "Number of classes",
             min_value=1,
@@ -103,7 +119,7 @@ if use_preset:
             value=2,
             step=1
         )
-    
+
         n_members = st.sidebar.number_input(
             "Members per class",
             min_value=2,
@@ -111,7 +127,7 @@ if use_preset:
             value=4,
             step=1
         )
-    
+
         equivalence_protocol = st.sidebar.selectbox(
             "Training protocol",
             ["Linear", "OTM", "MTO"],
@@ -121,30 +137,88 @@ if use_preset:
                 "MTO": "Many-to-one (MTO)"
             }[x]
         )
-    
+
         baseline, sLabs = create_equivalence_network(
             n_classes=n_classes,
             n_members=n_members,
             protocol=equivalence_protocol
         )
-    
+
         derived = None
-    
-        # This is dynamically generated, so send it through
-        # generateTrials as a manually specified network.
+
+        # Send dynamically generated network through Manual branch
         generator_preset = "Manual"
-    
+
+
+    # =====================================================
+    # STEELE & HAYES
+    # =====================================================
+
+    elif preset == "Steele&Hayes91":
+
+        sLabs = [
+            "A",
+            "B1", "B2", "B3",
+            "C1", "C2", "C3",
+            "N1", "N2"
+        ]
+
+        baseline = None
+
+        derived = st.sidebar.selectbox(
+            "Derived relations",
+            ["All", "Relnet"],
+            help=(
+                "Select which derived relations to test. "
+                "'All' creates trials for all possible derivations. "
+                "'Relnet' only creates trials for the selected "
+                "Steele & Hayes relational network."
+            )
+        )
+
+
+    # =====================================================
+    # TRANSITIVE INFERENCE
+    # =====================================================
+
+    elif preset == "TransitiveInference":
+
+        n_stim = st.sidebar.slider(
+            "Number of stimuli",
+            min_value=3,
+            max_value=15,
+            value=5,
+            help="Number of stimuli in the transitive inference chain."
+        )
+
+        sLabs = [
+            chr(65 + i)
+            for i in range(n_stim)
+        ]
+
+        baseline = None
+        derived = None
+
+
+    # =====================================================
+    # ALL OTHER FIXED PRESETS
+    # =====================================================
+
     else:
-    
-        # Fixed presets are handled internally by generateTrials()
+
+        # Their baseline, derived relations and labels
+        # are created inside generateTrials().
         baseline = None
         derived = None
         sLabs = None
-    
-        generator_preset = preset
-else:
-    preset = 'Manual'
 
+
+else:
+
+    preset = "Manual"
+    generator_preset = "Manual"
+    
+    
 if preset == "Manual":
     
     n_stim = st.sidebar.slider(
@@ -369,7 +443,7 @@ if st.button("Generate trials"):
         trial_data = generateTrials(
             baseline=baseline,
             n_baseline=n_baseline,
-            preset=preset,
+            preset=generator_preset,
             n_test=n_test,
             n_comp=n_comp,
             derived=derived,
