@@ -54,7 +54,10 @@ if use_preset:
     preset = st.sidebar.selectbox(
     "Preset",
     [
-        "Equivalence",
+        "Custom Equivalence",
+        "Equivalence Linear vs OTM 5-member class",
+        "Equivalence Linear vs MTO 5-member class",
+        "Equivalence OTM vs MTO 5-member class",
         "Steele&Hayes91",
         "TransitiveInference",
         "RFT Comparison More-Less",
@@ -89,11 +92,9 @@ if use_preset:
         sLabs = [chr(65 + i) for i in range(n_stim)]
         baseline = None
         derived = None
-    elif preset == "Equivalence":
+    if preset == "Custom Equivalence":
 
-        st.sidebar.subheader(
-            "Equivalence settings"
-        )
+        st.sidebar.subheader("Equivalence settings")
     
         n_classes = st.sidebar.number_input(
             "Number of classes",
@@ -113,11 +114,7 @@ if use_preset:
     
         equivalence_protocol = st.sidebar.selectbox(
             "Training protocol",
-            [
-                "Linear",
-                "OTM",
-                "MTO"
-            ],
+            ["Linear", "OTM", "MTO"],
             format_func=lambda x: {
                 "Linear": "Linear series",
                 "OTM": "One-to-many (OTM)",
@@ -133,11 +130,18 @@ if use_preset:
     
         derived = None
     
-        # Tell generateTrials that this is a
-        # user-defined network
+        # This is dynamically generated, so send it through
+        # generateTrials as a manually specified network.
         generator_preset = "Manual"
-    else: 
-        preset = "Manual"
+    
+    else:
+    
+        # Fixed presets are handled internally by generateTrials()
+        baseline = None
+        derived = None
+        sLabs = None
+    
+        generator_preset = preset
 
 
 
