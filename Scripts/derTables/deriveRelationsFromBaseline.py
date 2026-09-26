@@ -6,7 +6,8 @@ Created on Thu Aug 22 13:12:50 2024
 
 Function that derives all entailed relations from a given set of baseline relations
 
-Uses transitivity tables which can be constructed using another function.
+Uses transitivity tables constructed using createDerivationTables function.
+Derives until closure is reached.
 
 Prameters:
     - 'baseline': a dict containting tuples that represent the relata for 
@@ -16,16 +17,13 @@ Prameters:
                             heatmap for each relation (replace with network plotter)
     - 'printRels': True/False -  to print out the 'reasoning steps' involved in the process
     - 'sLabs': list of labels for the stimuli (can be longer than n_stim)
-
+    - 'max_depth': maximum depth (number of derivation steps) to look for. Derives until closure by default.
 
 TO DO:
     - Proper testing with all kinds of relations
-    - add network plotter
     
 
 """
-
-# Given a set of stimuli and baseline relations, compute derived relations 
 
 # Dependencies
 import numpy as np
@@ -36,188 +34,225 @@ from derTables.utils_tables import (cleanRelationLabels, # helper functions
                    findCommon,
                    deriveCombi,
                    determineProtocol,
-                   createRelationTable
+                   createRelationTable,
+                   add_fact
                    )
 from derTables.plot_utils import (plotNetworkHeatmap, plotRelNetworkGraph) # plot functions
 
-def deriveRelationsFromBaseline(baseline, sLabs = None, illustrate = None):
+from collections import deque
+
+def deriveRelationsFromBaseline(
+    baseline,
+    sLabs=None,
+    illustrate=None,
+    max_depth=None
+):
     
-    
-    if sLabs is None or len(sLabs) == 0 : # use default labels if not specified by user
-        sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 
-                 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-    
-    # fetch relations from baseline dict input
-    relations = cleanRelationLabels(list(baseline.keys()))
-    mutual, combi, relations = createDerivationTables(list(baseline.keys()))
+    if sLabs is None or len(sLabs) == 0:
+        sLabs = [
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+            'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'
+        ]
+
+    # create derivation tables tables
+    mutual, combi, relations = createDerivationTables(
+        list(baseline.keys())
+    )
+
     relation_list = list(relations.keys())
-    derived = dict() # initialize dict for derived relations
-    for i in relations.keys():
-        derived[i] = [] # ensure same order  & all relations accounted for
+
+    # Convert baseline into a set of relational facts
+    baseline_facts = set()
+
+    for rel_label, instances in baseline.items():
+        for source, target in instances:
+            baseline_facts.add(
+                (rel_label, source, target)
+            )
+
+    # All currently known relations
+    known = set(baseline_facts)
+
+    # Worklist of relations that still need to be processed
+    queue = deque()
+
+    # depth of each derivation
+    depth = {}
+
+    # optional record of how relation was derived
+    provenance = {}
+
+    for fact in baseline_facts:
+        queue.append(fact)
+        depth[fact] = 0
+        provenance[fact] = {
+            "type": "baseline"
+        }
+
+
     
-    for rel1Lab, source1_instances in baseline.items(): # Loop relations
+
+    # -----------------------------------------------------
+    # Iteratively derive until closure
+    # -----------------------------------------------------
+
+    while queue:
+
+        rel1Lab, s1a, s1b = queue.popleft()
+
         rel1 = relations[rel1Lab]
-        for source1 in source1_instances: # Loop specific relation instances
+        source1 = (s1a, s1b)
 
-            # Find mutually entailed relation in predefined list
-            mrel = mutual[rel1] 
-            mrelLab = list(relations.keys())[mrel] # label
-            
-            if illustrate == 'printRels': # For illustration, print baseline relation, then derived
-                print('{} is {} {}. \nFrom that, I can derive that {} is {} {}'.format(
-                          sLabs[source1[0]], rel1Lab, sLabs[source1[1]],
-                          sLabs[source1[1]], mrelLab, sLabs[source1[0]]))
-                        
-            # if mrelLab not in derived.keys():
-            #     # If derived relation not in baseline rels, create new key in dict
-            #     derived[mrelLab] = [(source1[1], source1[0])]
-            #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim])))
-            # else: # Find derived relation andappend mutually entailed relation
-            derived[mrelLab].append((source1[1], source1[0]))
-            
-            # # Update table (for visuals)
-            # relTab[rel1, source1[0], source1[1]] = 1 
-            # relTab[mrel, source1[1], source1[0]] = 1 
+        current_depth = depth[
+            (rel1Lab, s1a, s1b)
+        ]
 
-            # Loop relations again to get second relation for combinatorial entailment 
-            for rel2Lab, source2_instances in baseline.items():
-                rel2 = relations[rel2Lab]
-                for source2 in source2_instances:
-                    # Find common element between relations (to determine protococ and derivation)
-                    common = findCommon(source1, source2)
+        # =================================================
+        # 1. MUTUAL ENTAILMENT
+        # =================================================
 
-                    if common >= 0 and not (source1 == source2): 
-                        # Can only derive if non-identical relations have common element
+        mrel = mutual[rel1]
+        mrelLab = relation_list[mrel]
 
-                        # Find combinatorially entailed relation in lookup table
-                        # Depends on order of relations and elements (type of training)
-                        crel, source12 = deriveCombi(source1, source2, common, rel1, rel2, combi)
-                        
-                        if crel >= 0: # Exclude ill-defined relations
-                            crelLab = relation_list[crel] # label
-                            mcrel = mutual[crel] # get mutually entailed from predefined list
-                            mcrelLab = relation_list[mcrel] # label
-                            
-                            # determine protocol
-                            protocol = determineProtocol(source1, source2, common)
-    
-                            if protocol == 'OTM':# One-to-many: A-B & A-C
-                                if illustrate == 'print':# illustration: print baseline relations + combinatorial entailment
-                                    print('{} is {} {} \nand {} is {} {}. \
-                                          \nFrom that, I can derive that {} is {} {}.'.format(
-                                              sLabs[source1[0]], rel1Lab, sLabs[source1[1]],
-                                              sLabs[source2[0]], rel2Lab, sLabs[source2[1]],
-                                              sLabs[source1[1]], crelLab, sLabs[source2[1]]))
-                                # if crelLab not in derived.keys(): 
-                                #     # If derived relation not in baseline rels, create new key in dict
-                                #     derived[crelLab] = [(source1[1], source2[1])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:
-                                if not (source1[1], source2[1]) in derived[crelLab] \
-                                    and source1[1] != source2[1]:  # Filter duplicates and reflexive relations
-                                    derived[crelLab].append((source1[1], source2[1]))
-                                if illustrate == 'print':
-                                    print('\n...And that {} is {} {}.\n\n'.format(
-                                              sLabs[source2[1]], mcrelLab, sLabs[source1[1]]))
-                                # if mcrelLab not in derived.keys():
-                                #     derived[mcrelLab] = [(source2[1], source1[1])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:
-                                if not (source2[1], source1[1]) in derived[mcrelLab]\
-                                    and source2[1] != source1[1]:  # Filter duplicates and reflexive relations
-                                    derived[mcrelLab].append((source2[1], source1[1]))
-                            elif protocol == 'sMTO':
-                                if illustrate == 'print':
-                                    print('{} is {} {} \nand {} is {} {}. \
-                                          \nFrom that, I can derive that {} is {} {}.'.format(
-                                              sLabs[source1[0]], rel1Lab, sLabs[source1[1]],
-                                              sLabs[source2[0]], rel2Lab, sLabs[source2[1]],
-                                              sLabs[source1[1]], crelLab, sLabs[source2[0]]))
-                                # if crelLab not in derived.keys():
-                                #     derived[crelLab] = [(source1[1], source2[0])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:
-                                if not (source1[0], source2[1]) in derived[crelLab]\
-                                    and source1[0] != source2[1]:  # Filter duplicates and reflexive relations
-                                    derived[crelLab].append((source1[0], source2[1]))
-                                if illustrate == 'print':
-                                    print('\n...And that {} is {} {}.\n\n'.format(
-                                              sLabs[source2[0]], mcrelLab,sLabs[ source1[1]]))
-                                # if mcrelLab not in derived.keys():
-                                #     derived[mcrelLab] = [(source2[0], source1[1])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:
-                                if not (source2[0], source1[1]) in derived[mcrelLab]\
-                                    and source2[0] != source1[1]:  # Filter duplicates and reflexive relations
-                                    derived[mcrelLab].append((source2[0], source1[1]))
-                            elif protocol == 'Linear': # AxB and BxC -> derive A-C
-                                if illustrate == 'print':
-                                    print('{} is {} {} \nand {} is {} {}. \
-                                          \nFrom that, I can derive that {} is {} {}.'.format(
-                                             sLabs[source1[0]], rel1Lab, sLabs[source1[1]],
-                                              sLabs[source2[0]], rel2Lab, sLabs[source2[1]],
-                                              sLabs[source1[0]], crelLab, sLabs[source2[1]]))
-                                # if crelLab not in derived.keys():
-                                #     derived[crelLab] = [(source1[0], source2[1])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:
-                                if not (source1[0], source2[1]) in derived[crelLab]\
-                                    and source1[0] != source2[1]:  # Filter duplicates and reflexive relations
-                                    derived[crelLab].append((source1[0], source2[1]))
-                                if illustrate == 'print':
-                                    print('And that {} is {} {}.\n\n'.format(
-                                              sLabs[source2[1]], mcrelLab, sLabs[source1[0]]))
-                                # if mcrelLab not in derived.keys():
-                                #     derived[mcrelLab] = [(source2[1], source1[0])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:
-                                if not (source2[1], source1[0]) in derived[mcrelLab]\
-                                    and source2[1] != source1[0]:  # Filter duplicates and reflexive relations
-                                    derived[mcrelLab].append((source2[1], source1[0]))
-                            else: # sMTO:  A - B and A - C -> B-C
-                                if illustrate == 'print':
-                                    print('{} is {} {} \nand {} is {} {}. \
-                                          \nFrom that, I can derive that {} is {} {}.'.format(
-                                              sLabs[source1[0]], rel1Lab, sLabs[source1[1]],
-                                              sLabs[source2[0]], rel2Lab, sLabs[source2[1]],
-                                              sLabs[source1[0]], crelLab, sLabs[source2[0]]))
-                                # if crelLab not in derived.keys():
-                                #     derived[crelLab] = [(source1[0], source2[0])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:
-                                if not (source1[0], source2[0]) in derived[crelLab]\
-                                    and source1[0] != source2[0]:  # Filter duplicates and reflexive relations
-                                    derived[crelLab].append((source1[0], source2[0]))
-                                if illustrate == 'print':
-                                    print('\n...And that {} is {} {}\n\n'.format(
-                                              sLabs[source1[0]], mcrelLab, sLabs[source2[0]]))
-                                # if mcrelLab not in derived.keys():
-                                #     derived[mcrelLab] = [(source2[0], source1[0])]
-                                #     relTab = np.vstack((relTab, np.zeros([1, n_stim, n_stim]))) # Add another relation to table
-                                # else:       
-                                if not (source2[0], source1[0]) in derived[mcrelLab]\
-                                    and source2[0] != source1[0]:  # Filter duplicates and reflexive relations
-                                    derived[mcrelLab].append((source2[0], source1[0]))
+        add_fact(
+            rel_label=mrelLab,
+            source=s1b,
+            target=s1a,
+            known = known,
+            queue = queue,
+            provenance = provenance,
+            depth = depth,
+            new_depth=current_depth + 1,
+            max_depth = max_depth,
+            derivation_type="mutual",
+            parents=[
+                (rel1Lab, s1a, s1b)
+            ]
+        )
 
-                        else:
-                            if illustrate == 'print':
-                                print('{} is {} {} \nand {} is {} {}. \
-                                        \nFrom that, I cannot derive anything...\n\n'.format(
-                                            sLabs[source1[0]], rel1Lab, sLabs[source1[1]],
-                                            sLabs[source2[0]], rel2Lab, sLabs[source2[1]]))  
-                            
-    
-                                # Can go beyond two step derivations? Parametrize?
-                            # Probably have to for things like transitive inference
-    
-    # create table for heatmap illustration of relational network 
-    relTab = createRelationTable(baseline, derived)
-    
-    if illustrate == 'heatmap': 
-        # Plot baseline and derived relations as stimulus x stimulus heatmap   
-        plotNetworkHeatmap(baseline, derived, sLabs)
-    if illustrate == 'graph':
-        plotRels = ['baseline', 'mutual', 'combi']
-        plotTitle = ''
-        plotRelNetworkGraph(baseline, derived, sLabs, plotRels)
+        # =================================================
+        # 2. COMBINATORIAL ENTAILMENT
+        # =================================================
+
+        # snapshot because known can grow while processing
+        known_snapshot = list(known)
+
+        for rel2Lab, s2a, s2b in known_snapshot:
+
+            fact2 = (
+                rel2Lab,
+                s2a,
+                s2b
+            )
+
+            fact1 = (
+                rel1Lab,
+                s1a,
+                s1b
+            )
+
+            # Don't combine a fact with itself
+            if fact1 == fact2:
+                continue
+
+            rel2 = relations[rel2Lab]
+            source2 = (s2a, s2b)
+
+            common = findCommon(
+                source1,
+                source2
+            )
+
+            if common < 0:
+                continue
+
+            crel, source12 = deriveCombi(
+                source1,
+                source2,
+                common,
+                rel1,
+                rel2,
+                combi
+            )
+
+            # Ill-defined combination
+            if crel < 0:
+                continue
+
+            crelLab = relation_list[crel]
+
+            # source12 should represent the newly derived pair
+            new_source, new_target = source12
+
+            new_depth = max(
+                depth[fact1],
+                depth[fact2]
+            ) + 1
+
+            add_fact(
+                rel_label=crelLab,
+                source=new_source,
+                target=new_target,
+                known = known,
+                queue = queue,
+                provenance = provenance,
+                depth = depth,
+                new_depth=new_depth,
+                max_depth = max_depth,
+                derivation_type="combinatorial",
+                parents=[
+                    fact1,
+                    fact2
+                ]
+            )
+
+    # Convert back to  dictionary format
+    derived = {
+        rel: []
+        for rel in relation_list
+    }
+
+    for rel_label, source, target in known:
+
+        fact = (
+            rel_label,
+            source,
+            target
+        )
+
+        # Don't return baseline relations as derived
+        if fact in baseline_facts:
+            continue
+
+        derived[rel_label].append(
+            (source, target)
+        )
+
+    # deterministic ordering
+    for rel in derived:
+        derived[rel] = sorted(
+            derived[rel]
+        )
+
+    relTab = createRelationTable(
+        baseline,
+        derived
+    )
+
+    if illustrate == "heatmap":
+        plotNetworkHeatmap(
+            baseline,
+            derived,
+            sLabs
+        )
+
+    if illustrate == "graph":
+        plotRelNetworkGraph(
+            baseline,
+            derived,
+            sLabs,
+            ['baseline', 'mutual', 'combi']
+        )
+
     return relTab, derived

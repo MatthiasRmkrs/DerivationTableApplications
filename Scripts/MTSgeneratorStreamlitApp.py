@@ -14,7 +14,7 @@ from io import BytesIO
 
 from derTables.GenerateMTS_wip import generateTrials
 from derTables.plot_utils import plotRelNetworkGraph
-
+from derTables.utils_mts import *
 
 st.set_page_config(
     page_title="MTS Trial Generator",
@@ -52,10 +52,20 @@ use_preset = st.sidebar.checkbox(
 
 if use_preset:
     preset = st.sidebar.selectbox(
-        "Preset",
-        ["Steele&Hayes91", "TransitiveInference", "Equivalence 2 4-member classes",
-         "Equivalence 3 4-member classes"],
-        help="Use predefined relational structures or specify your own manually."
+    "Preset",
+    [
+        "Equivalence",
+        "Steele&Hayes91",
+        "TransitiveInference",
+        "RFT Comparison More-Less",
+        "RFT Temporal Before-After",
+        "RFT Hierarchical Contains-PartOf",
+        "RFT Same-Opposite",
+        "RFT Same-Different",
+        "Identity Matching",
+        "Arbitrary Conditional Discrimination"
+    ],
+        help="Select predefined relational structures (and MTS protocol)."
     )
     
     if preset == "Steele&Hayes91":
@@ -79,19 +89,55 @@ if use_preset:
         sLabs = [chr(65 + i) for i in range(n_stim)]
         baseline = None
         derived = None
-    elif preset == "Equivalence 2 4-member classes":
-        sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
-                 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
-        baseline = None
+    elif preset == "Equivalence":
+
+        st.sidebar.subheader(
+            "Equivalence settings"
+        )
+    
+        n_classes = st.sidebar.number_input(
+            "Number of classes",
+            min_value=1,
+            max_value=10,
+            value=2,
+            step=1
+        )
+    
+        n_members = st.sidebar.number_input(
+            "Members per class",
+            min_value=2,
+            max_value=10,
+            value=4,
+            step=1
+        )
+    
+        equivalence_protocol = st.sidebar.selectbox(
+            "Training protocol",
+            [
+                "Linear",
+                "OTM",
+                "MTO"
+            ],
+            format_func=lambda x: {
+                "Linear": "Linear series",
+                "OTM": "One-to-many (OTM)",
+                "MTO": "Many-to-one (MTO)"
+            }[x]
+        )
+    
+        baseline, sLabs = create_equivalence_network(
+            n_classes=n_classes,
+            n_members=n_members,
+            protocol=equivalence_protocol
+        )
+    
         derived = None
-        
-    elif preset == "Equivalence 3 4-member classes":
-        sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
-                 'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
-        baseline = None
-        derived = None
-else: 
-    preset = "Manual"
+    
+        # Tell generateTrials that this is a
+        # user-defined network
+        generator_preset = "Manual"
+    else: 
+        preset = "Manual"
 
 
 

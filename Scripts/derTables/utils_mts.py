@@ -171,3 +171,122 @@ def print_mts_trial(trial_data, idx, trial_number, trial_name, sLabs, relations)
         f"\n\nCorrect answer is "
         f"{sLabs[trial_data['correct'][idx]]}!"
     )
+    
+# %% helper to generate preset equivalence protocol
+
+def create_equivalence_network(
+    n_classes,
+    n_members,
+    protocol
+):
+    """
+    Create an equivalence-training network.
+
+    Parameters
+    ----------
+    n_classes : int
+        Number of equivalence classes.
+
+    n_members : int
+        Number of members per class.
+
+    protocol : str
+        Training structure:
+        'Linear', 'OTM', or 'MTO'.
+
+    Returns
+    -------
+    baseline : dict
+        Baseline Same-as relations.
+
+    sLabs : list
+        Stimulus labels.
+    """
+
+    baseline = {
+        "Same as": []
+    }
+
+    sLabs = []
+
+    # -----------------------------------------------------
+    # Create labels
+    # -----------------------------------------------------
+
+    # Member labels: A, B, C, D, ...
+    member_labels = [
+        chr(65 + i)
+        for i in range(n_members)
+    ]
+
+    # Store indices per class
+    classes = []
+
+    for class_id in range(1, n_classes + 1):
+
+        class_indices = []
+
+        for member in member_labels:
+
+            label = f"{member}{class_id}"
+
+            sLabs.append(label)
+
+            class_indices.append(
+                len(sLabs) - 1
+            )
+
+        classes.append(class_indices)
+
+    # -----------------------------------------------------
+    # Create baseline structure
+    # -----------------------------------------------------
+
+    for class_indices in classes:
+
+        if protocol == "Linear":
+
+            # A -> B -> C -> D ...
+            for i in range(len(class_indices) - 1):
+
+                baseline["Same as"].append(
+                    (
+                        class_indices[i],
+                        class_indices[i + 1]
+                    )
+                )
+
+        elif protocol == "OTM":
+
+            # A -> B
+            # A -> C
+            # A -> D
+            anchor = class_indices[0]
+
+            for target in class_indices[1:]:
+
+                baseline["Same as"].append(
+                    (anchor, target)
+                )
+
+        elif protocol == "MTO":
+
+            # B -> A
+            # C -> A
+            # D -> A
+            anchor = class_indices[0]
+
+            for source in class_indices[1:]:
+
+                baseline["Same as"].append(
+                    (source, anchor)
+                )
+
+        else:
+
+            raise ValueError(
+                "protocol must be "
+                "'Linear', 'OTM', or 'MTO'."
+            )
+
+    return baseline, sLabs

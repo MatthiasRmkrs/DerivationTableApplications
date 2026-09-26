@@ -660,7 +660,7 @@ def plotRelNetworkGraph(baseline,
     
     
     from derTables.createDerivationTables import createDerivationTables
-    from derTables.deriveRelationsFromBaseline2 import deriveRelationsFromBaseline
+    from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
     
     mutual, combi, relations = createDerivationTables(list(baseline.keys()))
     # derive relations (or do on the spot while plotting?)

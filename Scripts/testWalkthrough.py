@@ -10,7 +10,7 @@ Test walkthrough of derivation table functions
 
 # dependencies
 from derTables.createDerivationTables import createDerivationTables
-from derTables.deriveRelationsFromBaseline2 import deriveRelationsFromBaseline
+from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
 from derTables.GenerateMTS_wip import generateTrials
 from derTables.utils_syllogisms import *
 from derTables.plot_utils import *
@@ -94,11 +94,28 @@ relTab, derived = deriveRelationsFromBaseline(baseline, sLabs, illustrate)
 
 # But, to do that properly, one needs multi-step derivation
 
-sLabs = ['A', 'B', 'C', 'D', 'E', 'F']
-baseline = {'More than': [(0,1), (1,2), (2,3), (3,4), (4,5)]}
 illustrate = 'graph'
+baseline = {
+    "More than": [
+        (0, 1),
+        (1, 2),
+        (2, 3),
+        (3, 4),
+        (4, 5),
+        (5, 6)
+    ]
+}
 
-relTab, derived = deriveRelationsFromBaseline(baseline, sLabs, illustrate)
+sLabs = [
+    "A", "B", "C", "D", "E", "F", "G"
+]
+
+relTab, derived = deriveRelationsFromBaseline(
+    baseline,
+    sLabs,
+    illustrate = illustrate,
+    max_depth=None
+)
 
 # %% Generate a MTS procedure to train the baseline relations and test derived relational responding;
 
@@ -130,25 +147,6 @@ trial_data = generateTrials(
 
 # %%
 
-baseline = {
-    "More than": [
-        (0, 1),
-        (1, 2),
-        (2, 3),
-        (3, 4),
-        (4, 5),
-        (5, 6)
-    ]
-}
 
-sLabs = [
-    "A", "B", "C", "D", "E", "F", "G"
-]
-
-relTab, derived = deriveRelationsFromBaseline(
-    baseline,
-    sLabs,
-    max_depth=None
-)
 
 print(derived["More than"])

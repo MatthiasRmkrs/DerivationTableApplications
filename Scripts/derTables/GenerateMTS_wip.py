@@ -51,7 +51,7 @@ TODO - Function would ideally allow to:
 
 import numpy as np
 import pdb
-from derTables.deriveRelationsFromBaseline2 import deriveRelationsFromBaseline
+from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
 from derTables.createDerivationTables import createDerivationTables
 from derTables.utils_tables import *
 from derTables.utils_mts import findComparisonOptions, add_comparison_sets, print_mts_trial, format_comparisons
@@ -108,6 +108,306 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
                         
         #     # Also by default pick first stim in list as sample 
         #     o2m_Samp = s_mp[0]    
+        
+            
+            
+        case 'TransitiveInference': # transitive inference task in MTS
+            if sLabs is None: sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
+            baseline = dict({'More than': []})
+            for i in range(len(sLabs)-1):
+                baseline['More than'].append((i, i+1))  
+            n_stim = countUniqueStimuli(baseline)
+            relTab,  all_derived = deriveRelationsFromBaseline(baseline, sLabs)
+            derived = dict({'More than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
+            allRels = ['More than', 'Less than']
+            n_comp = 2
+            
+        
+        # ============================================================
+        # STIMULUS EQUIVALENCE PRESETS
+        # ============================================================
+    
+        case 'Equivalence 2 3-member Linear':
+            # Two 3-member equivalence classes
+            #
+            # Class 1: A1 -> B1 -> C1
+            # Class 2: A2 -> B2 -> C2
+    
+            sLabs = [
+                'A1', 'B1', 'C1',
+                'A2', 'B2', 'C2'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 1), (1, 2),   # class 1
+                    (3, 4), (4, 5)    # class 2
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = ['Same as']
+    
+    
+        case 'Equivalence 2 3-member OTM':
+            # Two 3-member equivalence classes
+            # One-to-many training
+            #
+            # Class 1: A1 -> B1, A1 -> C1
+            # Class 2: A2 -> B2, A2 -> C2
+    
+            sLabs = [
+                'A1', 'B1', 'C1',
+                'A2', 'B2', 'C2'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 1), (0, 2),   # class 1
+                    (3, 4), (3, 5)    # class 2
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = ['Same as']
+    
+    
+        case 'Equivalence 2 3-member MTO':
+            # Two 3-member equivalence classes
+            # Many-to-one training
+            #
+            # Class 1: B1 -> A1, C1 -> A1
+            # Class 2: B2 -> A2, C2 -> A2
+    
+            sLabs = [
+                'A1', 'B1', 'C1',
+                'A2', 'B2', 'C2'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (1, 0), (2, 0),   # class 1
+                    (4, 3), (5, 3)    # class 2
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = ['Same as']
+    
+    
+        case 'Equivalence 2 4-member Linear':
+            # Two 4-member equivalence classes
+            #
+            # A1 -> B1 -> C1 -> D1
+            # A2 -> B2 -> C2 -> D2
+    
+            sLabs = [
+                'A1', 'B1', 'C1', 'D1',
+                'A2', 'B2', 'C2', 'D2'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 1), (1, 2), (2, 3),
+                    (4, 5), (5, 6), (6, 7)
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = ['Same as']
+    
+    
+        case 'Equivalence 2 4-member OTM':
+            # Two 4-member equivalence classes
+            # One-to-many training
+    
+            sLabs = [
+                'A1', 'B1', 'C1', 'D1',
+                'A2', 'B2', 'C2', 'D2'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 1), (0, 2), (0, 3),
+                    (4, 5), (4, 6), (4, 7)
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = ['Same as']
+    
+    
+        case 'Equivalence 2 4-member MTO':
+            # Two 4-member equivalence classes
+            # Many-to-one training
+    
+            sLabs = [
+                'A1', 'B1', 'C1', 'D1',
+                'A2', 'B2', 'C2', 'D2'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (1, 0), (2, 0), (3, 0),
+                    (5, 4), (6, 4), (7, 4)
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = ['Same as']
+        
+
+        case 'Equivalence 3 4-member MTO':
+            sLabs = [
+                'A1', 'B1', 'C1', 'D1',
+                'A2', 'B2', 'C2', 'D2',
+                'A1', 'B3', 'C3', 'D3',
+                'A4', 'B4', 'C4', 'D4']
+            baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
+                                    (4,5), (4,6), (4,7),    # class 2
+                                    (8, 9), (8, 10), (8,11) # class 3
+                                    ]}
+            relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
+            allRels = ["Same as"]
+        case 'Equivalence 3 4-member OTM':
+            # Three 4-member equivalence classes
+            # One-to-many training
+    
+            sLabs = [
+                'A1', 'B1', 'C1', 'D1',
+                'A2', 'B2', 'C2', 'D2',
+                'A3', 'B3', 'C3', 'D3'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 1), (0, 2), (0, 3),
+                    (4, 5), (4, 6), (4, 7),
+                    (8, 9), (8, 10), (8, 11)
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = ['Same as']
+    
+        case 'Equivalence Linear vs OTM 5-member':
+            sLabs = ['A1', 'A2', 'A3', 'A4', 'A5', 'B1', 'B2', 'B3', 'B4', 'B5']
+            baseline = {'Same as': [(0,1), (1, 2), (2, 3), (3,4), # class 1 linear
+                                    (5,6), (5,7), (5, 8), (5, 9),  # class 2 OTM
+                                    ]}
+            relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
+            allRels = ["Same as"]
+        case 'Equivalence Linear vs MTO 5-member':
+
+            sLabs = [
+                'A1', 'B1', 'C1', 'D1', 'E1',
+                'A2', 'B2', 'C2', 'D2', 'E2'
+            ]
+        
+            baseline = {
+                'Same as': [
+        
+                    # Class 1 — linear
+                    (0, 1),
+                    (1, 2),
+                    (2, 3),
+                    (3, 4),
+        
+                    # Class 2 — many-to-one
+                    (6, 5),
+                    (7, 5),
+                    (8, 5),
+                    (9, 5)
+                ]
+            }
+        
+            n_stim = countUniqueStimuli(baseline)
+        
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+        
+            allRels = ['Same as']
+        case 'Equivalence OTM vs MTO 5-member class':
+
+            sLabs = [
+                'A1', 'B1', 'C1', 'D1', 'E1',
+                'A2', 'B2', 'C2', 'D2', 'E2'
+            ]
+        
+            baseline = {
+                'Same as': [
+        
+                    # Class 1 — one-to-many
+                    (0, 1),
+                    (0, 2),
+                    (0, 3),
+                    (0, 4),
+        
+                    # Class 2 — many-to-one
+                    (6, 5),
+                    (7, 5),
+                    (8, 5),
+                    (9, 5)
+                ]
+            }
+        
+            n_stim = countUniqueStimuli(baseline)
+        
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+        
+            allRels = ['Same as']
+        
+    
+        # ============================================================
+        # RFT PRESETS
+        # ============================================================
         case 'Steele&Hayes91': # Steele & Hayes set-up
             # Predefined relations/trials
             sLabs = ['A', 'B1', 'B2', 'B3', 'C1', 'C2', 'C3', 'N1', 'N2']
@@ -141,36 +441,269 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             relations = dict({'Same as': 0,
                               'Different from': 1,
                               'Opposite to': 2})
-            
-            
-        case 'TransitiveInference': # transitive inference task in MTS
-            if sLabs is None: sLabs = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K']
-            baseline = dict({'More than': []})
-            for i in range(len(sLabs)-1):
-                baseline['More than'].append((i, i+1))  
+        case 'RFT Comparison More-Less':
+            # Comparative relational frame
+            #
+            # A > B > C > D > E
+            #
+            # Mutual entailment:
+            # B < A, C < B, ...
+            #
+            # Combinatorial entailment:
+            # A > C, A > D, A > E, ...
+    
+            if sLabs is None:
+                sLabs = ['A', 'B', 'C', 'D', 'E']
+    
+            baseline = {
+                'More than': []
+            }
+    
+            for i in range(len(sLabs) - 1):
+                baseline['More than'].append(
+                    (i, i + 1)
+                )
+    
             n_stim = countUniqueStimuli(baseline)
-            relTab,  all_derived = deriveRelationsFromBaseline(baseline, sLabs)
-            derived = dict({'More than': [(0,2), (0,3), (0,4), (1,3), (1,4), (2, 4)]})
-            allRels = ['More than', 'Less than']
-            n_comp = 2
-            
-        case 'Equivalence 2 4-member classes': # train and test two four-member equivalence classes
-            sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
-                     'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
-            baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
-                                    (4,5), (4,6), (4,7)    # class 2
-                                    ]}
-            relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
-            allRels = ["Same as"]
-        case 'Equivalence 3 4-member classes':
-            sLabs = ['A1', 'A2', 'A3', 'A4', 'B1', 'B2', 'B3', 'B4',
-                     'C1', 'C2', 'C3', 'C4', 'D1', 'D2', 'D3', 'D4']
-            baseline = {'Same as': [(0,1), (0, 2), (0, 3), # class 1
-                                    (4,5), (4,6), (4,7),    # class 2
-                                    (8, 9), (8, 10), (8,11) # class 3
-                                    ]}
-            relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
-            allRels = ["Same as"]
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = [
+                'More than',
+                'Less than'
+            ]
+    
+    
+        case 'RFT Temporal Before-After':
+            # Temporal relational frame
+            #
+            # A before B
+            # B before C
+            # C before D
+            # D before E
+    
+            if sLabs is None:
+                sLabs = ['A', 'B', 'C', 'D', 'E']
+    
+            baseline = {
+                'Before': []
+            }
+    
+            for i in range(len(sLabs) - 1):
+                baseline['Before'].append(
+                    (i, i + 1)
+                )
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = [
+                'Before',
+                'After'
+            ]
+    
+    
+        case 'RFT Hierarchical Contains-PartOf':
+            # Hierarchical / containment frame
+            #
+            # A contains B
+            # B contains C
+            # C contains D
+            #
+            # Derivable:
+            # A contains C
+            # A contains D
+            # B contains D
+            #
+            # and reciprocal "Is part of" relations
+    
+            if sLabs is None:
+                sLabs = ['A', 'B', 'C', 'D']
+    
+            baseline = {
+                'Contains': []
+            }
+    
+            for i in range(len(sLabs) - 1):
+                baseline['Contains'].append(
+                    (i, i + 1)
+                )
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = [
+                'Contains',
+                'Is part of'
+            ]
+    
+    
+        case 'RFT Same-Opposite':
+            # Mixed coordination/opposition network
+            #
+            # A same B
+            # B opposite C
+            # C same D
+            #
+            # Tests composition of different relation types
+    
+            sLabs = [
+                'A', 'B', 'C', 'D'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 1),
+                    (2, 3)
+                ],
+                'Opposite to': [
+                    (1, 2)
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = [
+                'Same',
+                'Opposite'
+            ]
+    
+    
+        case 'RFT Same-Different':
+            # Mixed coordination/distinction network
+            #
+            # A same B
+            # B different C
+            # C same D
+    
+            sLabs = [
+                'A', 'B', 'C', 'D'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 1),
+                    (2, 3)
+                ],
+                'Different from': [
+                    (1, 2)
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            allRels = [
+                'Same',
+                'Different'
+            ]
+    
+    
+        # ============================================================
+        # BASIC CONDITIONAL DISCRIMINATION PRESETS
+        # ============================================================
+    
+        case 'Identity Matching':
+            # Simple identity matching-to-sample
+            #
+            # A -> A
+            # B -> B
+            # C -> C
+            # D -> D
+            #
+            # These are training relations rather than an equivalence
+            # derivation procedure.
+    
+            sLabs = [
+                'A', 'B', 'C', 'D'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 0),
+                    (1, 1),
+                    (2, 2),
+                    (3, 3)
+                ]
+            }
+    
+            n_stim = len(sLabs)
+    
+            # Construct relation table but do not create derived tests
+            relTab, all_derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            derived = {
+                'Same as': []
+            }
+    
+            allRels = [
+                'Same as'
+            ]
+    
+    
+        case 'Arbitrary Conditional Discrimination':
+            # Basic arbitrary matching-to-sample
+            #
+            # A1 -> B1
+            # A2 -> B2
+            # A3 -> B3
+            # A4 -> B4
+            #
+            # No derived relations are tested by default.
+    
+            sLabs = [
+                'A1', 'A2', 'A3', 'A4',
+                'B1', 'B2', 'B3', 'B4'
+            ]
+    
+            baseline = {
+                'Same as': [
+                    (0, 4),
+                    (1, 5),
+                    (2, 6),
+                    (3, 7)
+                ]
+            }
+    
+            n_stim = countUniqueStimuli(baseline)
+    
+            relTab, all_derived = deriveRelationsFromBaseline(
+                baseline,
+                sLabs
+            )
+    
+            # Conditional discrimination only:
+            # don't automatically test equivalence
+            derived = {
+                'Same as': []
+            }
+    
+            allRels = [
+                'Same as'
+            ]
             
     # initialize dicts for storing trial info
     nt_b, nt_t = 0,0

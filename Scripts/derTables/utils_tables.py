@@ -314,3 +314,51 @@ def createRelationTable(baseline, derived=None):
                 
     return relTab
 
+# %% Add fact to list of known facts for derivation logic
+
+def add_fact(
+    rel_label,
+    source,
+    target,
+    known,
+    queue, 
+    provenance,
+    depth,
+    max_depth,
+    new_depth,
+    derivation_type,
+    parents
+):
+
+    # Ignore reflexive relations
+    if source == target:
+        return False
+
+    fact = (
+        rel_label,
+        source,
+        target
+    )
+
+    # Already known
+    if fact in known:
+        return False
+
+    # Optional depth restriction
+    if (
+        max_depth is not None
+        and new_depth > max_depth
+    ):
+        return False
+
+    known.add(fact)
+    queue.append(fact)
+
+    depth[fact] = new_depth
+
+    provenance[fact] = {
+        "type": derivation_type,
+        "parents": parents
+    }
+
+    return True
