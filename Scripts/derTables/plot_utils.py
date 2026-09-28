@@ -646,8 +646,8 @@ def plotRelNetworkGraph(baseline,
     #       "simple, head_length=50, head_width=15, tail_width=5" # Simple arrow growing thinner
     # relArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
     # drelArrowStyle = "fancy, head_length=100, head_width=25, tail_width=7" # Pointed arrow growing thinner
-    relArrowStyle = "-|>"
-    drelArrowStyle = "-|>"
+    relArrowStyle = "-|>,head_length=20.0,head_width=5"
+    drelArrowStyle = "-|>,head_length=20,head_width=5"
     
     # label_offset = .55 # Play around with how close labels are plotted to lines
     relLabelFontSize = fontSize
@@ -753,7 +753,8 @@ def plotRelNetworkGraph(baseline,
                 currentColor = relation_colors[rels]
                 baselineArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
-                                        arrowstyle= relArrowStyle, color=currentColor, linewidth=5)
+                                        arrowstyle= relArrowStyle, color=currentColor,
+                                        shrinkA=40,shrinkB=40,linewidth=5)
                 plt.gca().add_patch(baselineArrow)
                 
                 # calculate position of label
@@ -800,7 +801,7 @@ def plotRelNetworkGraph(baseline,
                 derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
                                         arrowstyle=drelArrowStyle, color=currentColor, 
-                                        linestyle = ':', linewidth=5)
+                                        linestyle = ':', shrinkA=40, shrinkB=40, linewidth=5)
                 plt.gca().add_patch(derivedArrow)
                 if labels:
                     plt.text(azimuth_x, azimuth_y, shortrels[drels], color=currentColor, 
@@ -811,7 +812,7 @@ def plotRelNetworkGraph(baseline,
                 derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
                                         arrowstyle=drelArrowStyle, color=currentColor, 
-                                        linestyle = '--', linewidth=5)
+                                        linestyle = '--', shrinkA=40,shrinkB=40, linewidth=5)
                 plt.gca().add_patch(derivedArrow)
                 if labels:
                     plt.text(azimuth_x, azimuth_y, shortrels[drels], color=currentColor, 
