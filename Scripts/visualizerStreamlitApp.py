@@ -27,7 +27,7 @@ Simplest use-case is for users to specify a set of baseline relations, the funct
 will then automatically compute all relations that can be derived from those baseline 
 relations, and plot the full network as a labeled graph network.
 
-Users can optionally choose to specify the derived relations as well, instead of
+Users can optionally choose to manually specify the derived relations as well, instead of
 automatically deriving all relations.
 
 Users can specify the layout of the network (circular, degree-based, linear, etc.)
@@ -69,7 +69,25 @@ relation_options = [
     "Before",
     "After",
     "Contains",
-    "Is part of"
+    "Is part of",
+    'Bigger than',
+    'Smaller than',
+    'Larger than',
+    'Smaller than', 
+    'Faster than',
+    "Slower than", 
+    'Stronger than',
+    "Weaker than",
+    'Better than',
+    "Worse than", 
+    'Longer than',
+    "Shorter than",
+    'Left of',
+    'Right of',
+    'In front',
+    'Behind',
+    'Above',
+    'Below',
 ]
 
 selected_relations = st.sidebar.multiselect(
@@ -141,9 +159,8 @@ manual_derived = st.sidebar.checkbox(
     "Manually define derived relations",
     value=False,
     help=(
-        "Check this box to manually specify derived relations (similar to baseline above)."
-        "If not checked, derived relations will be computed automatically "
-        "from the baseline relations."
+        "Check this box to manually specify derived relations (similar to baseline relations above)."
+        "If not checked, derived relations will be computed automatically from the baseline relations."
     )
 )
 
@@ -167,7 +184,7 @@ if manual_derived:
             st.sidebar.markdown(f"### Derived: {relation}")
 
             n_derived_pairs = st.sidebar.number_input(
-                f"Number of derived stimulus pairs for '{relation}'",
+                f"Number of '{relation}' relations",
                 min_value=0,
                 max_value=100,
                 value=1,
@@ -322,10 +339,25 @@ legend = st.sidebar.multiselect(
 with st.expander("How to use the function?"):
 
     st.markdown("""
-- Specify the number of stimuli in the network, their labels and the types of relations in the network
-- Specify the number of instances of each relation and specify which stimuli are related (optionally also define derived relations in same way)
+- Specify the number of stimuli in the network and provide their labels 
+- Select the types of relations in the network, the number of instances of each relation and the pairs of related stimuli (optionally also define derived relations in same way)
 - Specify the layout you want for the network (circular, degree-based, hierarchical, ...), which relations to plot and other plot settings.
 - Press the 'Generate Network Graph' to create the plot and download it. 
+""")
+
+with st.expander("What are baseline and derived relations?"):
+
+    st.markdown("""
+### Baseline relations
+Directly trained relations.
+
+Example: A is more than B and B is more than C
+
+### Derived relations
+Relations inferred from the baseline network, by reversal or transitivity.
+
+From the example above: B is less than A and A is more than C
+can be derived.
 """)
 
 with st.expander("Example use"):
@@ -340,6 +372,120 @@ Then, we specify two sameness relations (A1-B1 and A1-C1), two difference relati
 If no derived relations are specified, the function will comoute all possible derived relations from baseline network and plot them.
 
 Given the one-to-many structure, let's choose a degree-based layout and create a separate plot for the baseline (only 'baseline' in relations to display) and derived relations ('mutual' and 'combi' in relations to display).
+""")
+
+with st.expander("Graph layouts"):
+
+    st.markdown("""
+### Graph layouts
+
+The graph visualizer supports several ways of positioning stimuli in the relational network, under 'stimulus layout'.  
+Changing the layout only changes the **visual arrangement of the stimuli**; it does not change the underlying baseline or derived relations.
+
+#### Auto
+Automatically selects a suitable layout based on the structure of the relational network.
+
+This is generally a good default when you do not have a specific visualization in mind.
+
+#### Degree
+Positions stimuli according to their **degree**, that is, the number of relations in which each stimulus participates.
+
+Stimuli with many connections tend to occupy more central positions, whereas stimuli with fewer connections are placed more peripherally.
+
+This layout can be useful for:
+- identifying highly connected or central stimuli
+- visualizing one-to-many or many-to-one structures
+- comparing the connectivity of different nodes
+
+#### Circular
+Places all stimuli evenly around a circle.
+
+This gives every stimulus an equal visual position and is useful when:
+- the relational network has no obvious hierarchy
+- comparing several equivalence classes
+- you want to avoid implying that one stimulus is more central than another
+
+For highly connected networks, however, relations may cross through the centre of the graph.
+
+#### Spring
+Uses a force-directed layout.
+
+Stimuli are treated as if connected by springs:
+- related stimuli attract each other
+- stimuli are simultaneously pushed apart
+
+The resulting layout tends to place strongly interconnected stimuli close together.
+
+This can be useful for:
+- larger relational networks
+- identifying clusters or equivalence classes
+- exploring the overall structure of a network
+
+The exact positions may vary somewhat between networks.
+
+#### Spectral
+Positions stimuli using the mathematical structure of the graph's connectivity matrix.
+
+It can reveal clusters and structural divisions within larger networks, although the resulting arrangement is sometimes less intuitive than circular or spring layouts.
+
+This layout is mainly useful for exploratory visualization of more complex networks.
+
+#### Shell
+Arranges stimuli in concentric circles or *shells*.
+
+This can be useful when the network contains:
+- central and peripheral stimuli
+- multiple levels of relational structure
+- groups that can naturally be represented at different distances from the centre
+
+#### Grid
+Places stimuli at regularly spaced positions on a grid.
+
+Unlike force-directed layouts, the positions do not depend strongly on the relational structure.
+
+This is useful when:
+- a predictable and orderly layout is preferred
+- comparing several graphs using similar stimulus sets
+- visual clarity is more important than representing network topology spatially
+
+#### Polygon
+Places stimuli at evenly spaced positions around a regular polygon.
+
+For example:
+- 3 stimuli → triangle
+- 4 stimuli → square
+- 5 stimuli → pentagon
+
+This is especially useful for small relational networks because the arrangement is symmetrical and easy to interpret.
+
+---
+
+### Baseline versus derived relations in the layout
+
+The **Include derived relations in layout** option determines whether derived relations influence the positioning of the stimuli.
+
+- **Off:** stimulus positions are determined only from the baseline/trained network.
+- **On:** both baseline and derived relations influence the layout.
+
+Keeping this option off is often useful when comparing trained and derived relational networks, because the stimulus positions remain based on the original training structure.
+
+---
+
+### Which layout should I use?
+
+There is no single best layout. Different layouts emphasize different properties of the same relational network.
+
+A useful starting point is:
+
+- **Auto** — general use
+- **Degree** — highlight highly connected stimuli
+- **Circular / Polygon** — small or symmetrical networks
+- **Spring** — larger or more complex networks
+- **Shell** — hierarchical or centre–periphery structures
+- **Grid** — consistent layouts across graphs
+- **Spectral** — exploratory analysis of network structure
+
+Because layout only affects stimulus positions, it can be useful to inspect the same network using several layouts.
 """)
 
 ###########
