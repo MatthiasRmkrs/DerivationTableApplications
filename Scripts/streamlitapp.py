@@ -134,18 +134,21 @@ if relata in ["names", "nonwords", "alphanumerics"]:
     syllogism_sLabs = None
 
 if st.button("Generate task"):
-    df = generateSyllogism(
-        relations=relations,
-        premises_types=premises_types,
-        n_rep=n_rep,
-        relata=relata,
-        protocol=protocol,
-        sLabs = syllogism_sLabs,
-        n_opt=n_opt,
-        includeIllDefined=include_ill,
-        randomizePremises=randomize,
-    )
-
+    try:
+        df = generateSyllogism(
+            relations=relations,
+            premises_types=premises_types,
+            n_rep=n_rep,
+            relata=relata,
+            protocol=protocol,
+            n_opt=n_opt,
+            randomizePremises=randomize,
+        )
+    
+    except Exception as e:
+        st.exception(e)
+        
+        
     st.success(f"Generated {len(df)} trials")
     
     st.subheader("Task summary")
