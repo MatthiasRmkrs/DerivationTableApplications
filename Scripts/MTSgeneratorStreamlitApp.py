@@ -261,15 +261,28 @@ if preset == "Manual":
     sLabs = [x.strip() for x in label_string.split(",")]
     
     relation_options = [
-        "Same as",
-        "Different from",
-        "Opposite to",
-        "More than",
-        "Less than",
-        "Before",
-        "After",
-        "Contains",
-        "Is part of"
+        'Same as', 
+         'Different from',
+         'Opposite to',
+        'More than', 'Less than'
+        'Larger than', 'Smaller than', 
+        'Faster than',  'Slower than', 
+        'Stronger than','Weaker than',
+        'Better than', 'Worse than', 
+        'Longer than', 'Shorter than',
+        'Before', 'After', 
+        'Contains','Is part of', 
+        'Left of','Right of',
+        'In front', 'Behind',
+        'Heavier than','Lighter than',
+        'Older than','Younger than',
+        'Wider than','Narrower than',
+        'Louder than','Quieter than',
+        'Farther than','Closer than',
+        'Higher than','Lower than',
+        'Earlier than','Later than',
+        'North of','South of',
+        'Taller than', 'Not as tall as'
     ]
     
     selected_relations = st.sidebar.multiselect(
