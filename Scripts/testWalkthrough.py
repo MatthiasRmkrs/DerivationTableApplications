@@ -12,6 +12,7 @@ Test walkthrough of derivation table functions
 from derTables.createDerivationTables import createDerivationTables
 from derTables.deriveRelationsFromBaseline import deriveRelationsFromBaseline
 from derTables.GenerateMTS_wip import generateTrials
+from derTables.generateRelationalSyllogisms import generateSyllogism
 from derTables.utils_syllogisms import *
 from derTables.plot_utils import *
 from derTables.utils_tables import *
@@ -145,8 +146,27 @@ trial_data = generateTrials(
     sLabs=sLabs
 )
 
-# %%
+# %% Set-up a syllogistic reasoning task
+
+# typical syllogistic n-term reasoning task relations x names
+relations = ['longer', 'shorter', 'stronger', 'weaker']
+relata = 'names'
+
+# include 'incorrect' conclusions and reversal of transitive derived relations
+premises_types = {'2': ['Incorrect', 'MutualCE'],
+                  '3': ['Incorrect', 'MutualCE'],
+                  '4': ['Incorrect', 'MutualCE']
+                  }
+n_rep = 4 # problem repetitions
+n_opt = 3 # number of response options
+protocol = 'Linear'
+
+trial_data = generateSyllogism(relations = relations, 
+                               premises_types = premises_types, 
+                               n_rep = n_rep, 
+                               relata = relata,
+                               protocol = protocol,
+                               n_opt = 3,
+                               printTrials = True)
 
 
-
-print(derived["More than"])

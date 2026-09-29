@@ -34,12 +34,7 @@ Input:
 
 ######
 TODO:
-    - ADD multiple choice setting
-        -> figure out inputs, which types to include, efficiently update trial data, 
-        ...
-    - This version is linear training, could allow user to define and specify 
-        different training protocols (Linear, One-to-many, many-to-one)? 
-        Many different options when there are more than 2 premises...
+
     - Add other types of ToF
         -> What is the benefit? Not really transformation of function anyway?
             -> Could add separate test where a function is attached to the 

@@ -7,7 +7,7 @@ Created on Sun Mar 15 09:10:17 2026
 
 # dependencies
 import numpy as np
-from itertools import product
+from itertools import product, combinations
 import pdb
 
 # %% relLabsForPremises - similar to above, convert rel Labs for premises in syllogistic problem
@@ -73,26 +73,126 @@ def relLabsForPremises(relations):
 # %% find all unique combinations of a set of relations for a given number of premises
 
 def findAllRelPremCombinations(relations, p):
-    
     """
-    For a given set of relations, finds all combinations of those relations that 
-    can go in a given number of premises, using itertools product.
-    
+    For a given set of relations, find all ordered combinations of relations
+    that can occur together in problems with 1..p premises.
+
+    Only combinations containing mutually compatible relations are retained.
+
     Args:
-        Relations: dict, relations as keys, int indices as values
-        n_p: the number of premises (repetitions)
+        relations: dict
+            Relation labels as keys and integer indices as values.
+        p: int or str
+            Maximum number of premises.
+
     Returns:
-        p_rels: dict, number of premises as keys, list of lists with combinations
-                of relations as values
+        p_rels: dict
+            Number of premises as string keys and lists of compatible
+            relation combinations as values.
     """
-    
-    
-    rel_list = list(relations.keys())
-    
-    p_rels = {
-        str(n): [list(tup) for tup in product(rel_list, repeat=n)]
-        for n in range(1, int(p) + 1)
+
+    compatible = {
+        'Same as': [],  # treated as compatible with everything below
+
+        'Different from': ['Same as', 'Different from', 'Opposite to'],
+        'Opposite to': ['Same as', 'Different from', 'Opposite to'],
+
+        'More than': ['Less than', 'More than'],
+        'Less than': ['Less than', 'More than'],
+
+        'Larger than': ['Larger than', 'Smaller than'],
+        'Smaller than': ['Larger than', 'Smaller than'],
+
+        'Faster than': ['Faster than', 'Slower than'],
+        'Slower than': ['Faster than', 'Slower than'],
+
+        'Stronger than': ['Stronger than', 'Weaker than'],
+        'Weaker than': ['Stronger than', 'Weaker than'],
+
+        'Better than': ['Better than', 'Worse than'],
+        'Worse than': ['Better than', 'Worse than'],
+
+        'Longer than': ['Longer than', 'Shorter than'],
+        'Shorter than': ['Longer than', 'Shorter than'],
+
+        'Contains': ['Contains', 'Is part of'],
+        'Is part of': ['Contains', 'Is part of'],
+
+        'Before': ['Before', 'After'],
+        'After': ['Before', 'After'],
+
+        'Left of': ['Left of', 'Right of'],
+        'Right of': ['Left of', 'Right of'],
+
+        'In front': ['In front', 'Behind'],
+        'Behind': ['In front', 'Behind'],
+
+        'Above': ['Above', 'Below'],
+        'Below': ['Above', 'Below'],
+
+        'Heavier than': ['Heavier than', 'Lighter than'],
+        'Lighter than': ['Heavier than', 'Lighter than'],
+
+        'Older than': ['Older than', 'Younger than'],
+        'Younger than': ['Older than', 'Younger than'],
+
+        'Wider than': ['Wider than', 'Narrower than'],
+        'Narrower than': ['Wider than', 'Narrower than'],
+
+        'Louder than': ['Louder than', 'Quieter than'],
+        'Quieter than': ['Louder than', 'Quieter than'],
+
+        'Farther than': ['Farther than', 'Closer than'],
+        'Closer than': ['Farther than', 'Closer than'],
+
+        'Higher than': ['Higher than', 'Lower than'],
+        'Lower than': ['Higher than', 'Lower than'],
+
+        'Earlier than': ['Earlier than', 'Later than'],
+        'Later than': ['Earlier than', 'Later than'],
+
+        'North of': ['North of', 'South of'],
+        'South of': ['North of', 'South of'],
+
+        'Taller than': ['Taller than', 'Not as tall as'],
+        'Not as tall as': ['Taller than', 'Not as tall as']
     }
+
+    rel_list = list(relations.keys())
+
+    def are_compatible(rel1, rel2):
+        """Return True if two relation labels can occur in the same problem."""
+
+        # Coordination can combine with any relation
+        if rel1 == 'Same as' or rel2 == 'Same as':
+            return True
+
+        # Require compatibility to be defined in both directions
+        return (
+            rel2 in compatible.get(rel1, [])
+            and rel1 in compatible.get(rel2, [])
+        )
+
+    def valid_combination(rel_combination):
+        """Check pairwise compatibility of all relations in a combination."""
+
+        return all(
+            are_compatible(rel1, rel2)
+            for rel1, rel2 in combinations(rel_combination, 2)
+        )
+
+    p_rels = {}
+
+    for n in range(1, int(p) + 1):
+
+        all_combinations = product(rel_list, repeat=n)
+
+        p_rels[str(n)] = [
+            list(rel_combination)
+            for rel_combination in all_combinations
+            if valid_combination(rel_combination)
+        ]
+
     return p_rels
 
 
