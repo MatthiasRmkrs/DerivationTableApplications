@@ -127,7 +127,25 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                     'Left of': 'to the left of',
                     'Right of': 'to the right of',
                     'In front': 'in front of',
-                    'Behind': 'behind'
+                    'Behind': 'behind',
+                    'Heavier than': 'heavier than',
+                    'Lighter than': 'lighter than',
+                    'Older than': 'older than',
+                    'Younger than': 'younger than',
+                    'Wider than': 'wider than',
+                    'Narrower than': 'narrower than',
+                    'Louder than': 'louder than',
+                    'Quieter than': 'quieter than',
+                    'Farther than': 'farther than',
+                    'Closer than': 'closer than',
+                    'Higher than': 'higher than',
+                    'Lower than': 'lower than',
+                    'Earlier than': 'earlier than',
+                    'Later than': 'later than',
+                    'North of': 'north than',
+                    'South of': 'south than',
+                    'Taller than': 'taller than',
+                    'Not as tall as': 'not as tall than', 
                       }
 
     # Create transitivity tables for relations in task
