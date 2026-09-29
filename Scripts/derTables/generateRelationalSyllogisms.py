@@ -220,28 +220,31 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                     
                 # debug
                 expected_relations = int(p)
-                expected_stimuli = len(useableRelations) + 1
+                if len(useableRelations) != int(p):
+                    print("DEBUG relation mismatch")
+                    print("p:", p)
+                    print("rels:", rels)
+                    print("useableRelations:", useableRelations)
+                    print("len(rels):", len(rels))
+                    print("len(useableRelations):", len(useableRelations))
                 
-                if len(useableRelations) != expected_relations:
-                    raise ValueError(
-                        f"Relation count mismatch. "
-                        f"This is a {p}-premise problem, but relLabsForPremises() returned "
-                        f"{len(useableRelations)} relations. "
-                        f"Original relations: {rels}. "
-                        f"Usable relations: {useableRelations}."
-                    )
+                    raise ValueError("Relation count mismatch")
 
 
-                if len(stim) != expected_stimuli:
-                    raise ValueError(
-                        f"Stimulus count mismatch for {p}-premise problem. "
-                        f"Expected {expected_stimuli} stimuli, got {len(stim)}. "
-                        f"Relations: {rels}. "
-                        f"Usable relations: {useableRelations}. "
-                        f"Stimuli: {stim}. "
-                        f"r_ids: {r_ids}. "
-                        f"rep: {rep}."
-                    )
+                expected_stimuli = len(useableRelations) + 1
+
+                if len(stim) < expected_stimuli:
+                    print("DEBUG stimulus mismatch")
+                    print("p:", p)
+                    print("rels:", rels)
+                    print("useableRelations:", useableRelations)
+                    print("stim:", stim)
+                    print("len(stim):", len(stim))
+                    print("expected_stimuli:", expected_stimuli)
+                    print("r_ids:", r_ids)
+                    print("rep:", rep)
+                
+                    raise ValueError("Stimulus count mismatch")
                 
                 premises, sources = createPremises(useableRelations, stim, protocol)
                 
