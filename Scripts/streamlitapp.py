@@ -14,7 +14,7 @@ from derTables.generateRelationalSyllogisms import generateSyllogism
 st.title("Relational Syllogism Task Generator")
 
 st.markdown("""
-Create custom syllogistic reasoning tasks based on relational frame theory.
+Create custom syllogistic reasoning tasks.
 
 **Workflow:**
 1. Choose relations and task structure in the sidebar
@@ -30,7 +30,29 @@ st.sidebar.header("Task settings")
 
 relations = st.sidebar.multiselect(
     "Relations",
-    ["same", "different", "opposite", "more than", "less than"],
+    ['Same as', 
+     'Different from',
+     'Opposite to',
+    'More than', 'Less than'
+    'Larger than', 'Smaller than', 
+    'Faster than',  'Slower than', 
+    'Stronger than','Weaker than',
+    'Better than', 'Worse than', 
+    'Longer than', 'Shorter than',
+    'Before', 'After', 
+    'Contains','Is part of', 
+    'Left of','Right of',
+    'In front', 'Behind',
+    'Heavier than','Lighter than',
+    'Older than','Younger than',
+    'Wider than','Narrower than',
+    'Louder than','Quieter than',
+    'Farther than','Closer than',
+    'Higher than','Lower than',
+    'Earlier than','Later than',
+    'North of','South of',
+    'Taller than', 'Not as tall as'
+    ],
     default=["same", "different"],
     help="Choose which relational cues will be used in syllogism \
         premises (e.g., 'A is more than B'). Note that for problems with \

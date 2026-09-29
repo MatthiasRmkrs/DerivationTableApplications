@@ -41,7 +41,7 @@ def cleanRelationLabels(relations):
                         'Faster than': "faster", 
                         'Stronger than': "stronger",
                         'Better than': "better", 
-                        'Longer than': "longer", # any comparative relation
+                        'Longer than': "longer", 
                         'Less than': "less", 
                         'Smaller than': "smaller", 
                         'Slower than': "slower", 
@@ -55,7 +55,26 @@ def cleanRelationLabels(relations):
                         'Left of': 'left',
                         'Right of': 'right',
                         'In front': 'front',
-                        'Behind': 'behind'} 
+                        'Behind': 'behind',
+                        'Heavier than': 'heavier',
+                        'Lighter than': 'lighter',
+                        'Older than': 'older',
+                        'Younger than': 'younger',
+                        'Wider than': 'wider',
+                        'Narrower than': 'narrower',
+                        'Louder than': 'louder',
+                        'Quieter than': 'quieter',
+                        'Farther than': 'farther',
+                        'Closer than': 'closer',
+                        'Higher than': 'higher',
+                        'Lower than': 'lower',
+                        'Earlier than': 'earlier',
+                        'Later than': 'later',
+                        'North of': 'north',
+                        'South of': 'south',
+                        'Taller than': 'taller',
+                        'Not as tall as': 'not as tall', 
+                        } 
 
     
     cleanRelations = dict()
@@ -93,11 +112,12 @@ def findGeneralRelations(relations):
                         'Opposite to': ['opposite'],
                         'More than':  ["more", 'bigger', "larger", "faster", 
                                        "stronger", "better", "longer", # any comparative relation
-                                       'right', 'in front'
+                                       'right', 'in front', 'heavier', 'older', 'wider', 'north', 'farther', 'louder', 'higher', 'later', 'taller'
                                        # 'after', # could add temporal here too, but then need to remove the before/after lists
                                 ],
+                        
                         'Less than': ["less", "smaller", "slower", "weaker", "worse", "shorter",
-                                      'left', 'behind'
+                                      'left', 'behind', 'lighter', 'younger', 'narrower', 'south', 'quieter', 'lower', 'earlier',  'not as tall'
                                       # "before",
                                       
                                 ],
