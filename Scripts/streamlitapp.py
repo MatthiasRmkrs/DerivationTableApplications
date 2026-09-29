@@ -33,7 +33,7 @@ relations = st.sidebar.multiselect(
     ['Same as', 
      'Different from',
      'Opposite to',
-    'More than', 'Less than'
+    'More than', 'Less than',
     'Larger than', 'Smaller than', 
     'Faster than',  'Slower than', 
     'Stronger than','Weaker than',
