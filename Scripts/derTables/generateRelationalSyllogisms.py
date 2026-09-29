@@ -173,6 +173,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
     rows = []  # for data storage
 
     for p, var in premises_types.items():  # loop levels of complexity and variants                                          
+        p_int = int(p) # convert
         premises = [] # init new set of premises
         p_rels = findAllRelPremCombinations(relations, p) # find all combinations of relations for N premises
         for rels in p_rels[p]:# then loop over those
@@ -184,19 +185,19 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
 
             for rep in range(n_rep): # loop problem repetitions (unique stimuli)
                 t += 1  # update trial id
-                if p == '1':
+                if p_int == 1:
                     stim, t_id = findUniqueStimuli(
                         relations, sLabs, p, n_rep, rep, r_ids[0])
-                elif p == '2':
+                elif p_int == 2:
                     stim, t_id = findUniqueStimuli(
                         relations, sLabs, p, n_rep, rep, r_ids[0], r_ids[1])
-                elif p == '3':
+                elif p_int == 3:
                     stim, t_id = findUniqueStimuli(
                         relations, sLabs, p, n_rep, rep, r_ids[0], r_ids[1], r_ids[2])
-                elif p == '4':
+                elif p_int == 4:
                     stim, t_id = findUniqueStimuli(
                         relations, sLabs, p, n_rep, rep, r_ids[0], r_ids[1], r_ids[2], r_ids[3])
-                elif p == '5':
+                elif p_int == 5:
                     stim, t_id = findUniqueStimuli(
                         relations, sLabs, p, n_rep, rep, r_ids[0], r_ids[1], r_ids[2], r_ids[3], r_ids[4])
                 
@@ -216,27 +217,42 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                         func = rep
                     fPremise = "{} {} '{}'.".format(
                         stim[0], crelfuncs[rels[0]][func], funcs[rels[0]][func])
+                    
+                # debug
+                expected_stimuli = int(p) + 1
+
+                if len(stim) != expected_stimuli:
+                    raise ValueError(
+                        f"Stimulus count mismatch for {p}-premise problem. "
+                        f"Expected {expected_stimuli} stimuli, got {len(stim)}. "
+                        f"Relations: {rels}. "
+                        f"Usable relations: {useableRelations}. "
+                        f"Stimuli: {stim}. "
+                        f"r_ids: {r_ids}. "
+                        f"rep: {rep}."
+                    )
+                
                 premises, sources = createPremises(useableRelations, stim, protocol)
                 
                 # derive relation
-                if p == '1': # mutual entailment
+                if p_int == 1: # mutual entailment
                     corDer = mutual[r_ids[0]] # Find mutual relation
                     d_pair = [stim[1], stim[0]]
                     derivation = 'Mutual'
                 else:                    
                     derivation = 'Combinatorial'
-                if p == '2':
+                if p_int == 2:
                     common = findCommon(sources[0], sources[1]) # Find common
                     corDer, d_pair = deriveCombi(
                         sources[0], sources[1], common, r_ids[0], r_ids[1], combi)
-                if p == '3':
+                if p_int == 3:
                     common = findCommon(sources[0], sources[1]) # Find common
                     corDer, d_pair = deriveCombi(
                         sources[0], sources[1], common, r_ids[0], r_ids[1], combi)
                     common = findCommon(d_pair, sources[2]) # Find common
                     corDer, d_pair = deriveCombi(
                         d_pair, sources[2], common, corDer, r_ids[2], combi)
-                if p == '4':
+                if p_int == 4:
                     common = findCommon(sources[0], sources[1]) # Find common
                     corDer, d_pair = deriveCombi(
                         sources[0], sources[1], common, r_ids[0], r_ids[1], combi)
@@ -246,7 +262,7 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                     common = findCommon(d_pair, sources[3]) # Find common
                     corDer, d_pair = deriveCombi(
                         d_pair, sources[3], common, corDer, r_ids[3], combi)
-                if p == '5':
+                if p_int == 5:
                     common = findCommon(sources[0], sources[1]) # Find common
                     corDer, d_pair = deriveCombi(
                         sources[0], sources[1], common, r_ids[0], r_ids[1], combi)
