@@ -104,11 +104,18 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
     
     if protocol is None:
         protocol = 'Linear' # linear combination by default
-    if sLabs is None:
-        if relata == 'nonwords': sLabs = nonwords
-        elif relata == 'names': sLabs = names
-        elif relata == 'alphanumerics': sLabs = alphanumerics
-    
+    if not sLabs:
+        if relata == 'nonwords':
+            sLabs = nonwords.copy()
+        elif relata == 'names':
+            sLabs = names.copy()
+        elif relata == 'alphanumerics':
+            sLabs = alphanumerics.copy()
+        else:
+            raise ValueError(
+                f"No stimulus labels supplied and unknown relata type: {relata}"
+            )
+        
     # specify vocabulary to translate default relation labels to ones that fit in premises
     relpremVoc = {'Same as': 'the same as',
                     'Different from': 'different from',

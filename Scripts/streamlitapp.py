@@ -53,7 +53,7 @@ relations = st.sidebar.multiselect(
     'North of','South of',
     'Taller than', 'Not as tall as'
     ],
-    default=["Same as", "Different from"],
+    default=["Same as", "Different"],
     help="Choose which relational cues will be used in syllogism \
         premises (e.g., 'A is more than B'). Note that for problems with \
         multiple premises, only compatible relations will be combined in one problem."
@@ -130,6 +130,9 @@ randomize = st.sidebar.checkbox("Randomize premise order",
 # -------------------------
 # Generate
 # -------------------------
+if relata in ["names", "nonwords", "alphanumerics"]:
+    syllogism_sLabs = None
+
 if st.button("Generate task"):
     df = generateSyllogism(
         relations=relations,
@@ -137,6 +140,7 @@ if st.button("Generate task"):
         n_rep=n_rep,
         relata=relata,
         protocol=protocol,
+        sLabs = syllogism_sLabs,
         n_opt=n_opt,
         includeIllDefined=include_ill,
         randomizePremises=randomize,
