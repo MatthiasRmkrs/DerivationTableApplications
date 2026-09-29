@@ -42,7 +42,25 @@ def relLabsForPremises(relations):
                         'to the left of': 'left',
                         'to the right of': 'right',
                         'in front of': 'front',
-                        'behind': 'behind'}
+                        'behind': 'behind',
+                        'heavier than': 'heavier',
+                        'lighter than': 'lighter',
+                        'older than': 'older',
+                        'younger than': 'younger',
+                        'wider than': 'wider',
+                        'narrower than': 'narrower',
+                        'louder than': 'louder',
+                        'quieter than': 'quieter',
+                        'farther than': 'farther',
+                        'closer than': 'closer',
+                        'higher than': 'higher',
+                        'lower than': 'lower',
+                        'earlier than': 'earlier',
+                        'later than': 'later',
+                        'north of': 'north',
+                        'south of': 'south',
+                        'taller than': 'taller',
+                        'not as tall as': 'not as tall', }
     useableRelations = []
     rel_id = -1 # init relation index
     for rel in relations: # loop input relations
