@@ -53,7 +53,7 @@ relations = st.sidebar.multiselect(
     'North of','South of',
     'Taller than', 'Not as tall as'
     ],
-    default=["Same as", "Different"],
+    default=["Same as", "Different from"],
     help="Choose which relational cues will be used in syllogism \
         premises (e.g., 'A is more than B'). Note that for problems with \
         multiple premises, only compatible relations will be combined in one problem."
