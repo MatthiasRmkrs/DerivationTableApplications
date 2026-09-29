@@ -221,14 +221,14 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                 # debug
                 expected_relations = int(p)
                 if len(useableRelations) != int(p):
-                    print("DEBUG relation mismatch")
-                    print("p:", p)
-                    print("rels:", rels)
-                    print("useableRelations:", useableRelations)
-                    print("len(rels):", len(rels))
-                    print("len(useableRelations):", len(useableRelations))
-                
-                    raise ValueError("Relation count mismatch")
+                    raise ValueError(
+                        f"Relation count mismatch | "
+                        f"p={p} | "
+                        f"rels={rels} | "
+                        f"useableRelations={useableRelations} | "
+                        f"len(rels)={len(rels)} | "
+                        f"len(useableRelations)={len(useableRelations)}"
+                    )
 
 
                 expected_stimuli = len(useableRelations) + 1

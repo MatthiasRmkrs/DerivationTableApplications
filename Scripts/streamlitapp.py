@@ -147,7 +147,7 @@ if st.button("Generate task"):
     
     except Exception as e:
         st.exception(e)
-        
+        st.stop()
         
     st.success(f"Generated {len(df)} trials")
     

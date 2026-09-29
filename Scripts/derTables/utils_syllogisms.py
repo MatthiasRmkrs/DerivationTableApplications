@@ -14,60 +14,74 @@ import pdb
 
 def relLabsForPremises(relations):
     """
-    convert input labels to ones that can be used in premises
-    
+    Convert relation labels to wording that can be used in premises.
+
     Args:
-        Relations: list of relation labels (str)
+        relations: list of relation labels (str)
+
+    Returns:
+        list of premise-compatible relation labels
     """
-    premiseVariants = {'the same as': 'same',
-                        'different from': 'different',
-                        'opposite to': 'opposite',
-                        'more than':  "more", 
-                        'bigger than': 'bigger',
-                        'larger than': "larger", 
-                        'faster than': "faster", 
-                        'stronger than': "stronger",
-                        'better than': "better", 
-                        'longer than': "longer", # any comparative relation
-                        'less than': "less", 
-                        'smaller than': "smaller", 
-                        'slower than': "slower", 
-                        'weaker than': "weaker", 
-                        'worse than': "worse", 
-                        'shorter than': "shorter",
-                        'before': 'before',
-                        'after': 'after',
-                        'contains': 'contains',
-                        'part of': 'part',
-                        'to the left of': 'left',
-                        'to the right of': 'right',
-                        'in front of': 'front',
-                        'behind': 'behind',
-                        'heavier than': 'heavier',
-                        'lighter than': 'lighter',
-                        'older than': 'older',
-                        'younger than': 'younger',
-                        'wider than': 'wider',
-                        'narrower than': 'narrower',
-                        'louder than': 'louder',
-                        'quieter than': 'quieter',
-                        'farther than': 'farther',
-                        'closer than': 'closer',
-                        'higher than': 'higher',
-                        'lower than': 'lower',
-                        'earlier than': 'earlier',
-                        'later than': 'later',
-                        'north of': 'north',
-                        'south of': 'south',
-                        'taller than': 'taller',
-                        'not as tall as': 'not as tall', }
+
+    premiseVariants = {
+        'Same as': 'the same as',
+        'Different from': 'different from',
+        'Opposite to': 'opposite to',
+        'More than': 'more than',
+        'Bigger than': 'bigger than',
+        'Larger than': 'larger than',
+        'Faster than': 'faster than',
+        'Stronger than': 'stronger than',
+        'Better than': 'better than',
+        'Longer than': 'longer than',
+        'Less than': 'less than',
+        'Smaller than': 'smaller than',
+        'Slower than': 'slower than',
+        'Weaker than': 'weaker than',
+        'Worse than': 'worse than',
+        'Shorter than': 'shorter than',
+        'Before': 'before',
+        'After': 'after',
+        'Contains': 'contains',
+        'Is part of': 'part of',
+        'Left of': 'to the left of',
+        'Right of': 'to the right of',
+        'In front': 'in front of',
+        'Behind': 'behind',
+        'Above': 'above',
+        'Below': 'below',
+        'Heavier than': 'heavier than',
+        'Lighter than': 'lighter than',
+        'Older than': 'older than',
+        'Younger than': 'younger than',
+        'Wider than': 'wider than',
+        'Narrower than': 'narrower than',
+        'Louder than': 'louder than',
+        'Quieter than': 'quieter than',
+        'Farther than': 'farther than',
+        'Closer than': 'closer than',
+        'Higher than': 'higher than',
+        'Lower than': 'lower than',
+        'Earlier than': 'earlier than',
+        'Later than': 'later than',
+        'North of': 'north of',
+        'South of': 'south of',
+        'Taller than': 'taller than',
+        'Not as tall as': 'not as tall as',
+    }
+
     useableRelations = []
-    rel_id = -1 # init relation index
-    for rel in relations: # loop input relations
-        rel_id +=1
-        for useable, inputs in premiseVariants.items():
-            if inputs in rel.lower(): useableRelations.append(useable)
-    
+
+    for rel in relations:
+        if rel not in premiseVariants:
+            raise ValueError(
+                f"Relation '{rel}' is not defined in premiseVariants."
+            )
+
+        useableRelations.append(
+            premiseVariants[rel]
+        )
+
     return useableRelations
 
 # %% find all unique combinations of a set of relations for a given number of premises
