@@ -165,21 +165,27 @@ if st.button("Generate task"):
         st.warning("⚠️ Large task generated. This may be difficult to run experimentally.")
     
     if len(df) > 0:
-        st.subheader("Example trial")
+        st.subheader("Example trials")
     
-        example = df.iloc[0]
+        n_examples = min(3, len(df))
+        examples = df.sample(n=n_examples)
     
-        st.markdown(f"""
-                **Premises:**  
-                {" ".join(example["Premises"])}
-                
-                **Prompt:**  
-                {example["Prompt"]}
-                
-                **Correct answer:**  
-                {example["printCorrect"]}
-                """)
-
+        for i, (_, example) in enumerate(examples.iterrows(), start=1):
+    
+            st.markdown(f"""
+            ### Example {i}
+    
+            **Premises:**  
+            {" ".join(example["Premises"])}
+    
+            **Prompt:**  
+            {example["Prompt"]}
+    
+            **Correct answer:**  
+            {example["printCorrect"]}
+            """)
+            
+        
     st.dataframe(df.head(20))
 
     csv = df.to_csv(index=False).encode("utf-8")

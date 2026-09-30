@@ -641,19 +641,23 @@ if st.button("Generate trials"):
         # EXAMPLE TRIAL
         # =================================================
 
-        st.subheader("Example trial")
+        st.subheader("Example trials")
+    
+        n_examples = min(3, len(df))
+        examples = df.sample(n=n_examples)
+    
+        for i, (_, ex) in enumerate(examples.iterrows(), start=1):
+    
+            st.markdown(f"""
+            ### Example {i}: {ex['Type']}
+            
+            - **Sample stimulus:** {ex['Sample Label']}
+            - **Relation cue:** {ex['Relation']}
+            - **Comparison stimuli:** {", ".join(ex['Comparison Labels'])}
+            - **Correct comparison:** {ex['Correct Label']}
+            """)
 
-        ex = df.iloc[0]
-
-        st.markdown(f"""
-### {ex['Type']}
-
-- **Sample stimulus:** {ex['Sample Label']}
-- **Relation cue:** {ex['Relation']}
-- **Comparison stimuli:** {", ".join(ex['Comparison Labels'])}
-- **Correct comparison:** {ex['Correct Label']}
-""")
-
+        st.markdown("---")
         # =================================================
         # DOWNLOAD
         # =================================================
