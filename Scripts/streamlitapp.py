@@ -13,15 +13,6 @@ from derTables.generateRelationalSyllogisms import generateSyllogism
 
 st.title("Relational Syllogism Task Generator")
 
-st.markdown("""
-Create custom syllogistic reasoning tasks.
-
-**Workflow:**
-1. Choose relations and task structure in the sidebar
-2. Click *Generate task*
-3. Preview and download your trials as CSV
-""")
-
 
 # -------------------------
 # UI
@@ -73,21 +64,25 @@ for p in range(1, 6):
             f"Variants for {p} premises",
             variant_options,
             default=["Incorrect", "Irrelevant"],
-            key=f"variants_{p}"
+            key=f"variants_{p}",
+            help = """ See explainer for examples.
+        - **Incorrect**: conclusion is false  
+        - **Irrelevant**: adds unrelated premise  
+        - **Analogy**: compares relations (only for 2 premises)  
+        - **mutualCE**: tests reversed combinatorial entailment  
+        """
         )
         
         if selected:  # only include if something selected
             premises_types[str(p)] = selected
             
-with st.expander("What are problem variants?"):
-    st.markdown("""
-- **Incorrect**: conclusion is false  
-- **Irrelevant**: adds unrelated premise  
-- **Analogy**: compares relations (only for 2 premises)  
-- **mutualCE**: tests reversed combinatorial entailment  
-""")
 
-n_rep = st.sidebar.number_input("Repetitions", 1, 50, 1)
+n_rep = st.sidebar.number_input("Repetitions", 1, 50, 1,
+                                help = """
+                                Set how many repetitions to create for each 
+                                unique problem (relations, premises and type).
+                                Each repetition will include novel stimuli.
+                                """)
 
 relata = st.sidebar.selectbox(
     "Stimulus type",
@@ -103,16 +98,21 @@ relata = st.sidebar.selectbox(
 protocol = st.sidebar.selectbox(
     "Protocol",
     ["Linear", "OTM", "MTO", "revLinear"],
-    help = ""
+    help = """'Linear' presents premises as 'A related to B; B related to C, ...'.
+            'OTM' presents premises as 'A related to B, A related to C, ...'.
+            'MTO' presents premises as 'A related to B, C related to B, ...'.
+            'revLinear' presentspremises as 'A related to B, C related to A'.
+            Note that OTM and MTO are only relevant for 2-premise problems."""
+            
 )
 
 n_opt = st.sidebar.selectbox(
     "Number of Response Options",
     [1, 2, 3, 4],
     index=2,
-    help = "Number of response options. If set to 1, problem premises are \
-        followed by one conclusion, and function generates a unique problem \
-        for each type you specified in input."
+    help = """Number of response options. If set to 1, problem premises are 
+        followed by one conclusion (forced choice). If set to more than 1, 
+        multiple choice problems will be created."""
 )
 
 include_ill = st.sidebar.checkbox("Include ill-defined problems",
@@ -190,13 +190,87 @@ if st.button("Generate task"):
         file_name="syllogism_task.csv",
         mime="text/csv"
     )
+    
+    with st.expander("How to use this app?"):
+        st.markdown("""
+                    
+        This app allows you to generate syllogistic reasoning tasks with content and
+        parameters of your choice.
+        
+        First, select the relations you want to make up the premises from the drop-down menu.
+        The function underneath the app ensures that only compatible relations 
+        (e.g., stronger than and weaker than, but not longer than) are combined in a given problem.
+        
+        Then, specify the number of premises you want problems to made up of. 
+        You can vary the number of premises from 1 to 5 by checking the boxes.
+        
+        Next, for each level of complexity, you will have to specify which problem 
+        variants (see explainer below) you want to include, by selecting them from 
+        the drop-down menu. If none are selected, only 'regular' problems are included.
+        
+        Finally, you can manipulate a number of procedural aspects:
+            - The number of repetitions of each unique problem type (each repetition using new stimuli)
+            - The type of stimuli to use in the problems (names, nonwords, alphanumerics)
+            - The number of response options. Set to 1 for forced choice problems,
+                or >1 for multiple-choice problems.
+            - Include ill-defined problems (problems for which no relation can reliably be derived)
+            - Randomise premise order (default is linear: A related to B, B related to C, ...)
+        
+        
+
+    """)
+    with st.expander("What are the problem variants."):
+        st.markdown("""
+                    
+                A regular problem presents a number of premises and a conclusion 
+                that can be derived from those premises, e.g.:
+                    
+                    Jack is stronger than Jane, Jane is stronger than Ellie.
+                    Is stronger than Ellie?
+                
+                
+                'Incorrect' problems present a conclusion that cannot be derived 
+                from the premises, allowing you to balance the number of yes/no responses.
+                For example:
+                    
+                    Jack is stronger than Jane, Jane is stronger than Ellie. 
+                    Is Ellie stronger than Jack?
+                    
+                'Irrelevant' problems add an extra premise to the problem, which is not 
+                required to make the derivation allowing one to judge the conclusion.
+                For example:
+                    
+                    Jack is stronger than Jane, Jane is stronger than Ellie. 
+                    Ellie is weaker than Mark.
+                    Is Jack stronger than Ellie?
+                    
+                    Note that if both 'incorrect' and 'irrelevant' problems are included, 
+                    a problem variant with both an irrlevant premise and an incorrect 
+                    conclusion will also be created.
+                
+                'mutual CE' will also include problem variants that assess the reversal 
+                of the transitively derived relation.
+                For example:
+                    Given premises "Jack is stronger than Jane. Jane is stronger than Ellie."
+                    A 'regular' conclusion would be 'Is Jack stronger than Ellie?'
+                    And the 'mutual CE' conclusion would be 'Is Ellie weaker than Jack?'
+                    
+                'Analogy' problems present two premises and then prompt a comparison 
+                of the two relations in the premises. For example,
+                
+                Jack is stronger than Jane, Jane is stronger than Ellie. 
+                Is Jack related to Jane in the same way that Jane is related to Ellie?
+                
+    """)
+    
     with st.expander("How to use this output"):
         st.markdown("""
     The downloaded CSV contains:
     - **Premises**: list of premises per trial  
-    - **Prompt**: full text shown to participant  
+    - **Prompt**: full text shown to participant (including conclusion and response options)
     - **Correct**: correct response  
-    - **Type**: trial type (e.g., Incorrect, Irrelevant)  
+    - **Type**: trial type (e.g., Incorrect, Irrelevant, ...)
+    - 
     
     You can import this into:
     - PsychoPy

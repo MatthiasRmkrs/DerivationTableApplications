@@ -149,7 +149,7 @@ trial_data = generateTrials(
 # %% Set-up a syllogistic reasoning task
 
 # typical syllogistic n-term reasoning task relations x names
-relations = ['longer', 'shorter', 'stronger', 'weaker']
+relations = ['faster', 'slower', 'stronger', 'weaker']
 relata = 'names'
 
 # include 'incorrect' conclusions and reversal of transitive derived relations

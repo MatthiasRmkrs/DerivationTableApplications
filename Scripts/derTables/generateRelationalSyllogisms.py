@@ -218,34 +218,6 @@ def generateSyllogism(relations, premises_types, n_rep, relata, protocol, *, sLa
                     fPremise = "{} {} '{}'.".format(
                         stim[0], crelfuncs[rels[0]][func], funcs[rels[0]][func])
                     
-                # debug
-                expected_relations = int(p)
-                if len(useableRelations) != int(p):
-                    raise ValueError(
-                        f"Relation count mismatch | "
-                        f"p={p} | "
-                        f"rels={rels} | "
-                        f"useableRelations={useableRelations} | "
-                        f"len(rels)={len(rels)} | "
-                        f"len(useableRelations)={len(useableRelations)}"
-                    )
-
-
-                expected_stimuli = len(useableRelations) + 1
-
-                if len(stim) < expected_stimuli:
-                    print("DEBUG stimulus mismatch")
-                    print("p:", p)
-                    print("rels:", rels)
-                    print("useableRelations:", useableRelations)
-                    print("stim:", stim)
-                    print("len(stim):", len(stim))
-                    print("expected_stimuli:", expected_stimuli)
-                    print("r_ids:", r_ids)
-                    print("rep:", rep)
-                
-                    raise ValueError("Stimulus count mismatch")
-                
                 premises, sources = createPremises(useableRelations, stim, protocol)
                 
                 # derive relation
