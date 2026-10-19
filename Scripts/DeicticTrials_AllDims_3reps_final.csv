@@ -1,0 +1,451 @@
+id,Premises,Relations,Prompt,Correct,Type,n_p,Derivation,pPrems,pCorrect,taskPremise,Premise1,Premise2,extraPremises,option1,option2,option3,trial_index,relation,timeout
+1,"['Today is the opening of the new shop', 'Yesterday was the start of the academic year.']",['temporal'],"Today is the opening of the new shop. Yesterday was the start of the academic year.
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",Regular,2,Mutual,"
+1: The opening of the new shop is today.
+2: The opening of the new shop was yesterday.
+3: The start of the academic year was yesterday.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",Today is the opening of the new shop,Yesterday was the start of the academic year.,,The opening of the new shop is today.,The opening of the new shop was yesterday.,The start of the academic year was yesterday.,1,temporal,40000
+2,"['Today is the opening of the new shop', 'Yesterday was the start of the academic year.']",['temporal'],"Today is the opening of the new shop. Yesterday was the start of the academic year. If today were yesterday and yesterday were today;
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Temporal Reversal,2,Mutual,"
+1: The start of the academic year would be today.
+2: The start of the academic year would have been yesterday.
+3: The opening of the new shop would be today.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",Today is the opening of the new shop,Yesterday was the start of the academic year.,If today were yesterday and yesterday were today;,The start of the academic year would be today.,The start of the academic year would have been yesterday.,The opening of the new shop would be today.,2,temporal,40000
+3,"['Today is my birthday', 'Yesterday was your birthday.']",['temporal'],"Today is my birthday. Yesterday was your birthday.
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",Regular,2,Mutual,"
+1: My birthday is today.
+2: My birthday was yesterday.
+3: Your birthday was yesterday.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",Today is my birthday,Yesterday was your birthday.,,My birthday is today.,My birthday was yesterday.,Your birthday was yesterday.,3,temporal,40000
+4,"['Today is my birthday', 'Yesterday was your birthday.']",['temporal'],"Today is my birthday. Yesterday was your birthday. If today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[0, 0, 1]",Temporal Reversal,2,Mutual,"
+1: My birthday would have been yesterday.
+2: Your birthday would be today.
+3: Your birthday would have been yesterday.","['no select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",Today is my birthday,Yesterday was your birthday.,If today were yesterday and yesterday were today;,My birthday would have been yesterday.,Your birthday would be today.,Your birthday would have been yesterday.,4,temporal,40000
+5,"['Today is the first day of school', 'Yesterday was my birthday.']",['temporal'],"Today is the first day of school. Yesterday was my birthday.
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",Regular,2,Mutual,"
+1: The first day of school was yesterday.
+2: My birthday is today.
+3: The first day of school is today.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",Today is the first day of school,Yesterday was my birthday.,,The first day of school was yesterday.,My birthday is today.,The first day of school is today.,5,temporal,40000
+6,"['Today is the first day of school', 'Yesterday was my birthday.']",['temporal'],"Today is the first day of school. Yesterday was my birthday. If today were yesterday and yesterday were today;
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",Temporal Reversal,2,Mutual,"
+1: My birthday would have been yesterday.
+2: The first day of school would be today.
+3: My birthday would be today.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",Today is the first day of school,Yesterday was my birthday.,If today were yesterday and yesterday were today;,My birthday would have been yesterday.,The first day of school would be today.,My birthday would be today.,6,temporal,40000
+7,"['The red chair is here', 'The blue chair is there.']",['spatial'],"The red chair is here. The blue chair is there.
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Regular,2,Mutual,"
+1: The blue chair is there.
+2: The red chair is there.
+3: The blue chair is here.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",The red chair is here,The blue chair is there.,,The blue chair is there.,The red chair is there.,The blue chair is here.,7,spatial,40000
+8,"['The red chair is here', 'The blue chair is there.']",['spatial'],"The red chair is here. The blue chair is there. If here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 1, 0]",Spatial Reversal,2,Mutual,"
+1: The red chair would be there.
+2: The blue chair would be here.
+3: The red chair would be here.","['select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",The red chair is here,The blue chair is there.,If here were there and there were here;,The red chair would be there.,The blue chair would be here.,The red chair would be here.,8,spatial,40000
+9,"['The pharmacy is here', 'The grocery store is there.']",['spatial'],"The pharmacy is here. The grocery store is there.
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",Regular,2,Mutual,"
+1: The grocery store is here.
+2: The pharmacy is there.
+3: The grocery store is there.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",The pharmacy is here,The grocery store is there.,,The grocery store is here.,The pharmacy is there.,The grocery store is there.,9,spatial,40000
+10,"['The pharmacy is here', 'The grocery store is there.']",['spatial'],"The pharmacy is here. The grocery store is there. If here were there and there were here;
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",Spatial Reversal,2,Mutual,"
+1: The grocery store would be there.
+2: The grocery store would be here.
+3: The pharmacy would be there.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",The pharmacy is here,The grocery store is there.,If here were there and there were here;,The grocery store would be there.,The grocery store would be here.,The pharmacy would be there.,10,spatial,40000
+11,"['The school is here', 'My home is there.']",['spatial'],"The school is here. My home is there.
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",Regular,2,Mutual,"
+1: My home is here.
+2: My home is there.
+3: The school is here.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",The school is here,My home is there.,,My home is here.,My home is there.,The school is here.,11,spatial,40000
+12,"['The school is here', 'My home is there.']",['spatial'],"The school is here. My home is there. If here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 1, 0]",Spatial Reversal,2,Mutual,"
+1: My home would be there.
+2: The school would be there.
+3: The school would be here.","['no select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",The school is here,My home is there.,If here were there and there were here;,My home would be there.,The school would be there.,The school would be here.,12,spatial,40000
+1,"['I am sitting on a red chair', 'You are sitting on a blue chair.']",['interpersonal-doing'],"I am sitting on a red chair. You are sitting on a blue chair.
+Based on this information, select all statements that are FALSE.","[0, 0, 1]",Regular,2,Mutual,"
+1: I am sitting on a red chair.
+2: You are sitting on a blue chair.
+3: I am sitting on a blue chair.","['no select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",I am sitting on a red chair,You are sitting on a blue chair.,,I am sitting on a red chair.,You are sitting on a blue chair.,I am sitting on a blue chair.,13,interpersonal-doing,40000
+2,"['I am sitting on a red chair', 'You are sitting on a blue chair.']",['interpersonal-doing'],"I am sitting on a red chair. You are sitting on a blue chair. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[0, 1, 0]",Interpersonal Reversal,2,Mutual,"
+1: You would be sitting on a blue chair.
+2: You would be sitting on a red chair.
+3: I would be sitting on a red chair.","['no select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",I am sitting on a red chair,You are sitting on a blue chair.,If I were you and you were me;,You would be sitting on a blue chair.,You would be sitting on a red chair.,I would be sitting on a red chair.,14,interpersonal-doing,40000
+3,"['I am playing chess', 'You are reading a book.']",['interpersonal-doing'],"I am playing chess. You are reading a book.
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",Regular,2,Mutual,"
+1: I am reading a book.
+2: You are reading a book.
+3: I am playing chess.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",I am playing chess,You are reading a book.,,I am reading a book.,You are reading a book.,I am playing chess.,15,interpersonal-doing,40000
+4,"['I am playing chess', 'You are reading a book.']",['interpersonal-doing'],"I am playing chess. You are reading a book. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[1, 1, 0]",Interpersonal Reversal,2,Mutual,"
+1: You would be playing chess.
+2: I would be reading a book.
+3: You would be reading a book.","['select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",I am playing chess,You are reading a book.,If I were you and you were me;,You would be playing chess.,I would be reading a book.,You would be reading a book.,16,interpersonal-doing,40000
+5,"['I am drinking a coke', 'You are drinking a glass of water.']",['interpersonal-doing'],"I am drinking a coke. You are drinking a glass of water.
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Regular,2,Mutual,"
+1: You are drinking a glass of water.
+2: I am drinking a glass of water.
+3: You are drinking a coke.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I am drinking a coke,You are drinking a glass of water.,,You are drinking a glass of water.,I am drinking a glass of water.,You are drinking a coke.,17,interpersonal-doing,40000
+6,"['I am drinking a coke', 'You are drinking a glass of water.']",['interpersonal-doing'],"I am drinking a coke. You are drinking a glass of water. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",Interpersonal Reversal,2,Mutual,"
+1: You would be drinking a glass of water.
+2: You would be drinking a coke.
+3: I would be drinking a glass of water.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",I am drinking a coke,You are drinking a glass of water.,If I were you and you were me;,You would be drinking a glass of water.,You would be drinking a coke.,I would be drinking a glass of water.,18,interpersonal-doing,40000
+7,"['I think cats are fun', 'You think cats are annoying and dirty.']",['interpersonal-thinking'],"I think cats are fun. You think cats are annoying and dirty.
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",Regular,2,Mutual,"
+1: I think cats are annoying and dirty.
+2: You think cats are fun.
+3: I think cats are fun.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",I think cats are fun,You think cats are annoying and dirty.,,I think cats are annoying and dirty.,You think cats are fun.,I think cats are fun.,19,interpersonal-thinking,40000
+8,"['I think cats are fun', 'You think cats are annoying and dirty.']",['interpersonal-thinking'],"I think cats are fun. You think cats are annoying and dirty. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",Interpersonal Reversal,2,Mutual,"
+1: You would think cats are annoying and dirty.
+2: I would think cats are fun.
+3: You would think cats are fun.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",I think cats are fun,You think cats are annoying and dirty.,If I were you and you were me;,You would think cats are annoying and dirty.,I would think cats are fun.,You would think cats are fun.,20,interpersonal-thinking,40000
+9,"['I think ducks are funny and cute', 'You think ducks are boring.']",['interpersonal-thinking'],"I think ducks are funny and cute. You think ducks are boring.
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",Regular,2,Mutual,"
+1: You think ducks are funny and cute.
+2: You think ducks are boring.
+3: I think ducks are funny and cute.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",I think ducks are funny and cute,You think ducks are boring.,,You think ducks are funny and cute.,You think ducks are boring.,I think ducks are funny and cute.,21,interpersonal-thinking,40000
+10,"['I think ducks are funny and cute', 'You think ducks are boring.']",['interpersonal-thinking'],"I think ducks are funny and cute. You think ducks are boring. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Interpersonal Reversal,2,Mutual,"
+1: You would think ducks are funny and cute.
+2: I would think ducks are funny and cute.
+3: You would think ducks are boring.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I think ducks are funny and cute,You think ducks are boring.,If I were you and you were me;,You would think ducks are funny and cute.,I would think ducks are funny and cute.,You would think ducks are boring.,22,interpersonal-thinking,40000
+11,"['You think politics is boring', 'I think politics is important.']",['interpersonal-thinking'],"You think politics is boring. I think politics is important.
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",Regular,2,Mutual,"
+1: You think politics is boring.
+2: You think politics is important.
+3: I think politics is important.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You think politics is boring,I think politics is important.,,You think politics is boring.,You think politics is important.,I think politics is important.,23,interpersonal-thinking,40000
+12,"['You think politics is boring', 'I think politics is important.']",['interpersonal-thinking'],"You think politics is boring. I think politics is important. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",Interpersonal Reversal,2,Mutual,"
+1: You would think politics is boring.
+2: I would think politics is important.
+3: You would think politics is important.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You think politics is boring,I think politics is important.,If I were you and you were me;,You would think politics is boring.,I would think politics is important.,You would think politics is important.,24,interpersonal-thinking,40000
+13,"['You feel happy', 'I feel sad.']",['interpersonal-feeling'],"You feel happy. I feel sad.
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",Regular,2,Mutual,"
+1: You feel happy.
+2: I feel happy.
+3: I feel sad.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You feel happy,I feel sad.,,You feel happy.,I feel happy.,I feel sad.,25,interpersonal-feeling,40000
+14,"['You feel happy', 'I feel sad.']",['interpersonal-feeling'],"You feel happy. I feel sad. If I were you and you were me;
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",Interpersonal Reversal,2,Mutual,"
+1: You would feel sad.
+2: I would feel sad.
+3: I would feel happy.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You feel happy,I feel sad.,If I were you and you were me;,You would feel sad.,I would feel sad.,I would feel happy.,26,interpersonal-feeling,40000
+15,"['I feel angry', 'You feel confused.']",['interpersonal-feeling'],"I feel angry. You feel confused.
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",Regular,2,Mutual,"
+1: You feel angry.
+2: I feel angry.
+3: You feel confused.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",I feel angry,You feel confused.,,You feel angry.,I feel angry.,You feel confused.,27,interpersonal-feeling,40000
+16,"['I feel angry', 'You feel confused.']",['interpersonal-feeling'],"I feel angry. You feel confused. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",Interpersonal Reversal,2,Mutual,"
+1: I would feel confused.
+2: You would feel confused.
+3: You would feel angry.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",I feel angry,You feel confused.,If I were you and you were me;,I would feel confused.,You would feel confused.,You would feel angry.,28,interpersonal-feeling,40000
+17,"['I feel scared', 'You feel safe.']",['interpersonal-feeling'],"I feel scared. You feel safe.
+Based on this information, select all statements that are TRUE.","[1, 1, 0]",Regular,2,Mutual,"
+1: You feel safe.
+2: I feel scared.
+3: I feel safe.","['select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",I feel scared,You feel safe.,,You feel safe.,I feel scared.,I feel safe.,29,interpersonal-feeling,40000
+18,"['I feel scared', 'You feel safe.']",['interpersonal-feeling'],"I feel scared. You feel safe. If I were you and you were me;
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Interpersonal Reversal,2,Mutual,"
+1: You would feel scared.
+2: You would feel safe.
+3: I would feel scared.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I feel scared,You feel safe.,If I were you and you were me;,You would feel scared.,You would feel safe.,I would feel scared.,30,interpersonal-feeling,40000
+1,"['The red chair is here today', 'The blue chair was there yesterday.']",['temporal+spatial'],"The red chair is here today. The blue chair was there yesterday.
+Based on this information, select all statements that are FALSE.","[0, 0, 1]",Regular,2,Mutual,"
+1: The red chair is here today.
+2: The blue chair was there yesterday.
+3: The blue chair is here today.","['no select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",The red chair is here today,The blue chair was there yesterday.,,The red chair is here today.,The blue chair was there yesterday.,The blue chair is here today.,31,temporal+spatial,60000
+2,"['The red chair is here today', 'The blue chair was there yesterday.']",['temporal+spatial'],"The red chair is here today. The blue chair was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: The blue chair would have been there yesterday.
+2: The red chair would have been there yesterday.
+3: The blue chair would be here today.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",The red chair is here today,The blue chair was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,The blue chair would have been there yesterday.,The red chair would have been there yesterday.,The blue chair would be here today.,32,temporal+spatial,60000
+3,"['The pharmacy is here today', 'The grocery store was there yesterday.']",['temporal+spatial'],"The pharmacy is here today. The grocery store was there yesterday.
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",Regular,2,Mutual,"
+1: The pharmacy was there yesterday.
+2: The grocery store was there yesterday.
+3: The pharmacy is here today.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",The pharmacy is here today,The grocery store was there yesterday.,,The pharmacy was there yesterday.,The grocery store was there yesterday.,The pharmacy is here today.,33,temporal+spatial,60000
+4,"['The pharmacy is here today', 'The grocery store was there yesterday.']",['temporal+spatial'],"The pharmacy is here today. The grocery store was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[1, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: The grocery store would have been there yesterday.
+2: The grocery store would be here today.
+3: The pharmacy would be here today.","['select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",The pharmacy is here today,The grocery store was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,The grocery store would have been there yesterday.,The grocery store would be here today.,The pharmacy would be here today.,34,temporal+spatial,60000
+5,"['The school is here today', 'My home was there yesterday.']",['temporal+spatial'],"The school is here today. My home was there yesterday.
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",Regular,2,Mutual,"
+1: My home is here today.
+2: My home was there yesterday.
+3: The school is here today.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",The school is here today,My home was there yesterday.,,My home is here today.,My home was there yesterday.,The school is here today.,35,temporal+spatial,60000
+6,"['The school is here today', 'My home was there yesterday.']",['temporal+spatial'],"The school is here today. My home was there yesterday. If here were there and there were here and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",Spatial+Temporal Reversal,2,Mutual,"
+1: The school would have been there yesterday.
+2: My home would have been there yesterday.
+3: My home would be here today.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",The school is here today,My home was there yesterday.,If here were there and there were here and if today were yesterday and yesterday were today;,The school would have been there yesterday.,My home would have been there yesterday.,My home would be here today.,36,temporal+spatial,60000
+7,"['You think cats are fun today', 'I thought cats are annoying and dirty yesterday.']",['IPthinking+temporal'],"You think cats are fun today. I thought cats are annoying and dirty yesterday.
+Based on this information, select all statements that are FALSE.","[0, 0, 1]",Regular,2,Mutual,"
+1: I thought cats are annoying and dirty yesterday.
+2: You think cats are fun today.
+3: You think cats are annoying and dirty today.","['no select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",You think cats are fun today,I thought cats are annoying and dirty yesterday.,,I thought cats are annoying and dirty yesterday.,You think cats are fun today.,You think cats are annoying and dirty today.,37,IPthinking+temporal,60000
+8,"['You think cats are fun today', 'I thought cats are annoying and dirty yesterday.']",['IPthinking+temporal'],"You think cats are fun today. I thought cats are annoying and dirty yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",IP+Temporal Reversal,2,Mutual,"
+1: You would think cats are fun today.
+2: I would have thought cats are fun yesterday.
+3: You would think cats are annoying and dirty today.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",You think cats are fun today,I thought cats are annoying and dirty yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,You would think cats are fun today.,I would have thought cats are fun yesterday.,You would think cats are annoying and dirty today.,38,IPthinking+temporal,60000
+9,"['You think ducks are funny and cute today', 'I thought ducks are boring yesterday.']",['IPthinking+temporal'],"You think ducks are funny and cute today. I thought ducks are boring yesterday.
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",Regular,2,Mutual,"
+1: I thought ducks are funny and cute yesterday.
+2: You think ducks are boring today.
+3: You think ducks are funny and cute today.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You think ducks are funny and cute today,I thought ducks are boring yesterday.,,I thought ducks are funny and cute yesterday.,You think ducks are boring today.,You think ducks are funny and cute today.,39,IPthinking+temporal,60000
+10,"['You think ducks are funny and cute today', 'I thought ducks are boring yesterday.']",['IPthinking+temporal'],"You think ducks are funny and cute today. I thought ducks are boring yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: I would have thought ducks are boring yesterday.
+2: You would think ducks are funny and cute today.
+3: I would have thought ducks are funny and cute yesterday.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You think ducks are funny and cute today,I thought ducks are boring yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,I would have thought ducks are boring yesterday.,You would think ducks are funny and cute today.,I would have thought ducks are funny and cute yesterday.,40,IPthinking+temporal,60000
+11,"['You think politics is boring today', 'I thought politics is important yesterday.']",['IPthinking+temporal'],"You think politics is boring today. I thought politics is important yesterday.
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",Regular,2,Mutual,"
+1: You think politics is important today.
+2: I thought politics is boring yesterday.
+3: You think politics is boring today.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You think politics is boring today,I thought politics is important yesterday.,,You think politics is important today.,I thought politics is boring yesterday.,You think politics is boring today.,41,IPthinking+temporal,60000
+12,"['You think politics is boring today', 'I thought politics is important yesterday.']",['IPthinking+temporal'],"You think politics is boring today. I thought politics is important yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: I would have thought politics is important yesterday.
+2: You would think politics is boring today.
+3: You would think politics is important today.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You think politics is boring today,I thought politics is important yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,I would have thought politics is important yesterday.,You would think politics is boring today.,You would think politics is important today.,42,IPthinking+temporal,60000
+13,"['You feel happy today', 'I felt sad yesterday.']",['IPfeeling+temporal'],"You feel happy today. I felt sad yesterday.
+Based on this information, select all statements that are FALSE.","[1, 0, 1]",Regular,2,Mutual,"
+1: You feel sad today.
+2: I felt sad yesterday.
+3: I felt happy yesterday.","['select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",You feel happy today,I felt sad yesterday.,,You feel sad today.,I felt sad yesterday.,I felt happy yesterday.,43,IPfeeling+temporal,60000
+14,"['You feel happy today', 'I felt sad yesterday.']",['IPfeeling+temporal'],"You feel happy today. I felt sad yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: You would feel sad today.
+2: I would have felt sad yesterday.
+3: I would have felt happy yesterday.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You feel happy today,I felt sad yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,You would feel sad today.,I would have felt sad yesterday.,I would have felt happy yesterday.,44,IPfeeling+temporal,60000
+15,"['I feel angry today', 'You felt confused yesterday.']",['IPfeeling+temporal'],"I feel angry today. You felt confused yesterday.
+Based on this information, select all statements that are FALSE.","[0, 0, 1]",Regular,2,Mutual,"
+1: I feel angry today.
+2: You felt confused yesterday.
+3: I feel confused today.","['no select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",I feel angry today,You felt confused yesterday.,,I feel angry today.,You felt confused yesterday.,I feel confused today.,45,IPfeeling+temporal,60000
+16,"['I feel angry today', 'You felt confused yesterday.']",['IPfeeling+temporal'],"I feel angry today. You felt confused yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[0, 1, 1]",IP+Temporal Reversal,2,Mutual,"
+1: I would feel confused today.
+2: I would feel angry today.
+3: You would have felt confused yesterday.","['no select', 'select', 'select']","Based on this information, select all statements that are FALSE.",I feel angry today,You felt confused yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,I would feel confused today.,I would feel angry today.,You would have felt confused yesterday.,46,IPfeeling+temporal,60000
+17,"['I feel scared today', 'You felt safe yesterday.']",['IPfeeling+temporal'],"I feel scared today. You felt safe yesterday.
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",Regular,2,Mutual,"
+1: You felt safe yesterday.
+2: You felt scared yesterday.
+3: I feel scared today.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",I feel scared today,You felt safe yesterday.,,You felt safe yesterday.,You felt scared yesterday.,I feel scared today.,47,IPfeeling+temporal,60000
+18,"['I feel scared today', 'You felt safe yesterday.']",['IPfeeling+temporal'],"I feel scared today. You felt safe yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: I would feel scared today.
+2: You would have felt safe yesterday.
+3: You would have felt scared yesterday.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",I feel scared today,You felt safe yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,I would feel scared today.,You would have felt safe yesterday.,You would have felt scared yesterday.,48,IPfeeling+temporal,60000
+19,"['I am sitting on a red chair today', 'You were sitting on a blue chair yesterday.']",['IPdoing+temporal'],"I am sitting on a red chair today. You were sitting on a blue chair yesterday.
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",Regular,2,Mutual,"
+1: You were sitting on a blue chair yesterday.
+2: You were sitting on a red chair yesterday.
+3: I am sitting on a red chair today.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",I am sitting on a red chair today,You were sitting on a blue chair yesterday.,,You were sitting on a blue chair yesterday.,You were sitting on a red chair yesterday.,I am sitting on a red chair today.,49,IPdoing+temporal,60000
+20,"['I am sitting on a red chair today', 'You were sitting on a blue chair yesterday.']",['IPdoing+temporal'],"I am sitting on a red chair today. You were sitting on a blue chair yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",IP+Temporal Reversal,2,Mutual,"
+1: You would have been sitting on a blue chair yesterday.
+2: You would have been sitting on a red chair yesterday.
+3: I would be sitting on a blue chair today.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",I am sitting on a red chair today,You were sitting on a blue chair yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,You would have been sitting on a blue chair yesterday.,You would have been sitting on a red chair yesterday.,I would be sitting on a blue chair today.,50,IPdoing+temporal,60000
+21,"['You are playing chess today', 'I was reading a book yesterday.']",['IPdoing+temporal'],"You are playing chess today. I was reading a book yesterday.
+Based on this information, select all statements that are TRUE.","[0, 1, 0]",Regular,2,Mutual,"
+1: I was playing chess yesterday.
+2: You are playing chess today.
+3: You are reading a book today.","['no select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",You are playing chess today,I was reading a book yesterday.,,I was playing chess yesterday.,You are playing chess today.,You are reading a book today.,51,IPdoing+temporal,60000
+22,"['You are playing chess today', 'I was reading a book yesterday.']",['IPdoing+temporal'],"You are playing chess today. I was reading a book yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are TRUE.","[0, 1, 0]",IP+Temporal Reversal,2,Mutual,"
+1: I would have been reading a book yesterday.
+2: You would be reading a book today.
+3: You would be playing chess today.","['no select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",You are playing chess today,I was reading a book yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,I would have been reading a book yesterday.,You would be reading a book today.,You would be playing chess today.,52,IPdoing+temporal,60000
+23,"['You are drinking a coke today', 'I was drinking a glass of water yesterday.']",['IPdoing+temporal'],"You are drinking a coke today. I was drinking a glass of water yesterday.
+Based on this information, select all statements that are FALSE.","[1, 0, 1]",Regular,2,Mutual,"
+1: I was drinking a coke yesterday.
+2: I was drinking a glass of water yesterday.
+3: You are drinking a glass of water today.","['select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",You are drinking a coke today,I was drinking a glass of water yesterday.,,I was drinking a coke yesterday.,I was drinking a glass of water yesterday.,You are drinking a glass of water today.,53,IPdoing+temporal,60000
+24,"['You are drinking a coke today', 'I was drinking a glass of water yesterday.']",['IPdoing+temporal'],"You are drinking a coke today. I was drinking a glass of water yesterday. If I were you and you were me and if today were yesterday and yesterday were today;
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",IP+Temporal Reversal,2,Mutual,"
+1: I would have been drinking a coke yesterday.
+2: I would have been drinking a glass of water yesterday.
+3: You would be drinking a glass of water today.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You are drinking a coke today,I was drinking a glass of water yesterday.,If I were you and you were me and if today were yesterday and yesterday were today;,I would have been drinking a coke yesterday.,I would have been drinking a glass of water yesterday.,You would be drinking a glass of water today.,54,IPdoing+temporal,60000
+25,"['You think cats are fun here', 'I think cats are annoying and dirty there.']",['IPthinking+spatial'],"You think cats are fun here. I think cats are annoying and dirty there.
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",Regular,2,Mutual,"
+1: You think cats are fun here.
+2: I think cats are fun there.
+3: I think cats are annoying and dirty there.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You think cats are fun here,I think cats are annoying and dirty there.,,You think cats are fun here.,I think cats are fun there.,I think cats are annoying and dirty there.,55,IPthinking+spatial,60000
+26,"['You think cats are fun here', 'I think cats are annoying and dirty there.']",['IPthinking+spatial'],"You think cats are fun here. I think cats are annoying and dirty there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",IP+Spatial Reversal,2,Mutual,"
+1: You would think cats are fun here.
+2: I would think cats are annoying and dirty there.
+3: You would think cats are annoying and dirty here.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You think cats are fun here,I think cats are annoying and dirty there.,If I were you and you were me and if here were there and there were here;,You would think cats are fun here.,I would think cats are annoying and dirty there.,You would think cats are annoying and dirty here.,56,IPthinking+spatial,60000
+27,"['You think ducks are funny and cute here', 'I think ducks are boring there.']",['IPthinking+spatial'],"You think ducks are funny and cute here. I think ducks are boring there.
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",Regular,2,Mutual,"
+1: You think ducks are funny and cute here.
+2: I think ducks are funny and cute there.
+3: I think ducks are boring there.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You think ducks are funny and cute here,I think ducks are boring there.,,You think ducks are funny and cute here.,I think ducks are funny and cute there.,I think ducks are boring there.,57,IPthinking+spatial,60000
+28,"['You think ducks are funny and cute here', 'I think ducks are boring there.']",['IPthinking+spatial'],"You think ducks are funny and cute here. I think ducks are boring there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",IP+Spatial Reversal,2,Mutual,"
+1: I would think ducks are boring there.
+2: I would think ducks are funny and cute there.
+3: You would think ducks are boring here.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",You think ducks are funny and cute here,I think ducks are boring there.,If I were you and you were me and if here were there and there were here;,I would think ducks are boring there.,I would think ducks are funny and cute there.,You would think ducks are boring here.,58,IPthinking+spatial,60000
+29,"['I think politics is boring here', 'You think politics is important there.']",['IPthinking+spatial'],"I think politics is boring here. You think politics is important there.
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Regular,2,Mutual,"
+1: I think politics is boring here.
+2: I think politics is important here.
+3: You think politics is boring there.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I think politics is boring here,You think politics is important there.,,I think politics is boring here.,I think politics is important here.,You think politics is boring there.,59,IPthinking+spatial,60000
+30,"['I think politics is boring here', 'You think politics is important there.']",['IPthinking+spatial'],"I think politics is boring here. You think politics is important there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: You would think politics is important there.
+2: I would think politics is important here.
+3: I would think politics is boring here.","['no select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",I think politics is boring here,You think politics is important there.,If I were you and you were me and if here were there and there were here;,You would think politics is important there.,I would think politics is important here.,I would think politics is boring here.,60,IPthinking+spatial,60000
+31,"['You feel happy here', 'I feel sad there.']",['IPfeeling+spatial'],"You feel happy here. I feel sad there.
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Regular,2,Mutual,"
+1: I feel sad there.
+2: I feel happy there.
+3: You feel sad here.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",You feel happy here,I feel sad there.,,I feel sad there.,I feel happy there.,You feel sad here.,61,IPfeeling+spatial,60000
+32,"['You feel happy here', 'I feel sad there.']",['IPfeeling+spatial'],"You feel happy here. I feel sad there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",IP+Spatial Reversal,2,Mutual,"
+1: I would feel sad there.
+2: I would feel happy there.
+3: You would feel sad here.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",You feel happy here,I feel sad there.,If I were you and you were me and if here were there and there were here;,I would feel sad there.,I would feel happy there.,You would feel sad here.,62,IPfeeling+spatial,60000
+33,"['I feel angry here', 'You feel confused there.']",['IPfeeling+spatial'],"I feel angry here. You feel confused there.
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",Regular,2,Mutual,"
+1: You feel angry there.
+2: I feel confused here.
+3: I feel angry here.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",I feel angry here,You feel confused there.,,You feel angry there.,I feel confused here.,I feel angry here.,63,IPfeeling+spatial,60000
+34,"['I feel angry here', 'You feel confused there.']",['IPfeeling+spatial'],"I feel angry here. You feel confused there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: I would feel confused here.
+2: You would feel angry there.
+3: I would feel angry here.","['select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",I feel angry here,You feel confused there.,If I were you and you were me and if here were there and there were here;,I would feel confused here.,You would feel angry there.,I would feel angry here.,64,IPfeeling+spatial,60000
+35,"['I feel scared here', 'You feel safe there.']",['IPfeeling+spatial'],"I feel scared here. You feel safe there.
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",Regular,2,Mutual,"
+1: You feel safe there.
+2: You feel scared there.
+3: I feel scared here.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",I feel scared here,You feel safe there.,,You feel safe there.,You feel scared there.,I feel scared here.,65,IPfeeling+spatial,60000
+36,"['I feel scared here', 'You feel safe there.']",['IPfeeling+spatial'],"I feel scared here. You feel safe there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",IP+Spatial Reversal,2,Mutual,"
+1: You would feel scared there.
+2: I would feel scared here.
+3: You would feel safe there.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I feel scared here,You feel safe there.,If I were you and you were me and if here were there and there were here;,You would feel scared there.,I would feel scared here.,You would feel safe there.,66,IPfeeling+spatial,60000
+37,"['I am sitting on a red chair here', 'You are sitting on a blue chair there.']",['IPdoing+spatial'],"I am sitting on a red chair here. You are sitting on a blue chair there.
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",Regular,2,Mutual,"
+1: You are sitting on a red chair there.
+2: I am sitting on a red chair here.
+3: You are sitting on a blue chair there.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",I am sitting on a red chair here,You are sitting on a blue chair there.,,You are sitting on a red chair there.,I am sitting on a red chair here.,You are sitting on a blue chair there.,67,IPdoing+spatial,60000
+38,"['I am sitting on a red chair here', 'You are sitting on a blue chair there.']",['IPdoing+spatial'],"I am sitting on a red chair here. You are sitting on a blue chair there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 1, 0]",IP+Spatial Reversal,2,Mutual,"
+1: You would be sitting on a blue chair there.
+2: I would be sitting on a blue chair here.
+3: I would be sitting on a red chair here.","['no select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",I am sitting on a red chair here,You are sitting on a blue chair there.,If I were you and you were me and if here were there and there were here;,You would be sitting on a blue chair there.,I would be sitting on a blue chair here.,I would be sitting on a red chair here.,68,IPdoing+spatial,60000
+39,"['You are playing chess here', 'I am reading a book there.']",['IPdoing+spatial'],"You are playing chess here. I am reading a book there.
+Based on this information, select all statements that are TRUE.","[1, 1, 0]",Regular,2,Mutual,"
+1: I am reading a book there.
+2: You are playing chess here.
+3: I am playing chess there.","['select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",You are playing chess here,I am reading a book there.,,I am reading a book there.,You are playing chess here.,I am playing chess there.,69,IPdoing+spatial,60000
+40,"['You are playing chess here', 'I am reading a book there.']",['IPdoing+spatial'],"You are playing chess here. I am reading a book there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",IP+Spatial Reversal,2,Mutual,"
+1: You would be playing chess here.
+2: I would be reading a book there.
+3: You would be reading a book here.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You are playing chess here,I am reading a book there.,If I were you and you were me and if here were there and there were here;,You would be playing chess here.,I would be reading a book there.,You would be reading a book here.,70,IPdoing+spatial,60000
+41,"['You are drinking a coke here', 'I am drinking a glass of water there.']",['IPdoing+spatial'],"You are drinking a coke here. I am drinking a glass of water there.
+Based on this information, select all statements that are TRUE.","[1, 1, 0]",Regular,2,Mutual,"
+1: You are drinking a coke here.
+2: I am drinking a glass of water there.
+3: I am drinking a coke there.","['select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",You are drinking a coke here,I am drinking a glass of water there.,,You are drinking a coke here.,I am drinking a glass of water there.,I am drinking a coke there.,71,IPdoing+spatial,60000
+42,"['You are drinking a coke here', 'I am drinking a glass of water there.']",['IPdoing+spatial'],"You are drinking a coke here. I am drinking a glass of water there. If I were you and you were me and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",IP+Spatial Reversal,2,Mutual,"
+1: I would be drinking a coke there.
+2: I would be drinking a glass of water there.
+3: You would be drinking a glass of water here.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You are drinking a coke here,I am drinking a glass of water there.,If I were you and you were me and if here were there and there were here;,I would be drinking a coke there.,I would be drinking a glass of water there.,You would be drinking a glass of water here.,72,IPdoing+spatial,60000
+1,"['I think cats are fun here today', 'You thought cats are annoying and dirty there yesterday.']",['IPthinking+temporal+spatial'],"I think cats are fun here today. You thought cats are annoying and dirty there yesterday.
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",Regular,2,Mutual,"
+1: I think cats are fun here today.
+2: You thought cats are fun there yesterday.
+3: I think cats are annoying and dirty here today.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I think cats are fun here today,You thought cats are annoying and dirty there yesterday.,,I think cats are fun here today.,You thought cats are fun there yesterday.,I think cats are annoying and dirty here today.,73,IPthinking+temporal+spatial,80000
+2,"['I think cats are fun here today', 'You thought cats are annoying and dirty there yesterday.']",['IPthinking+temporal+spatial'],"I think cats are fun here today. You thought cats are annoying and dirty there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would think cats are annoying and dirty here today.
+2: I would think cats are fun here today.
+3: You would have thought cats are annoying and dirty there yesterday.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I think cats are fun here today,You thought cats are annoying and dirty there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would think cats are annoying and dirty here today.,I would think cats are fun here today.,You would have thought cats are annoying and dirty there yesterday.,74,IPthinking+temporal+spatial,80000
+3,"['I think ducks are funny and cute here today', 'You thought ducks are boring there yesterday.']",['IPthinking+temporal+spatial'],"I think ducks are funny and cute here today. You thought ducks are boring there yesterday.
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",Regular,2,Mutual,"
+1: I think ducks are boring here today.
+2: You thought ducks are boring there yesterday.
+3: I think ducks are funny and cute here today.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",I think ducks are funny and cute here today,You thought ducks are boring there yesterday.,,I think ducks are boring here today.,You thought ducks are boring there yesterday.,I think ducks are funny and cute here today.,75,IPthinking+temporal+spatial,80000
+4,"['I think ducks are funny and cute here today', 'You thought ducks are boring there yesterday.']",['IPthinking+temporal+spatial'],"I think ducks are funny and cute here today. You thought ducks are boring there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would think ducks are funny and cute here today.
+2: You would have thought ducks are boring there yesterday.
+3: I would think ducks are boring here today.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",I think ducks are funny and cute here today,You thought ducks are boring there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would think ducks are funny and cute here today.,You would have thought ducks are boring there yesterday.,I would think ducks are boring here today.,76,IPthinking+temporal+spatial,80000
+5,"['I think politics is boring here today', 'You thought politics is important there yesterday.']",['IPthinking+temporal+spatial'],"I think politics is boring here today. You thought politics is important there yesterday.
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",Regular,2,Mutual,"
+1: You thought politics is boring there yesterday.
+2: I think politics is boring here today.
+3: You thought politics is important there yesterday.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",I think politics is boring here today,You thought politics is important there yesterday.,,You thought politics is boring there yesterday.,I think politics is boring here today.,You thought politics is important there yesterday.,77,IPthinking+temporal+spatial,80000
+6,"['I think politics is boring here today', 'You thought politics is important there yesterday.']",['IPthinking+temporal+spatial'],"I think politics is boring here today. You thought politics is important there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would think politics is important here today.
+2: I would think politics is boring here today.
+3: You would have thought politics is boring there yesterday.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",I think politics is boring here today,You thought politics is important there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would think politics is important here today.,I would think politics is boring here today.,You would have thought politics is boring there yesterday.,78,IPthinking+temporal+spatial,80000
+7,"['You feel happy here today', 'I felt sad there yesterday.']",['IPfeeling+temporal+spatial'],"You feel happy here today. I felt sad there yesterday.
+Based on this information, select all statements that are FALSE.","[1, 0, 0]",Regular,2,Mutual,"
+1: I felt happy there yesterday.
+2: You feel happy here today.
+3: I felt sad there yesterday.","['select', 'no select', 'no select']","Based on this information, select all statements that are FALSE.",You feel happy here today,I felt sad there yesterday.,,I felt happy there yesterday.,You feel happy here today.,I felt sad there yesterday.,79,IPfeeling+temporal+spatial,80000
+8,"['You feel happy here today', 'I felt sad there yesterday.']",['IPfeeling+temporal+spatial'],"You feel happy here today. I felt sad there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would have felt sad there yesterday.
+2: You would feel sad here today.
+3: I would have felt happy there yesterday.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",You feel happy here today,I felt sad there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would have felt sad there yesterday.,You would feel sad here today.,I would have felt happy there yesterday.,80,IPfeeling+temporal+spatial,80000
+9,"['You feel angry here today', 'I felt confused there yesterday.']",['IPfeeling+temporal+spatial'],"You feel angry here today. I felt confused there yesterday.
+Based on this information, select all statements that are TRUE.","[0, 1, 1]",Regular,2,Mutual,"
+1: I felt angry there yesterday.
+2: You feel angry here today.
+3: I felt confused there yesterday.","['no select', 'select', 'select']","Based on this information, select all statements that are TRUE.",You feel angry here today,I felt confused there yesterday.,,I felt angry there yesterday.,You feel angry here today.,I felt confused there yesterday.,81,IPfeeling+temporal+spatial,80000
+10,"['You feel angry here today', 'I felt confused there yesterday.']",['IPfeeling+temporal+spatial'],"You feel angry here today. I felt confused there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are FALSE.","[1, 0, 1]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would have felt confused there yesterday.
+2: You would feel confused here today.
+3: You would feel angry here today.","['select', 'no select', 'select']","Based on this information, select all statements that are FALSE.",You feel angry here today,I felt confused there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would have felt confused there yesterday.,You would feel confused here today.,You would feel angry here today.,82,IPfeeling+temporal+spatial,80000
+11,"['You feel scared here today', 'I felt safe there yesterday.']",['IPfeeling+temporal+spatial'],"You feel scared here today. I felt safe there yesterday.
+Based on this information, select all statements that are TRUE.","[1, 0, 1]",Regular,2,Mutual,"
+1: You feel scared here today.
+2: I felt scared there yesterday.
+3: I felt safe there yesterday.","['select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You feel scared here today,I felt safe there yesterday.,,You feel scared here today.,I felt scared there yesterday.,I felt safe there yesterday.,83,IPfeeling+temporal+spatial,80000
+12,"['You feel scared here today', 'I felt safe there yesterday.']",['IPfeeling+temporal+spatial'],"You feel scared here today. I felt safe there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: You would feel scared here today.
+2: I would have felt safe there yesterday.
+3: I would have felt scared there yesterday.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",You feel scared here today,I felt safe there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",You would feel scared here today.,I would have felt safe there yesterday.,I would have felt scared there yesterday.,84,IPfeeling+temporal+spatial,80000
+13,"['I am sitting on a red chair here today', 'You were sitting on a blue chair there yesterday.']",['IPdoing+temporal+spatial'],"I am sitting on a red chair here today. You were sitting on a blue chair there yesterday.
+Based on this information, select all statements that are FALSE.","[1, 1, 0]",Regular,2,Mutual,"
+1: I am sitting on a blue chair here today.
+2: You were sitting on a red chair there yesterday.
+3: I am sitting on a red chair here today.","['select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",I am sitting on a red chair here today,You were sitting on a blue chair there yesterday.,,I am sitting on a blue chair here today.,You were sitting on a red chair there yesterday.,I am sitting on a red chair here today.,85,IPdoing+temporal+spatial,80000
+14,"['I am sitting on a red chair here today', 'You were sitting on a blue chair there yesterday.']",['IPdoing+temporal+spatial'],"I am sitting on a red chair here today. You were sitting on a blue chair there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 0, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would be sitting on a blue chair here today.
+2: You would have been sitting on a blue chair there yesterday.
+3: I would be sitting on a red chair here today.","['select', 'no select', 'no select']","Based on this information, select all statements that are TRUE.",I am sitting on a red chair here today,You were sitting on a blue chair there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would be sitting on a blue chair here today.,You would have been sitting on a blue chair there yesterday.,I would be sitting on a red chair here today.,86,IPdoing+temporal+spatial,80000
+15,"['I am playing chess here today', 'You were reading a book there yesterday.']",['IPdoing+temporal+spatial'],"I am playing chess here today. You were reading a book there yesterday.
+Based on this information, select all statements that are FALSE.","[0, 1, 0]",Regular,2,Mutual,"
+1: You were reading a book there yesterday.
+2: I am reading a book here today.
+3: I am playing chess here today.","['no select', 'select', 'no select']","Based on this information, select all statements that are FALSE.",I am playing chess here today,You were reading a book there yesterday.,,You were reading a book there yesterday.,I am reading a book here today.,I am playing chess here today.,87,IPdoing+temporal+spatial,80000
+16,"['I am playing chess here today', 'You were reading a book there yesterday.']",['IPdoing+temporal+spatial'],"I am playing chess here today. You were reading a book there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[0, 1, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would be playing chess here today.
+2: I would be reading a book here today.
+3: You would have been reading a book there yesterday.","['no select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",I am playing chess here today,You were reading a book there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would be playing chess here today.,I would be reading a book here today.,You would have been reading a book there yesterday.,88,IPdoing+temporal+spatial,80000
+17,"['You are drinking a coke here today', 'I was drinking a glass of water there yesterday.']",['IPdoing+temporal+spatial'],"You are drinking a coke here today. I was drinking a glass of water there yesterday.
+Based on this information, select all statements that are TRUE.","[0, 0, 1]",Regular,2,Mutual,"
+1: You are drinking a glass of water here today.
+2: I was drinking a coke there yesterday.
+3: You are drinking a coke here today.","['no select', 'no select', 'select']","Based on this information, select all statements that are TRUE.",You are drinking a coke here today,I was drinking a glass of water there yesterday.,,You are drinking a glass of water here today.,I was drinking a coke there yesterday.,You are drinking a coke here today.,89,IPdoing+temporal+spatial,80000
+18,"['You are drinking a coke here today', 'I was drinking a glass of water there yesterday.']",['IPdoing+temporal+spatial'],"You are drinking a coke here today. I was drinking a glass of water there yesterday. If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;
+Based on this information, select all statements that are TRUE.","[1, 1, 0]",IP+Temporal+Spatial Reversal,2,Mutual,"
+1: I would have been drinking a coke there yesterday.
+2: You would be drinking a glass of water here today.
+3: I would have been drinking a glass of water there yesterday.","['select', 'select', 'no select']","Based on this information, select all statements that are TRUE.",You are drinking a coke here today,I was drinking a glass of water there yesterday.,"If I were you and you were me,                 if today were yesterday and yesterday were today,                     and if here were there and there were here;",I would have been drinking a coke there yesterday.,You would be drinking a glass of water here today.,I would have been drinking a glass of water there yesterday.,90,IPdoing+temporal+spatial,80000

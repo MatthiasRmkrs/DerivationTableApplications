@@ -814,13 +814,18 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
             cmp = np.random.choice(np.linspace(0, len(unique_cmps[scc])-1, len(unique_cmps[scc]), dtype = 'int'))
             trial_data['comparisons'][tr] = np.random.permutation(unique_cmps[scc][cmp])
             trial_data['correct'][tr] = unique_scs[r][2] # Correct comparison stored last in sample-cue-comparison list  
-            # Check if mutually entailed relation is in baseline set,
-            mrel = list(cleanRelations.keys())[mutual[relations[trial_data['relation'][tr]]]]
-            if mrel in baseline.keys(): # always?
-                if (trial_data['correct'][tr], trial_data['sample'][tr]) in baseline[mrel]:
-                    trial_data['type'][tr] = 'Mutually entailed'                
-                else: # if not, this is combi trial
-                    trial_data['type'][tr] = 'Combinatorially entailed'
+            # Determine whether the derived relation is mutual or combinatorial
+            relLab = trial_data['relation'][tr]
+            mrel_idx = mutual[relations[relLab]]  # Identify the mutually entailed relation
+            mrel = list(relations.keys())[mrel_idx]
+            reverse_pair = (
+                trial_data['correct'][tr],
+                trial_data['sample'][tr]
+            )
+            if mrel in baseline and reverse_pair in baseline[mrel]: # Check whether the reverse relation was directly trained
+                trial_data['type'][tr] = 'Mutually entailed'
+            else:
+                trial_data['type'][tr] = 'Combinatorially entailed'
             trial_data['tID'][tr] = n_uni_base + r
             trial_data['label'][tr] = '{} [{}] {} - {}'.format(trial_data['type'][tr],
                                                                 allRels[trial_data['cue'][tr]],

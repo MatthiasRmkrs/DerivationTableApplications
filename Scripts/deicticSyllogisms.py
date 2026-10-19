@@ -234,7 +234,7 @@ forcedChoice = True
 n_opt = 3
 printTrials = True
 output = 'labjs'
-csv_file = "MorganeTestTrials.csv"
+csv_file = "DeicticTrials_AllDims_4reps_final.csv"
 
 # combine trials
 blocks = {'1dim': relations_1dim,
@@ -242,10 +242,10 @@ blocks = {'1dim': relations_1dim,
           '2dim': relations_2dim,
           '3dim': relations_3dim
           }
-reps = {'1dim': 1,
-        '1dim_ip': 1,
-          '2dim': 1,
-          '3dim': 1
+reps = {'1dim': 4,
+        '1dim_ip': 4,
+          '2dim': 4,
+          '3dim': 4
           }
 trial_data_combined = dict()
 t =-1
@@ -271,8 +271,29 @@ for block, rels in blocks.items():
         for k, v in trial_data.items(): # extend dict
             trial_data_combined[k].extend(v)
             
-trial_data_df = pd.DataFrame.from_dict(trial_data_combined) # create pandas dataframe
-trial_data_df.to_csv(csv_file) # store in csv for later use
+trial_data_df = pd.DataFrame.from_dict(trial_data_combined)
+
+# Add unique trial/item index across all blocks
+trial_data_df["trial_index"] = range(1, len(trial_data_df) + 1)
+
+# Unpack relation
+trial_data_df["relation"] = trial_data_df["Relations"].str[0]
+
+# Add timeout based on relational complexity
+def assign_timeout(rel):
+    if rel in relations_1dim or rel in relations_1dim_ip:
+        return 40000
+    elif rel in relations_2dim:
+        return 60000
+    elif rel in relations_3dim:
+        return 80000
+    else:
+        return None
+
+trial_data_df["timeout"] = trial_data_df["relation"].apply(assign_timeout)
+
+# Save
+trial_data_df.to_csv(csv_file, index=False)
   # %% Select models & set filename to store data
 
 filename = 'Meta8Bvs405B_DeicticRelations.csv'

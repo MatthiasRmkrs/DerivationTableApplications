@@ -683,13 +683,15 @@ def _convert_selecttf(corr_list, output, taskPremise):
     
     if output == 'csv':
         out = [1 if x == "yes" else 0 for x in corr_list] # default select TRUE
-        if taskPremise != "Select all questions to which the answer is 'yes'.":
+        # if taskPremise != "Select all questions to which the answer is 'yes'.":
+        if taskPremise != "Based on this information, select all statements that are TRUE.":
             out = [1 - x for x in out] # convert if task is to select false
         out = ['select' if x == 1 else 'no select' for x in out] # convert
         printOut = out
     elif output == 'labjs':
         out = [1 if x == "yes" else 0 for x in corr_list] # default select TRUE
-        if taskPremise != "Select all questions to which the answer is 'yes'.":
+        # if taskPremise != "Select all questions to which the answer is 'yes'.":
+        if taskPremise != "Based on this information, select all statements that are TRUE.":
             out = [1 - x for x in out] # convert if task is to select false
         printOut = ['select' if x == 1 else 'no select' for x in out] # convert
     return out, printOut
@@ -921,79 +923,216 @@ def build_deictic_option_sets(
                 return past_list[idx]
     
         return current
+    
+    ### FORMAT RESPONSE OPTIONS
+    # Old version -> formatted as questions
+    # def fmt_query(*, subj: str | None, obj: str, place: str | None, time: str | None, 
+    #               ip_would: bool = False,
+    #               cf_would: bool = False) -> str:
+    #     has_ip = subj is not None
+    #     has_place = place is not None
+    #     has_time = time is not None
+
+    #     if has_ip:
+    #         if ip and ip.get("type") in ("thinking", "feeling"):
+    #             if ip_would:
+    #                 if has_time and is_past_time(time):
+    #                     past_verb = past_deictic_verb_for_current(deictic_verb)
+    #                     bits = [f"Would {subj} have {past_verb} {obj}"]
+    #                 else:
+    #                     bits = [f"Would {subj} {deictic_verb} {obj}"]
+    #             else:
+    #                 lead = "Do"
+    #                 if has_time and is_past_time(time):
+    #                     lead = past_aux_for_do(lead, past=True)  # Do -> Did
+    #                 bits = [f"{lead} {subj} {deictic_verb} {obj}"]
+        
+    #             if has_place:
+    #                 bits.append(place)
+    #             if has_time:
+    #                 bits.append(time)
+    #             return " ".join(bits) + "?"
+
+    #         # doing (or unspecified)
+    #         if ip_would:
+    #             s = str(subj)
+    #             if "I" in s:
+    #                 pron = "I"
+    #             elif "you" in s.lower():
+    #                 pron = "you"
+    #             else:
+    #                 pron = s
+    #             aux = "have been" if (has_time and is_past_time(time)) else "be"
+    #             bits = [f"Would {pron} {aux} {obj}"]
+    #         else:
+    #             # doing (factual question): Am I/Are you -> Was I/Were you when time is past
+    #             subj_out = doing_statement_to_question_subj(str(subj))
+
+    #             # if temporal and past: Am/Are -> Was/Were
+    #             if has_time and is_past_time(time):
+    #                 subj_out = pastify_doing_question_subj(subj_out)
+                
+    #             bits = [f"{subj_out} {obj}"]
+
+    #         if has_place:
+    #             bits.append(place)
+    #         if has_time:
+    #             bits.append(time)
+    #         return " ".join(bits) + "?"
+
+    #     # non-interpersonal
+    #     if cf_would:
+    #         # Counterfactual copula for temporal/spatial reversals
+    #         aux = "have been" if (has_time and is_past_time(time)) else "be"
+    #         bits = [f"Would {obj} {aux}"]
+    #         if has_place:
+    #             bits.append(place)
+    #         if has_time:
+    #             bits.append(time)
+    #         return " ".join(bits) + "?"
+    
+    #     # factual non-IP
+    #     aux = "Was" if (has_time and is_past_time(time)) else "Is"
+    #     bits = [f"{aux} {obj}"]
+    #     if has_place:
+    #         bits.append(place)
+    #     if has_time:
+    #         bits.append(time)
+    #     return " ".join(bits) + "?"
+    
+    # New version formats as statements to SELECT ALL TRUE/FALSE 
+    
     def fmt_query(*, subj: str | None, obj: str, place: str | None, time: str | None, 
                   ip_would: bool = False,
                   cf_would: bool = False) -> str:
+        """
+           Format response options as statements instead of questions.
+    
+           Examples:
+               "I am sitting on a red chair here."
+               "You feel happy today."
+               "The red chair is here."
+               "My birthday was yesterday."
+    
+           The function keeps the same name/signature so the rest of
+           build_deictic_option_sets() does not need to change.
+           """
         has_ip = subj is not None
         has_place = place is not None
         has_time = time is not None
-
-        if has_ip:
-            if ip and ip.get("type") in ("thinking", "feeling"):
-                if ip_would:
-                    if has_time and is_past_time(time):
-                        past_verb = past_deictic_verb_for_current(deictic_verb)
-                        bits = [f"Would {subj} have {past_verb} {obj}"]
-                    else:
-                        bits = [f"Would {subj} {deictic_verb} {obj}"]
-                else:
-                    lead = "Do"
-                    if has_time and is_past_time(time):
-                        lead = past_aux_for_do(lead, past=True)  # Do -> Did
-                    bits = [f"{lead} {subj} {deictic_verb} {obj}"]
-        
-                if has_place:
-                    bits.append(place)
-                if has_time:
-                    bits.append(time)
-                return " ".join(bits) + "?"
-
-            # doing (or unspecified)
-            if ip_would:
-                s = str(subj)
-                if "I" in s:
-                    pron = "I"
-                elif "you" in s.lower():
-                    pron = "you"
-                else:
-                    pron = s
-                aux = "have been" if (has_time and is_past_time(time)) else "be"
-                bits = [f"Would {pron} {aux} {obj}"]
-            else:
-                # doing (factual question): Am I/Are you -> Was I/Were you when time is past
-                subj_out = doing_statement_to_question_subj(str(subj))
-
-                # if temporal and past: Am/Are -> Was/Were
-                if has_time and is_past_time(time):
-                    subj_out = pastify_doing_question_subj(subj_out)
-                
-                bits = [f"{subj_out} {obj}"]
-
-            if has_place:
-                bits.append(place)
-            if has_time:
-                bits.append(time)
-            return " ".join(bits) + "?"
-
-        # non-interpersonal
-        if cf_would:
-            # Counterfactual copula for temporal/spatial reversals
-            aux = "have been" if (has_time and is_past_time(time)) else "be"
-            bits = [f"Would {obj} {aux}"]
-            if has_place:
-                bits.append(place)
-            if has_time:
-                bits.append(time)
-            return " ".join(bits) + "?"
     
-        # factual non-IP
-        aux = "Was" if (has_time and is_past_time(time)) else "Is"
-        bits = [f"{aux} {obj}"]
+        def clean_subject(s: str) -> str:
+           """Convert possible question-style subjects back to statement-style subjects."""
+           s = str(s).strip()
+    
+           mapping = {
+               "Am I": "I am",
+               "Are you": "you are",
+               "Was I": "I was",
+               "Were you": "you were",
+           }
+    
+           return mapping.get(s, s)
+    
+        def cap_first(s: str) -> str:
+           return s[:1].upper() + s[1:] if s else s
+    
+       # ------------------------------------------------------------
+       # Interpersonal relations
+       # ------------------------------------------------------------
+        if has_ip:
+    
+           # Thinking / feeling
+           if ip and ip.get("type") in ("thinking", "feeling"):
+    
+               subj_out = clean_subject(subj)
+    
+               # Counterfactual / reversal statement
+               if ip_would:
+                   if has_time and is_past_time(time):
+                       past_verb = past_deictic_verb_for_current(deictic_verb)
+                       bits = [f"{subj_out} would have {past_verb} {obj}"]
+                   else:
+                       bits = [f"{subj_out} would {deictic_verb} {obj}"]
+    
+               # Regular factual statement
+               else:
+                   verb = deictic_verb
+    
+                   # Present/past adjustment for temporal items
+                   if has_time and is_past_time(time):
+                       verb = past_deictic_verb_for_current(deictic_verb)
+    
+                   bits = [f"{subj_out} {verb} {obj}"]
+    
+               if has_place:
+                   bits.append(place)
+               if has_time:
+                   bits.append(time)
+    
+               return cap_first(" ".join(bits)) + "."
+    
+           # Doing
+           subj_out = clean_subject(subj)
+    
+           # Counterfactual / reversal statement
+           if ip_would:
+               if "I" in subj_out:
+                   pron = "I"
+               elif "you" in subj_out.lower():
+                   pron = "you"
+               else:
+                   pron = subj_out
+    
+               aux = "would have been" if (has_time and is_past_time(time)) else "would be"
+               bits = [f"{pron} {aux} {obj}"]
+    
+           # Regular factual statement
+           else:
+               # Adjust tense if temporal item is past
+               if has_time and is_past_time(time):
+                   if subj_out == "I am":
+                       subj_out = "I was"
+                   elif subj_out == "you are":
+                       subj_out = "you were"
+    
+               bits = [f"{subj_out} {obj}"]
+    
+           if has_place:
+               bits.append(place)
+           if has_time:
+               bits.append(time)
+    
+           return cap_first(" ".join(bits)) + "."
+    
+       # ------------------------------------------------------------
+       # Non-interpersonal relations: temporal / spatial
+       # ------------------------------------------------------------
+    
+       # Counterfactual / reversal statement
+        if cf_would:
+           aux = "would have been" if (has_time and is_past_time(time)) else "would be"
+    
+           bits = [f"{obj} {aux}"]
+    
+           if has_place:
+               bits.append(place)
+           if has_time:
+               bits.append(time)
+    
+           return cap_first(" ".join(bits)) + "."
+    
+       # Regular factual statement
+        aux = "was" if (has_time and is_past_time(time)) else "is"
+    
+        bits = [f"{obj} {aux}"]
+    
         if has_place:
-            bits.append(place)
+           bits.append(place)
         if has_time:
-            bits.append(time)
-        return " ".join(bits) + "?"
+           bits.append(time)
+    
+        return cap_first(" ".join(bits)) + "."
 
     def block(kind_subj: str, kind_time: str, kind_place: str, *, ip_would: bool = False, cf_would: bool = False):
         """Return a 4-option block + its correct labels."""
@@ -1104,8 +1243,10 @@ def build_deictic_option_sets(
 # %% pick_task_premise - for MC problems, randomize whether to select TRUE/FALSE statements
 def _pick_task_premise(*, rng: np.random.Generator) -> str:
     """Task premise only matters for forced-choice multiple-choice."""
-    TASK_PREMISE_YES = "Select all questions to which the answer is 'yes'."
-    TASK_PREMISE_NO = "Select all questions to which the answer is 'no'."
+    # TASK_PREMISE_YES = "Select all questions to which the answer is 'yes'."
+    # TASK_PREMISE_NO = "Select all questions to which the answer is 'no'."
+    TASK_PREMISE_YES = "Based on this information, select all statements that are TRUE."
+    TASK_PREMISE_NO = "Based on this information, select all statements that are FALSE."
     return rng.choice([TASK_PREMISE_YES, TASK_PREMISE_NO])
 
 # %% options-to-prems - MC response options into numbered list
@@ -1187,7 +1328,7 @@ def emit_mc_trial(
             
     full_prompt = stem
     if n_opt > 1 and forcedChoice:
-        full_prompt = f"{taskPremise}\n{full_prompt}"
+        full_prompt = f"{full_prompt}\n{taskPremise}"
     return {
         "Premises": [premise1, premise2],
         "Premise1": premise1,
@@ -1250,3 +1391,15 @@ def emit_single_option_trials(
         rows.append(row)
 
     return rows
+
+# %% add trial timeout based on trial complexity
+
+def assign_timeout(rel):
+    if rel in relations_1dim or rel in relations_1dim_ip:
+        return 40000
+    elif rel in relations_2dim:
+        return 60000
+    elif rel in relations_3dim:
+        return 80000
+    else:
+        return None
