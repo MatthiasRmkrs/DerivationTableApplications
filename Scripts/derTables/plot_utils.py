@@ -94,111 +94,283 @@ def createPlotRelLabels(relations):
 
 # %% Plot derivation tables as heatmaps
 
-def plotTablesHeatmap(relations, mutual, combi):
-    
+
+from matplotlib.colors import ListedColormap, BoundaryNorm
+from matplotlib.gridspec import GridSpec
+
+def plotTablesHeatmap(
+    relations,
+    mutual,
+    combi,
+    save_path=None,
+    palette="YlGnBu"
+):
     """
-    Plots derivation tables, created by 'createDerivationTables' as heatmaps,
-    both for mutual and combinatorial entailment.
-    
-    Args:
-        relations: dict, relations as keys, tuples of stimulus indices as values
-                 output by createDerivationTables
-        mutual: list that contains the (indices) of the relations that are mutually 
-                entailed by those provided in input
-                output by createDerivationTables
-        combi:  a dict containing four arrays, one for each way two relations can be combined,
-             each containing the combinatorially entailed relations (indices)
-             for all possible combinations of the relations provided in input
-             output by createDerivationTables
-            
+    Create a five-panel manuscript figure displaying mutual
+    and combinatorial entailment tables.
+
+    A: Mutual entailment (full-width top panel)
+    B-E: Four combinatorial entailment configurations
+
+    All panels use the same categorical color mapping.
+
+    Parameters
+    ----------
+    relations : dict
+        Relation labels mapped to integer indices.
+    mutual : array-like
+        Mutually entailed relation index for each relation.
+    combi : dict
+        Four combinatorial entailment matrices.
+    save_path : str or Path, optional
+        Base filename for exporting PNG and PDF.
+    palette : str
+        Seaborn categorical palette.
     """
-    inv_relations = {v: k for k, v in relations.items()}  # invert dict index -> label
-    # Plot mutual entailment as heatmap 
+
     n_rels = len(relations)
 
+    inv_relations = {v: k for k, v in relations.items()}
     shortrels, longrels = createPlotRelLabels(relations)
 
-    # === Plot ===
-    mutual_matrix = np.zeros((2, len(relations)), dtype=int)
-    
-    # Populate mutual matrix: row 0 = original relations, row 1 = corresponding mutual relations
-    for i, rel in enumerate(relations):
-        mutual_matrix[0, i] = i  # Original relation index
-        mutual_matrix[1, i] = mutual[i]  # Corresponding mutual relation index
-    
-    labels = np.empty_like(mutual_matrix, dtype=object)  # Create labels matrix
+    # -----------------------------------------------------
+    # Shared categorical colormap
+    # -----------------------------------------------------
+
+    colors = sns.color_palette(
+        palette,
+        n_colors=n_rels
+    )
+
+    cmap = ListedColormap(colors)
+    cmap.set_bad("lightgray")
+
+    norm = BoundaryNorm(
+        np.arange(-0.5, n_rels + 0.5, 1),
+        ncolors=n_rels
+    )
+
+    # -----------------------------------------------------
+    # Figure layout
+    # -----------------------------------------------------
+
+    fig = plt.figure(figsize=(15, 15))
+
+    gs = GridSpec(
+        3, 2,
+        figure=fig,
+        height_ratios=[0.55, 1.5, 1.5],
+        hspace=0.45,
+        wspace=0.35
+    )
+
+    ax_mutual = fig.add_subplot(gs[0, :])
+
+    axes_combi = [
+        fig.add_subplot(gs[1, 0]),
+        fig.add_subplot(gs[1, 1]),
+        fig.add_subplot(gs[2, 0]),
+        fig.add_subplot(gs[2, 1])
+    ]
+
+    # =====================================================
+    # A. Mutual entailment
+    # =====================================================
+
+    mutual_matrix = np.zeros(
+        (2, n_rels),
+        dtype=int
+    )
+
+    for i in range(n_rels):
+        mutual_matrix[0, i] = relations[list(relations)[i]]
+        mutual_matrix[1, i] = mutual[i]
+
+    mutual_labels = np.empty(
+        mutual_matrix.shape,
+        dtype=object
+    )
+
     for row in range(2):
         for col in range(n_rels):
-            labels[row, col] = shortrels[inv_relations[mutual_matrix[row, col]]]
-    # Create a DataFrame from the matrix
-    df = pd.DataFrame(mutual_matrix, index=["Input Relation AxB", "Mutually Entailed Relation BxA"], columns=relations)
 
-    # Create the plot with a dynamic size
-    fig, ax = plt.subplots(figsize=(len(relations), 2))  # Adjust width based on the number of relations
-    
-    sns.heatmap(df, annot=labels, fmt='', cmap='YlGnBu', cbar=False, linewidths=0.5, ax=ax,
-                annot_kws={"weight": "bold"}, cbar_kws={'label': 'Mutual Relations'})
-    
-    # Set title and axes labels
-    ax.set_title('Mutual Entailment for User Input', fontsize=14, fontweight='bold')
-    ax.set_ylabel('Input Relation AxB', fontsize=12, fontweight='bold')
-    ax.set_xlabel('Mutually Entailed Relation BxA', fontsize=12, fontweight='bold')
-    ax.set_xticks([])
-    # Adjust x and y ticks
-    # plt.xticks(rotation=45, ha='right', fontsize=10, fontweight='bold')
-    plt.yticks(rotation=0, fontsize=10, fontweight='bold')
-    
-    plt.tight_layout()
-    plt.show()
+            rel_idx = mutual_matrix[row, col]
 
-    # Plot combinatorial entailment heatmaps for each combination type 
-    fig, axs = plt.subplots(2, 2, figsize=(18, 14))  # 2 rows, 2 columns
-    axs = axs.flatten()  # Flatten to index as 0,1,2,3
-    
+            mutual_labels[row, col] = (
+                shortrels[inv_relations[rel_idx]]
+                if rel_idx >= 0 else ""
+            )
+
+    mutual_df = pd.DataFrame(
+        mutual_matrix,
+        index=[
+            "Original relation (AxB)",
+            "Bidirectional relation (BxA)"
+        ],
+        columns=list(relations)
+    ).replace(-1, np.nan)
+
+    sns.heatmap(
+        mutual_df,
+        annot=mutual_labels,
+        fmt="",
+        cmap=cmap,
+        norm=norm,
+        cbar=False,
+        linewidths=0.7,
+        linecolor="white",
+        annot_kws={
+            "weight": "bold",
+            "fontsize": 11
+        },
+        ax=ax_mutual
+    )
+
+    ax_mutual.set_title(
+        "A. Bidirectional Relations",
+        fontweight="bold",
+        fontsize=14,
+        pad=14
+    )
+
+    ax_mutual.set_xticks(
+        np.arange(n_rels) + 0.5
+    )
+
+    ax_mutual.set_xticklabels(
+        [shortrels[r] for r in relations],
+        rotation=0,
+        fontweight="bold"
+    )
+
+    ax_mutual.tick_params(
+        axis="y",
+        rotation=0,
+        length=0
+    )
+
+    # =====================================================
+    # B-E. Combinatorial entailment
+    # =====================================================
+
+    panel_letters = ["B", "C", "D", "E"]
+
     for i, (comb_type, matrix) in enumerate(combi.items()):
-        df = pd.DataFrame(matrix)
-        df.index = [k for k in relations]
-        df.columns = [k for k in relations]
-        df.replace(-1, np.nan, inplace=True)
-    
-        # Abbreviated cell labels
-        label_matrix = (
-            df.astype(pd.Int64Dtype())
-              .apply(lambda col: col.map(inv_relations))
-              .apply(lambda col: col.map(shortrels))
+
+        if i >= 4:
+            break
+
+        ax = axes_combi[i]
+
+        df = pd.DataFrame(
+            matrix,
+            index=list(relations),
+            columns=list(relations)
+        ).replace(-1, np.nan)
+
+        # Annotation matrix
+        annotations = np.empty(
+            df.shape,
+            dtype=object
         )
-    
-        ax = axs[i]
+        
+        
+        for row in range(df.shape[0]):
+            for col in range(df.shape[1]):
+
+                value = df.iloc[row, col]
+
+                if pd.isna(value):
+                    annotations[row, col] = ""
+                else:
+                    annotations[row, col] = (
+                        shortrels[inv_relations[int(value)]]
+                    )
+
         sns.heatmap(
             df,
-            annot=label_matrix,
-            fmt='',
-            cmap='coolwarm',
+            annot=annotations,
+            fmt="",
+            cmap=cmap,
+            norm=norm,
             cbar=False,
             linewidths=0.5,
-            linecolor='lightgray',
-            annot_kws={"weight": "bold"},
+            linecolor="white",
+            square=True,
+            annot_kws={
+                "weight": "bold",
+                "fontsize": 10
+            },
             ax=ax
         )
-    
-        ax.set_title(f"{type_labs[comb_type]}",
-                     fontweight='bold', fontsize=14, pad=20)
-    
+
+        ax.set_title(
+            f"{panel_letters[i]}. {type_labs[comb_type]}",
+            fontweight="bold",
+            fontsize=13,
+            pad=16
+        )
+
         ax.xaxis.tick_top()
-        ax.xaxis.set_label_position('top')
-        ax.set_xlabel(rel2_x[comb_type], fontweight='bold', fontsize=12)
-        if i % 2 == 0: ax.set_ylabel("First Relation - AxB", fontweight='bold', fontsize=12)
+        ax.xaxis.set_label_position("top")
+
+        ax.set_xlabel(
+            rel2_x[comb_type],
+            fontweight="bold",
+            fontsize=11
+        )
+
+        if i % 2 == 0:
+            ax.set_ylabel(
+                "First relation (AxB)",
+                fontweight="bold",
+                fontsize=11
+            )
+
+        ax.set_xticks(
+            np.arange(n_rels) + 0.5
+        )
+        ax.set_xticklabels(
+            [shortrels[r] for r in relations],
+            rotation=0,
+            fontweight="bold"
+        )
+
+        ax.set_yticks(
+            np.arange(n_rels) + 0.5
+        )
+        ax.set_yticklabels(
+            [longrels[r] for r in relations],
+            rotation=0
+        )
+
+        ax.tick_params(length=0)
     
-        ax.set_xticks(np.arange(len(df.columns))+0.5)
-        ax.set_xticklabels([shortrels[r] for r in df.columns], rotation=0, fontweight='bold')
-        ax.set_yticks(np.arange(len(df.index))+0.5)
-        ax.set_yticklabels([longrels[r] for r in df.index], rotation=0, fontweight='bold')
-    
-    plt.suptitle('Combinatorially Entailed Relations for All Combinations of Relations',
-                 fontsize=18, fontweight='bold', y=1.02)
-    plt.tight_layout()
+    # -----------------------------------------------------
+    # Export
+    # -----------------------------------------------------
+
+    if save_path is not None:
+
+        from pathlib import Path
+
+        save_path = Path(save_path)
+
+        fig.savefig(
+            save_path.with_suffix(".png"),
+            dpi=300,
+            bbox_inches="tight"
+        )
+
+        fig.savefig(
+            save_path.with_suffix(".pdf"),
+            bbox_inches="tight"
+        )
+
     plt.show()
-    return
+
+    return fig
+
 
 
 # %% plotNetworkHeatmap - plot network of baseline and derived relations as heatmaps
@@ -378,38 +550,59 @@ def build_layout_graph(baseline, sLabs, derived=None, include_derived=False):
     return G
 
 
-def degree_layout(G, scale=100):
+def degree_layout(G, scale=100, class_spacing=2.5):
     """
-    Places the most connected node in the center and all other nodes around it.
-    Good for one-to-many and many-to-one networks.
+    Arrange each disconnected component as a star/polygon.
+
+    For each component:
+    - The highest-degree node is placed centrally.
+    - Remaining nodes are evenly distributed around it.
+    - Components are arranged horizontally.
+
+    Works with multiple classes of different sizes.
     """
 
     if G.number_of_nodes() == 0:
         return {}
 
-    degrees = dict(G.degree())
-    center_node = max(degrees, key=degrees.get)
+    # Identify independent classes/components
+    components = list(nx.connected_components(G.to_undirected()))
 
-    other_nodes = [node for node in G.nodes if node != center_node]
+    pos = {}
 
-    pos = {
-        center_node: (0.0, 0.0)
-    }
+    # Position each class separately
+    for ci, component in enumerate(components):
 
-    n = len(other_nodes)
+        subG = G.subgraph(component)
 
-    if n == 0:
-        return pos
+        # Determine central node within this class
+        degrees = dict(subG.degree())
+        center_node = max(degrees, key=degrees.get)
 
-    for k, node in enumerate(other_nodes):
-        angle = 2 * np.pi * k / n
-        pos[node] = (
-            scale * np.cos(angle),
-            scale * np.sin(angle)
-        )
+        other_nodes = [
+            node for node in subG.nodes
+            if node != center_node
+        ]
+
+        n = len(other_nodes)
+
+        # Horizontal position of class center
+        cx = ci * scale * class_spacing
+        cy = 0
+
+        pos[center_node] = (cx, cy)
+
+        # Arrange remaining stimuli around their class center
+        for k, node in enumerate(other_nodes):
+
+            angle = 2 * np.pi * k / max(n, 1)
+
+            pos[node] = (
+                cx + scale * np.cos(angle),
+                cy + scale * np.sin(angle)
+            )
 
     return pos
-
 
 def hierarchical_layout(G, scale=100):
     """
@@ -470,6 +663,52 @@ def normalize_positions(pos, scale=100, margin=50):
     return normalized
 
 
+def linear_series_layout(baseline, sLabs, spacing=250, row_spacing=380, margin=150):
+    """Place independent baseline chains on parallel horizontal rows.
+
+    Isolated nodes (e.g. a test-only second class when using the wrong baseline)
+    are grouped into one horizontal row in stimulus-label order rather than
+    becoming separate vertical single-node rows. Use the actual task baseline
+    for semantically meaningful chain ordering.
+    """
+    G = nx.Graph()
+    G.add_nodes_from(sLabs)
+    for pairs in baseline.values():
+        for source, target in pairs:
+            G.add_edge(sLabs[int(source)], sLabs[int(target)])
+
+    order = {label: index for index, label in enumerate(sLabs)}
+    components = list(nx.connected_components(G))
+    chains, isolated = [], []
+    for component in components:
+        subgraph = G.subgraph(component)
+        if len(component) == 1:
+            isolated.extend(component)
+            continue
+        if any(degree > 2 for _, degree in subgraph.degree()):
+            raise ValueError("layout='line' requires unbranched baseline chains; "
+                             "try 'hierarchical' or 'degree' instead.")
+        ends = [node for node, degree in subgraph.degree() if degree == 1]
+        if len(ends) != 2:
+            raise ValueError("layout='line' requires acyclic baseline chains.")
+        current = min(ends, key=order.get)
+        previous = None
+        chain = []
+        while current is not None:
+            chain.append(current)
+            neighbors = [node for node in subgraph.neighbors(current)
+                         if node != previous]
+            previous, current = current, (neighbors[0] if neighbors else None)
+        chains.append(chain)
+    if isolated:
+        chains.append(sorted(isolated, key=order.get))
+    chains.sort(key=lambda chain: min(order[node] for node in chain))
+    return {node: (float(margin + col * spacing),
+                   float(margin - row * row_spacing))
+            for row, chain in enumerate(chains)
+            for col, node in enumerate(chain)}
+
+
 def compute_stimulus_layout(
     baseline,
     sLabs,
@@ -489,11 +728,18 @@ def compute_stimulus_layout(
     - 'spring'
     - 'degree'
     - 'hierarchical'
+    - 'line' (one or more independent baseline chains)
     - 'manual'
     """
 
     if sLabs is None:
         raise ValueError("sLabs must be provided to compute stimulus layout.")
+
+    if layout == "line":
+        # Use BASELINE edges, not derived links, to preserve chain order.
+        # Use fixed spacing rather than normalization, so separate chains
+        # remain parallel and nodes are evenly separated.
+        return linear_series_layout(baseline, sLabs, margin=margin)
 
     if layout == "manual":
         if positions is None:
@@ -576,7 +822,7 @@ def compute_stimulus_layout(
         raise ValueError(
             f"Unknown layout '{layout}'. "
             "Choose from 'auto', 'circle', 'spring', 'degree', "
-            "'hierarchical', or 'manual'."
+            "'hierarchical', 'line', or 'manual'."
         )
 
     return normalize_positions(
@@ -664,8 +910,9 @@ def plotRelNetworkGraph(baseline,
     
     mutual, combi, relations = createDerivationTables(list(baseline.keys()))
     # derive relations (or do on the spot while plotting?)
-    relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
-    
+    if derived is None:
+        relTab, derived = deriveRelationsFromBaseline(baseline, sLabs)
+
     default_relation_colors = [
         "#E69F00",  # orange
         "#56B4E9",  # sky blue
@@ -697,6 +944,10 @@ def plotRelNetworkGraph(baseline,
             if rel_label not in relation_colors:
                 relation_colors[rel_label] = default_relation_colors[i % len(default_relation_colors)]
         
+    shortrels, _ = createPlotRelLabels(
+        dict.fromkeys(list(baseline.keys()) + list(derived.keys()))
+    )
+
     # Determine stimulus positions in graph
     n_stim = len(sLabs)
     
@@ -711,11 +962,24 @@ def plotRelNetworkGraph(baseline,
         margin=150
     )
     
-    # Create a Cartesian grid plot without showing the grid
-    figsize = (25, 25)
-    plt.figure(figsize=figsize)
-    plt.plot([], [])
-    
+    # Leave dedicated space on the right for BOTH legends, outside the axes.
+    if layout == 'line':
+        n_rows = len(set(y for x, y in layout_positions.values()))
+        figsize = (17, max(4.5, 2.3 * n_rows + 1.5))
+    else:
+        figsize = (25, 25)
+    fig, ax = plt.subplots(figsize=figsize)
+    fig.subplots_adjust(left=.055, right=.74, top=.82, bottom=.12)
+    if layout == 'line':
+        # Old defaults were sized for a 25-inch square figure.
+        if fontSize == 50:
+            relLabelFontSize = sLabelFontSize = 16
+        if sDotSize == 100:
+            sDotSize = 34
+        arrow_shrink, arrow_width = 17, 2.2
+    else:
+        arrow_shrink, arrow_width = 40, 5
+
     # Use dynamic plot limits based on computed coordinates
     xs = [xy[0] for xy in layout_positions.values()]
     ys = [xy[1] for xy in layout_positions.values()]
@@ -733,6 +997,8 @@ def plotRelNetworkGraph(baseline,
     }
     
     plottedRels = dict({})
+    # Track relation labels actually drawn, preserving first-seen order.
+    plotted_relation_labels = dict.fromkeys([])
 
     if 'baseline' in plotRels:
         # Loop through baseline relations
@@ -754,8 +1020,9 @@ def plotRelNetworkGraph(baseline,
                 baselineArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
                                         arrowstyle= relArrowStyle, color=currentColor,
-                                        shrinkA=40,shrinkB=40,linewidth=5)
+                                        shrinkA=arrow_shrink,shrinkB=arrow_shrink,linewidth=arrow_width)
                 plt.gca().add_patch(baselineArrow)
+                plotted_relation_labels[rels] = None
                 
                 # calculate position of label
                 azimuth_x, azimuth_y = findLabelPosition(x_start, x_end,
@@ -801,8 +1068,9 @@ def plotRelNetworkGraph(baseline,
                 derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
                                         arrowstyle=drelArrowStyle, color=currentColor, 
-                                        linestyle = ':', shrinkA=40, shrinkB=40, linewidth=5)
+                                        linestyle = ':', shrinkA=arrow_shrink, shrinkB=arrow_shrink, linewidth=arrow_width)
                 plt.gca().add_patch(derivedArrow)
+                plotted_relation_labels[drels] = None
                 if labels:
                     plt.text(azimuth_x, azimuth_y, shortrels[drels], color=currentColor, 
                          fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
@@ -812,8 +1080,9 @@ def plotRelNetworkGraph(baseline,
                 derivedArrow = FancyArrowPatch((x_start, y_start), (x_end, y_end),
                                         connectionstyle="arc3,rad={}".format(radius),  # Controls the curvature
                                         arrowstyle=drelArrowStyle, color=currentColor, 
-                                        linestyle = '--', shrinkA=40,shrinkB=40, linewidth=5)
+                                        linestyle = '--', shrinkA=arrow_shrink,shrinkB=arrow_shrink, linewidth=arrow_width)
                 plt.gca().add_patch(derivedArrow)
+                plotted_relation_labels[drels] = None
                 if labels:
                     plt.text(azimuth_x, azimuth_y, shortrels[drels], color=currentColor, 
                              fontsize=relLabelFontSize, ha='center', fontweight = 'bold')
@@ -821,84 +1090,33 @@ def plotRelNetworkGraph(baseline,
 
     
     if legend:
+        type_handles = []
+        for kind, linestyle, caption in (
+            ('baseline', '-', 'Baseline'),
+            ('mutual', ':', 'Mutual'),
+            ('combi', '--', 'Combinatorial')
+        ):
+            if kind in plotRels:
+                type_handles.append(Line2D([0], [0], color='black',
+                                           linestyle=linestyle, linewidth=2.5,
+                                           label=caption))
 
-        ax = plt.gca()
-    
-        # Legend 1: relation class / derivation type by line style
-        if "Relation type" in legend:
-    
-            type_legend_handles = []
-    
-            if 'baseline' in plotRels:
-                type_legend_handles.append(
-                    Line2D(
-                        [0], [0],
-                        color='black',
-                        linestyle='-',
-                        linewidth=5,
-                        label='Baseline'
-                    )
-                )
-    
-            if 'mutual' in plotRels:
-                type_legend_handles.append(
-                    Line2D(
-                        [0], [0],
-                        color='black',
-                        linestyle=':',
-                        linewidth=5,
-                        label='Mutual'
-                    )
-                )
-    
-            if 'combi' in plotRels:
-                type_legend_handles.append(
-                    Line2D(
-                        [0], [0],
-                        color='black',
-                        linestyle='--',
-                        linewidth=5,
-                        label='Combinatorial'
-                    )
-                )
-    
-            if type_legend_handles:
-                type_legend = ax.legend(
-                    handles=type_legend_handles,
-                    title="Relation type",
-                    loc="upper left",
-                    fontsize=35,
-                    title_fontsize=40,
-                    frameon=False
-                )
-    
-                ax.add_artist(type_legend)
-    
-        # Legend 2: specific relation labels by color
-        if "Relation colors" in legend:
-    
-            relation_legend_handles = []
-    
-            for rel_label in all_relation_labels:
-                relation_legend_handles.append(
-                    Line2D(
-                        [0], [0],
-                        color=relation_colors[rel_label],
-                        linestyle='-',
-                        linewidth=5,
-                        label=rel_label
-                    )
-                )
-    
-            if relation_legend_handles:
-                ax.legend(
-                    handles=relation_legend_handles,
-                    title="Relation",
-                    loc="upper right",
-                    fontsize=35,
-                    title_fontsize=40,
-                    frameon=False
-                )
+        color_handles = [
+            Line2D([0], [0], color=relation_colors[name], linewidth=2.5,
+                   label=name)
+            for name in plotted_relation_labels
+        ]
+        legend_font = 12 if layout == 'line' else 20
+        if 'Relation type' in legend and type_handles:
+            first = fig.legend(handles=type_handles, title='Relation type',
+                               loc='upper left', bbox_to_anchor=(.77, .79),
+                               fontsize=legend_font, title_fontsize=legend_font + 1,
+                               frameon=False)
+        if 'Relation colors' in legend and color_handles:
+            fig.legend(handles=color_handles, title='Relation',
+                       loc='upper left', bbox_to_anchor=(.77, .44),
+                       fontsize=legend_font, title_fontsize=legend_font + 1,
+                       frameon=False)
 
     # title
     if plotTitle == '' or plotTitle is None: 
@@ -910,7 +1128,7 @@ def plotRelNetworkGraph(baseline,
             title = 'Trained and Derived Relational Network'
     else:
         title = plotTitle
-    plt.title(title, fontsize=72, fontweight = 'bold')
+    fig.suptitle(title, fontsize=(19 if layout == 'line' else 34), fontweight='bold', y=.96)
     
     # Ensure grid is not displayed
     plt.grid(False)

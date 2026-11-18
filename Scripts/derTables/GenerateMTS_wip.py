@@ -714,7 +714,7 @@ def generateTrials(baseline, n_baseline, preset, n_test, n_comp,
     # create derivation tables
     relations = dict({}) # Create relations dict (for creating and indexing tables)
     for i in range(len(baseline.keys())): relations[list(baseline.keys())[i]] = i   
-    mutual, combi, cleanRelations = createDerivationTables(relations)
+    mutual, combi, relations = createDerivationTables(relations)
     # First create all unique trials (i.e., different configurations of comparison stimuli)
     unique_scs = [] # init to store unique baseline relations
     unique_cmps = dict() # init to store unique comparison sets
