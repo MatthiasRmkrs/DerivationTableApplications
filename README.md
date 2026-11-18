@@ -1,5 +1,5 @@
 This repository contains scripts to generate relational derivation tables and use them for various applications.
-A paper describing the tables, tools and tutorials on how to use them is in production.
+A paper describing the tables, tools and tutorials on how to use them (submitted to Behavior Research Methods) is also included.
 
 ## Relational derivation tables 
 The relational derivation tables we share are inspired by the work of Allen (1983) who constructed so-called transitivity tables of temporal relations to automate computer systems' reasoning about temporal relations.
