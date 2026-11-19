@@ -7,6 +7,7 @@ These transitivty tables are essentially look-up tables for relational derivatio
 
 In this work, we expanded on Allen's tables by (1) including other relations beyond temporal relations that are typically studied in relational reasoning research; (2) included tables for both mutual entailment or bidirectionality of relations and the combinatorial entailment or transitivity of relations; and (3) included separate tables for the different ways in which two relations can be combined, leading to different derivations (e.g., A-B and B-C -> A-C vs. A-B and A-C -> B-C).
 The tables in the illustration below feature a subset of supporteed relations. This subset was chosen because they can be considered as general versions of more specific relations. That is, the derivation patterns for these relations are the same as those for more specific instances of the general pattern (e.g., taller and shorter than are specific instances of more than and less than).
+
 ### Illustrations
 
 *Derivation Table for Mutual Entailment*  
