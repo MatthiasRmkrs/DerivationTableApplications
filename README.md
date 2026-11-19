@@ -20,7 +20,7 @@ The tables in the illustration below feature a subset of supporteed relations. T
 ### Illustrations
 
 *Example Derivation Tables Illustrated*  
-<img width="500" height="800" alt="derTables" src="https://github.com/MatthiasRmkrs/DerivationTableApplications/blob/main/Example_Illustrations_and_Tasks/Derivation_Tables_Illustrated/DerivationTablesFigure.png?raw=true" />
+<img width="850" height="1150" alt="derTables" src="https://github.com/MatthiasRmkrs/DerivationTableApplications/blob/main/Example_Illustrations_and_Tasks/Derivation_Tables_Illustrated/DerivationTablesFigure.png?raw=true" />
 
 
 ## Tools Using Automated Relational Derivation
@@ -35,9 +35,22 @@ Users have control over which relations are plotted, over whether they are plott
 *Example Graph Illustration of the Relational Network Trained and Tested By Steele and Hayes (1991)* 
 <img width="824" height="395" alt="image" src="https://github.com/user-attachments/assets/5b8c7d8d-555a-4129-82d4-07af4ae6fe69" />
 
-
-Try the [Relational Network Plotter]()
+Try the [Relational Network Plotter](https://relationalnetworkvisualizer.streamlit.app/)
 
 ### Relational Syllogistic Reasoning Task Generator
 
+The python package also includes a function to generate syllogistic reasoning problems. Users can manipulate the complexity and nature of problems (number of premises, relations, analogy, transformation of function,...) and specify task parameters (number of iterations, response format, ...).
+
+We also created a Streamlit app to provide code-free access to the function. 
 Try the [Relational Syllogistic Problem Generator](https://relationalsyllogismgenerator.streamlit.app/)
+
+### Matching-to-Sample task Generator
+
+Finally, we also include code and an app to generate Matching-to-Sample procedures. Similar to the syllogism generator, the function allows users to specify the (training and optional test) relations for which to create MTS trials, and specify task parameters (iterations, number of comparison stimuli, ...).
+
+We also created a Streamlit app to provide code-free access to the function. 
+Try the [Relational Matching-to-Sample Task Generator](https://mtsgenerator.streamlit.app/)
+
+
+Feel free to use or extend the software under license CC-by-4.0. For questions: matthias.raemaekers@ugent.be.
+Reference: Raemaekers, M. (in preparation). Open-source tools for automated relational network derivation, visualization and task Generation.
