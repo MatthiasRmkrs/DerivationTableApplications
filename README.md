@@ -1,4 +1,13 @@
+# Relational Derivation Tables and Tools for Relational Reasoning Research
+
 This repository contains scripts to generate relational derivation tables and use them for various applications.
+The relational derivation tables are look-up tables that store information about bidirectional and transitive relations, which can be used for automated relational derivation. We use them in three tools:
+<ul>
+  <li>Visualizing User-Defined Relational Networks as Graph Networks</li>
+  <li>Generating Matching-to-Sample Procedures</li>
+  <li>Generating Syllogistic Reasoning Problems</li>
+</ul>
+
 A paper describing the tables, tools and tutorials on how to use them (submitted to Behavior Research Methods) is also included.
 
 ## Relational derivation tables 
@@ -10,14 +19,9 @@ The tables in the illustration below feature a subset of supporteed relations. T
 
 ### Illustrations
 
-*Derivation Table for Mutual Entailment*  
-<img width="252" height="222" alt="MutualClean" src="https://github.com/user-attachments/assets/0c064ca3-2b06-4c1d-8aa4-c2bd3915eddb" />
+*Example Derivation Tables Illustrated*  
+<img width="252" height="222" alt="derTables" src="https://github.com/user-attachments/assets/0c064ca3-2b06-4c1d-8aa4-c2bd3915eddb" />
 
-*Derivation Table for Linear Combination of Relations*
-<img width="817" height="450" alt="LinearDerivationTable_clean" src="https://github.com/user-attachments/assets/ac184414-3afa-48a8-9e9e-7d3c2e5fb38d" />
-
-*Derivation Table for One-to-Many Combination of Relations*
-<img width="816" height="340" alt="OTM_clean" src="https://github.com/user-attachments/assets/93fc1dab-841b-405a-96bd-aea1c914802a" />
 
 ## Tools Using Automated Relational Derivation
 The derivation tables can be used to program an algorithm that automatically derives relations for a given set of input relations. This algorithm can then become the foundation for tools designed to facilitate relational reasoning research.
