@@ -51,6 +51,6 @@ Finally, we also include code and an app to generate Matching-to-Sample procedur
 We also created a Streamlit app to provide code-free access to the function. 
 Try the [Relational Matching-to-Sample Task Generator](https://mtsgenerator.streamlit.app/)
 
-
+## License and Reference
 Feel free to use or extend the software under license CC-by-4.0. For questions: matthias.raemaekers@ugent.be.
 Reference: Raemaekers, M. (in preparation). Open-source tools for automated relational network derivation, visualization and task Generation.
