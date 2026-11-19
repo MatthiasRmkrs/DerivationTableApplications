@@ -20,7 +20,7 @@ The tables in the illustration below feature a subset of supporteed relations. T
 ### Illustrations
 
 *Example Derivation Tables Illustrated*  
-<img width="252" height="222" alt="derTables" src="https://github.com/user-attachments/assets/0c064ca3-2b06-4c1d-8aa4-c2bd3915eddb" />
+<img width="252" height="222" alt="derTables" src="https://github.com/MatthiasRmkrs/DerivationTableApplications/blob/main/Example_Illustrations_and_Tasks/Derivation_Tables_Illustrated/DerivationTablesFigure.png?raw=true" />
 
 
 ## Tools Using Automated Relational Derivation
