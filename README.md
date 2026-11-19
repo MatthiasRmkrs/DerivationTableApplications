@@ -52,6 +52,22 @@ Finally, we also include code and an app to generate Matching-to-Sample procedur
 We also created a Streamlit app to provide code-free access to the function. 
 Try the [Relational Matching-to-Sample Task Generator](https://mtsgenerator.streamlit.app/)
 
+## Repository Contents
+
+<ul>
+  <li> 'Academic Output' folder contains a poster presented at ABAI Lisbon 2025 and a manuscript describing the derivation tables software and tools, currently submitted to Behavior Research Methods. </li>
+  <li> 'Example_Illustrations_And_Tasks' folder contains example illustrations of derivation tables and relational networks, and generated tasks (to be added).</li>
+  <li> 'Scripts' folder contains the python module and scripts to host the apps</li>
+  <ul> 
+      <li> 'derTables' folder is the python module </li>
+      <li> 'RelationalDerivationSoftwareAndTools_Walktrough' interactive walktrough notebook to get familiar with tools </li>
+      <li> 'visualizerStreamlitApp' script to host graph visualizer streamlit app</li>
+      <li> 'MTSGeneratorStreamlitApp' script to host MTS generator streamlit app</li>
+      <li> 'streamlitApp' script to host syllogism generator streamlit app</li>
+      <li> 'requirements.txt' required modules for streamlit apps</li>
+  </ul>
+</ul>
+
 ## License and Reference
 Feel free to use or extend the software under license CC-by-4.0. For questions: matthias.raemaekers@ugent.be.
 Reference: Raemaekers, M. (in preparation). Open-source tools for automated relational network derivation, visualization and task Generation.
