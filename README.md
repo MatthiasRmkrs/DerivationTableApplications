@@ -35,6 +35,7 @@ Users have control over which relations are plotted, over whether they are plott
 *Example Graph Illustration of the Relational Network Trained and Tested By Steele and Hayes (1991)* 
 <img width="824" height="395" alt="image" src="https://github.com/user-attachments/assets/5b8c7d8d-555a-4129-82d4-07af4ae6fe69" />
 
+We also created a Streamlit app to provide code-free access to the function. 
 Try the [Relational Network Plotter](https://relationalnetworkvisualizer.streamlit.app/)
 
 ### Relational Syllogistic Reasoning Task Generator
